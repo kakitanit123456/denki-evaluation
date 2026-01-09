@@ -3,2296 +3,1758 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>3年理科｜電気の通り道｜評価記録</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>理科評価 記録ツール（iPad）</title>
   <style>
     :root{
-      --bg:#0b1220;
-      --panel:#0f172a;
-      --card:#0b1327;
-      --text:#e5e7eb;
-      --muted:#94a3b8;
-      --line:rgba(148,163,184,.18);
-      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --bg:#0b1020;
+      --card:#121a33;
+      --card2:#0f1630;
+      --text:#f2f4ff;
+      --muted:#aab3d1;
+      --line:#2a3562;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
 
-      --k:#38bdf8; /* 知識・技能 */
-      --t:#a78bfa; /* 思考・判断・表現 */
-      --a:#fb923c; /* 主体 */
-      --good:#34d399;
-      --warn:#fbbf24;
-      --bad:#fb7185;
-      --btn:#1f2a44;
-      --btn2:#162038;
-      --focus: rgba(56,189,248,.35);
+      --k:#2dd4bf;  /* 知識・技能 */
+      --t:#60a5fa;  /* 思考・判断・表現 */
+      --a:#f59e0b;  /* 主体的 */
+      --danger:#fb7185;
+      --ok:#34d399;
     }
-
-    *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
-    html,body{height:100%;}
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      background: radial-gradient(1200px 600px at 30% -10%, rgba(56,189,248,.18), transparent 60%),
-                  radial-gradient(1200px 600px at 80% 10%, rgba(167,139,250,.14), transparent 55%),
-                  radial-gradient(1200px 800px at 60% 120%, rgba(251,146,60,.12), transparent 55%),
-                  var(--bg);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Segoe UI", Arial;
+      background: radial-gradient(1200px 800px at 10% 10%, #18234a 0%, var(--bg) 55%, #050814 100%);
       color:var(--text);
-      font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+      -webkit-font-smoothing:antialiased;
+      touch-action:manipulation;
     }
-
+    button, input, textarea, select { font: inherit; color:inherit; }
+    a{color:inherit}
+    .safe{padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
     .app{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) 12px;
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
     }
-
     header{
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      position:sticky; top:0; z-index:50;
       backdrop-filter: blur(10px);
-      background: linear-gradient(to bottom, rgba(11,18,32,.92), rgba(11,18,32,.6));
-      border-bottom: 1px solid var(--line);
-      padding: 10px 0 8px;
+      background: rgba(7,10,20,.7);
+      border-bottom:1px solid rgba(255,255,255,.08);
     }
-
-    .topRow{
+    .topbar{
+      padding:14px 14px 10px;
       display:flex;
       gap:10px;
       align-items:center;
-      flex-wrap:wrap;
+      justify-content:space-between;
     }
-
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      min-width: 280px;
-      flex:1;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 8px 12px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(15,23,42,.55);
-      font-weight: 700;
-      color: var(--text);
-    }
-    .dot{width:10px;height:10px;border-radius:999px;background:var(--k);}
-    .dot.t{background:var(--t);}
-    .dot.a{background:var(--a);}
-
     .title{
-      font-weight: 900;
-      letter-spacing: .02em;
-      line-height: 1.1;
+      display:flex; flex-direction:column; gap:2px;
     }
-    .subtitle{
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 2px;
+    .title b{font-size:16px}
+    .title small{color:var(--muted); font-size:12px}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: 0 8px 20px rgba(0,0,0,.22);
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pill strong{font-size:14px}
+    .pill .dot{width:10px;height:10px;border-radius:999px;background:var(--ok)}
+    .actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
+    .btn{
+      border:none;
+      border-radius:14px;
+      padding:12px 14px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+      cursor:pointer;
+      min-height:44px;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{background: rgba(96,165,250,.18); border-color: rgba(96,165,250,.35)}
+    .btn.warn{background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.35)}
+    .btn.danger{background: rgba(251,113,133,.14); border-color: rgba(251,113,133,.35)}
+    .btn.ok{background: rgba(52,211,153,.14); border-color: rgba(52,211,153,.35)}
+    .btn.small{padding:10px 12px; border-radius:12px; font-size:13px}
+    .btn.ghost{background: transparent; box-shadow:none}
+    .row{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
     }
 
-    .controls{
-      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+    main{
+      flex:1;
+      padding:14px 14px 120px;
+      max-width:1100px;
+      width:100%;
+      margin:0 auto;
     }
-
-    button, select, input[type="text"], input[type="number"], textarea{
-      font: inherit;
-      color: var(--text);
-    }
-    button{
-      background: var(--btn);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: none;
-      min-height: 44px;
-    }
-    button:active{transform: translateY(1px);}
-    button.secondary{ background: var(--btn2); }
-    button.danger{ background: rgba(251,113,133,.15); border-color: rgba(251,113,133,.28); }
-    button.good{ background: rgba(52,211,153,.12); border-color: rgba(52,211,153,.25); }
-    button:focus{ outline: none; box-shadow: 0 0 0 4px var(--focus); }
-
-    select{
-      background: rgba(15,23,42,.55);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px 12px;
-      min-height: 44px;
-      font-weight: 800;
-    }
-    select:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
-
-    .main{ padding: 10px 0 30px; }
 
     .grid{
       display:grid;
-      gap: 12px;
       grid-template-columns: 1fr;
+      gap:12px;
+    }
+    @media (min-width: 940px){
+      .grid{grid-template-columns: 360px 1fr;}
     }
 
     .card{
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(15,23,42,.55);
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
-      overflow: hidden;
+      overflow:hidden;
     }
-
-    .cardHead{
-      display:flex;
-      align-items:flex-start;
-      justify-content: space-between;
-      gap:12px;
-      padding: 14px 14px 10px;
-      border-bottom: 1px solid var(--line);
-    }
-    .cardTitle{
-      font-weight: 900;
-      font-size: 16px;
-      line-height: 1.25;
+    .card h3{
       margin:0;
+      padding:14px 14px 10px;
+      font-size:14px;
+      color:var(--muted);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
     }
-    .cardMeta{
-      margin-top: 6px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
-    .badge{
-      display:inline-flex;
+    .card .body{padding:14px}
+    .muted{color:var(--muted)}
+    .split{
+      display:flex; gap:10px; flex-wrap:wrap;
       align-items:center;
-      justify-content:center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-weight: 900;
-      border: 1px solid var(--line);
-      background: rgba(2,6,23,.35);
-      min-width: 132px;
-      text-align: center;
-      gap:8px;
-      white-space: nowrap;
+      justify-content:space-between;
     }
-    .badge .small{ font-size: 12px; color: var(--muted); font-weight: 800; }
-    .badge.k{ border-color: rgba(56,189,248,.35); }
-    .badge.t{ border-color: rgba(167,139,250,.35); }
-    .badge.a{ border-color: rgba(251,146,60,.35); }
-
-    .cardBody{
-      padding: 12px 14px 14px;
-      display:grid;
-      gap: 12px;
+    .field{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .field label{font-size:12px; color:var(--muted)}
+    .input, textarea{
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding:12px 12px;
+      min-height:44px;
+      outline:none;
+    }
+    textarea{min-height:72px; resize:vertical;}
+    .select{
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding:12px 12px;
+      min-height:44px;
     }
 
+    .list{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .student{
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+    .student.active{
+      background: rgba(96,165,250,.16);
+      border-color: rgba(96,165,250,.35);
+    }
+    .student b{font-size:15px}
+    .badge{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      font-size:12px;
+      display:inline-flex; align-items:center; gap:6px;
+      user-select:none;
+    }
+    .badge .s{font-weight:700}
+    .badge.k{border-color: rgba(45,212,191,.45); background: rgba(45,212,191,.12)}
+    .badge.t{border-color: rgba(96,165,250,.45); background: rgba(96,165,250,.12)}
+    .badge.a{border-color: rgba(245,158,11,.45); background: rgba(245,158,11,.12)}
+    .badge.total{border-color: rgba(255,255,255,.20); background: rgba(255,255,255,.08)}
+    .grade{
+      font-weight:800;
+      padding:6px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      min-width:44px;
+      text-align:center;
+    }
+    .grade.A{background: rgba(52,211,153,.14); border-color: rgba(52,211,153,.35)}
+    .grade.Bp{background: rgba(96,165,250,.14); border-color: rgba(96,165,250,.35)}
+    .grade.B{background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.18)}
+    .grade.Bm{background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.35)}
+    .grade.C{background: rgba(251,113,133,.14); border-color: rgba(251,113,133,.35)}
+
+    .rubric{
+      display:flex; flex-direction:column; gap:12px;
+    }
     details{
-      border: 1px solid var(--line);
       border-radius: 16px;
-      background: rgba(2,6,23,.25);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
       overflow:hidden;
     }
     summary{
+      list-style:none;
+      padding:12px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
       cursor:pointer;
-      padding: 12px 12px;
-      font-weight: 900;
-      list-style: none;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
-    summary::-webkit-details-marker{ display:none; }
-    .rubric{
-      padding: 0 12px 12px;
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.55;
+    summary::-webkit-details-marker{display:none}
+    .sumL{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    .tag{
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      user-select:none;
     }
+    .tag.k{border-color: rgba(45,212,191,.45); background: rgba(45,212,191,.10)}
+    .tag.t{border-color: rgba(96,165,250,.45); background: rgba(96,165,250,.10)}
+    .tag.a{border-color: rgba(245,158,11,.45); background: rgba(245,158,11,.10)}
+    .tag.gray{border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.06)}
+    .sumR{display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end}
+    .mini{font-size:12px;color:var(--muted)}
+    .line{height:1px;background: rgba(255,255,255,.08); margin:10px 0}
+    .block{padding:12px}
+    .scoreRow{
+      display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;
+      justify-content:space-between;
+    }
+    .scoreBox{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+    .num{
+      width:110px;
+      text-align:center;
+      font-weight:800;
+      font-size:18px;
+      letter-spacing:.5px;
+    }
+    .hint{font-size:12px;color:var(--muted)}
+    .chips{display:flex; gap:8px; flex-wrap:wrap}
 
-    .checkList{ display:grid; gap: 10px; }
-    .checkItem{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      padding: 10px 10px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: rgba(2,6,23,.22);
-    }
-    .checkItem input[type="checkbox"]{
-      width: 22px; height: 22px;
-      margin-top: 2px;
-      accent-color: var(--k);
-      flex: 0 0 auto;
-    }
-    .checkText{ font-weight: 800; line-height: 1.35; }
-
-    .parts{ display:grid; gap: 10px; }
-    .partRow{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      padding: 10px 10px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: rgba(2,6,23,.22);
-    }
-    .partText{ flex:1; min-width: 0; }
-    .partLabel{ font-weight: 900; line-height: 1.25; }
-    .partHint{ color: var(--muted); font-size: 12px; margin-top: 4px; line-height: 1.35; }
-
-    input[type="number"]{
-      width: 96px;
-      min-height: 44px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(15,23,42,.5);
-      text-align: center;
-      font-weight: 900;
-    }
-    input[type="number"]:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
-
-    textarea{
-      width: 100%;
-      min-height: 88px;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: rgba(2,6,23,.25);
-      padding: 10px 12px;
-      line-height: 1.45;
-      resize: vertical;
-    }
-    textarea:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
-
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content: space-between;
-    }
-    .mini{ color: var(--muted); font-size: 12px; line-height: 1.35; }
-
-    .photoArea{ display:grid; gap:10px; }
-
-    .thumbs{
+    .itemGrid{
       display:grid;
+      grid-template-columns: 1fr;
       gap:10px;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      margin-top:10px;
+    }
+    .itemCard{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      padding:12px;
+      display:flex; flex-direction:column; gap:10px;
+    }
+
+    .photoArea{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .photoStrip{
+      display:flex; gap:10px; flex-wrap:wrap;
     }
     .thumb{
-      border: 1px solid var(--line);
+      width:110px; height:90px;
       border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
       overflow:hidden;
-      background: rgba(2,6,23,.25);
-      position: relative;
+      position:relative;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
     .thumb img{
-      width:100%;
-      height: 110px;
-      object-fit: cover;
+      width:100%; height:100%; object-fit:cover;
       display:block;
+    }
+    .thumb .x{
+      position:absolute; top:6px; right:6px;
+      width:26px; height:26px; border-radius:999px;
+      border:none;
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.18);
       cursor:pointer;
     }
-    .thumb .tag{
-      position:absolute;
-      left:6px; bottom:6px;
-      font-size: 11px;
-      font-weight: 900;
-      padding: 4px 6px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(2,6,23,.7);
-      color: var(--text);
+    .thumb .x:active{transform:translateY(1px)}
+    .thumb .ocr{
+      position:absolute; bottom:6px; left:6px;
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.18);
+      user-select:none;
     }
 
-    /* 右上：削除、左上：OCR */
-    .thumb button{
-      position:absolute;
-      top:6px; right:6px;
-      padding: 6px 8px;
-      min-height: 36px;
-      border-radius: 10px;
-      font-weight: 900;
-      background: rgba(251,113,133,.18);
-      border-color: rgba(251,113,133,.35);
-      z-index: 2;
-    }
-    .thumb .ocrBtn{
-      position:absolute;
-      top:6px; left:6px;
-      padding: 6px 8px;
-      min-height: 36px;
-      border-radius: 10px;
-      font-weight: 950;
-      background: rgba(52,211,153,.14);
-      border: 1px solid rgba(52,211,153,.30);
-      z-index: 2;
-    }
-
-    .modalBg{
-      position: fixed;
-      inset: 0;
+    /* モーダル（注釈） */
+    .modal{
+      position:fixed; inset:0;
       background: rgba(0,0,0,.55);
       display:none;
       align-items:center;
       justify-content:center;
-      padding: 18px;
-      z-index: 50;
+      z-index:100;
+      padding: 14px;
     }
-    .modal{
-      width: min(820px, 100%);
+    .modal.show{display:flex}
+    .modalCard{
+      width:min(980px, 100%);
+      max-height: 92vh;
       border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(15,23,42,.92);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,14,28,.92);
       box-shadow: var(--shadow);
       overflow:hidden;
-    }
-    .modalHead{
-      padding: 14px 14px 10px;
-      border-bottom: 1px solid var(--line);
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
+      flex-direction:column;
     }
-    .modalTitle{
-      font-weight: 950;
-      margin:0;
-    }
-    .modalBody{ padding: 12px 14px 14px; display:grid; gap:12px; }
-    .modalBody input[type="text"]{
-      width:100%;
-      min-height: 44px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(2,6,23,.25);
-      padding: 10px 12px;
-      font-weight: 900;
-    }
-    .modalBody input[type="text"]:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
-    .list{ display:grid; gap: 8px; }
-    .listItem{
-      display:flex;
-      gap: 10px;
-      align-items:center;
-      justify-content: space-between;
-      padding: 10px 10px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: rgba(2,6,23,.22);
-    }
-    .listItem .name{ font-weight: 900; }
-    .listItem .actions{ display:flex; gap:8px; }
-
-    .sectionLabel{
-      display:flex; align-items:center; gap:8px;
-      font-weight: 950;
-      margin: 2px 0 0;
-    }
-    .kLabel{ color: var(--k); }
-    .tLabel{ color: var(--t); }
-    .aLabel{ color: var(--a); }
-
-    .hr{ height:1px; background: var(--line); margin: 8px 0; }
-
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: calc(env(safe-area-inset-bottom) + 14px);
-      transform: translateX(-50%);
-      background: rgba(2,6,23,.86);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-weight: 900;
-      display:none;
-      z-index: 60;
-    }
-
-    /* 注釈エディタ（全画面） */
-    .annoBg{
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.75);
-      display:none;
-      z-index: 80;
-    }
-    .anno{
-      position:absolute;
-      inset: 0;
-      display:grid;
-      grid-template-rows: auto 1fr auto;
-      padding: env(safe-area-inset-top) 10px env(safe-area-inset-bottom) 10px;
-      gap: 10px;
-    }
-    .annoTop, .annoBottom{
-      display:flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items:center;
-      justify-content: space-between;
-      background: rgba(15,23,42,.80);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 8px 8px;
-      backdrop-filter: blur(10px);
-    }
-    .annoTop .left, .annoTop .right, .annoBottom .left, .annoBottom .right{
-      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
-    }
-    .annoMid{
-      position:relative;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      overflow:hidden;
-      background: rgba(2,6,23,.6);
-      box-shadow: var(--shadow);
-      touch-action: none;
-    }
-    canvas#annoCanvas{
-      width:100%;
-      height:100%;
-      display:block;
-      touch-action: none;
-    }
-    .toolBtn{
-      min-height: 44px;
-      padding: 10px 10px;
-      border-radius: 12px;
-      background: rgba(2,6,23,.25);
-      border: 1px solid var(--line);
-      font-weight: 900;
-      white-space: nowrap;
-    }
-    .toolBtn.active{
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(167,139,250,.28);
-      border-color: rgba(167,139,250,.45);
-      background: rgba(167,139,250,.16);
-    }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 8px 10px;
-      background: rgba(2,6,23,.25);
-      min-height: 44px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-    input[type="range"]{ width: 160px; accent-color: var(--t); }
-    input[type="color"]{
-      width: 44px;
-      height: 44px;
-      border: none;
-      background: transparent;
-      padding: 0;
-    }
-    .swatches{
-      display:flex;
-      gap:6px;
+    .modalTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:12px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
       flex-wrap:wrap;
-      align-items:center;
     }
-    .sw{
-      width: 26px; height: 26px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      cursor: pointer;
-    }
-    .annoHint{ color: var(--muted); font-size: 12px; font-weight: 800; }
-
-    /* OCRモーダル */
-    .ocrBg{
-      position: fixed;
-      inset:0;
-      display:none;
+    .modalTop .left{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .modalTop .right{display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
+    .canvasWrap{
+      position:relative;
+      background: rgba(0,0,0,.2);
+      flex:1;
+      display:flex;
       align-items:center;
       justify-content:center;
-      padding: 18px;
-      background: rgba(0,0,0,.6);
-      z-index: 90;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      padding:10px;
     }
-    .ocr{
-      width: min(900px, 100%);
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(15,23,42,.95);
-      box-shadow: var(--shadow);
+    .stage{
+      position:relative;
+      border-radius: 14px;
       overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.2);
     }
-    .ocrHead{
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line);
+    .stage img{display:block; max-width: 100%; height:auto}
+    canvas{
+      position:absolute; left:0; top:0;
+      touch-action: none; /* ペン描画 */
+    }
+    .toolRow{
+      display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+    }
+    .toolRow .lab{font-size:12px;color:var(--muted)}
+    .range{width:140px}
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.65);
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:13px;
+      display:none;
+      z-index:200;
+      max-width: calc(100% - 20px);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .toast.show{display:block}
+
+    footer{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(7,10,20,.75);
+      border-top:1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(10px);
+      z-index:40;
+    }
+    .foot{
+      max-width:1100px;
+      margin:0 auto;
       display:flex;
+      gap:10px;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
       flex-wrap:wrap;
     }
-    .ocrTitle{ margin:0; font-weight: 950; }
-    .ocrBody{ padding: 12px 14px 14px; display:grid; gap: 10px; }
-    .ocrProgress{
-      height: 10px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(2,6,23,.35);
-      overflow:hidden;
-    }
-    .ocrProgress > div{
-      height: 100%;
-      width: 0%;
-      background: rgba(52,211,153,.75);
-      transition: width .15s linear;
-    }
-    .ocrRow{
-      display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; align-items:center;
-    }
-    .ocrText{
-      width:100%;
-      min-height: 220px;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: rgba(2,6,23,.25);
-      padding: 10px 12px;
-      line-height: 1.5;
-      resize: vertical;
-      font-weight: 800;
-    }
-
-    @media (min-width: 840px){
-      .grid{ gap: 14px; }
-      input[type="range"]{ width: 220px; }
+    .statline{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      color:var(--muted);
+      font-size:12px;
     }
   </style>
 </head>
 <body>
-<div class="app">
+<div class="app safe">
   <header>
-    <div class="topRow">
-      <div class="brand">
-        <div>
-          <div class="title">3年理科「電気の通り道」評価記録（iPad）</div>
-          <div class="subtitle">評価入力＋メモ＋写真＋注釈＋OCR（自動保存）</div>
-        </div>
+    <div class="topbar">
+      <div class="title">
+        <b>理科評価 記録ツール（iPad最適化）</b>
+        <small id="subTitle">単元：電気の通り道（サンプル）｜端末内に自動保存</small>
       </div>
-
-      <div class="controls">
-        <select id="studentSelect" aria-label="児童選択"></select>
-        <button class="secondary" id="btnRoster">名簿</button>
-        <button class="secondary" id="btnResetStudent">この児童の記録をリセット</button>
-        <button class="good" id="btnClearCache">画像の整理</button>
+      <div class="actions">
+        <button class="btn small primary" id="btnBackup">バックアップ(JSON)</button>
+        <button class="btn small warn" id="btnRestore">復元(JSON)</button>
+        <button class="btn small danger" id="btnReset">全消去</button>
       </div>
-    </div>
-
-    <div class="topRow" style="margin-top:8px;">
-      <span class="pill"><span class="dot"></span>知識・技能</span>
-      <span class="pill"><span class="dot t"></span>思考・判断・表現</span>
-      <span class="pill"><span class="dot a"></span>主体</span>
-      <span class="pill" id="autoSavePill" style="margin-left:auto;">
-        <span class="dot" style="background:var(--good)"></span><span id="saveState">保存済み</span>
-      </span>
     </div>
   </header>
 
-  <main class="main">
-    <div class="grid" id="cards"></div>
+  <main>
+    <div class="grid">
+      <!-- 左：名簿 -->
+      <section class="card">
+        <h3>
+          <span>名簿</span>
+          <span class="mini">タップで切替</span>
+        </h3>
+        <div class="body">
+          <div class="field">
+            <label>児童名（改行で複数。例：3-1 田中太郎）</label>
+            <textarea id="rosterText" placeholder="例）&#10;3-1 田中太郎&#10;3-1 佐藤花子"></textarea>
+          </div>
+          <div class="row" style="margin-top:10px; justify-content:flex-end;">
+            <button class="btn ok" id="btnApplyRoster">名簿を反映</button>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="list" id="studentList"></div>
+        </div>
+      </section>
+
+      <!-- 右：採点 -->
+      <section class="card">
+        <h3>
+          <span>採点（1画面）</span>
+          <span class="mini" id="who">—</span>
+        </h3>
+        <div class="body">
+          <div class="split">
+            <div class="field" style="flex:1; min-width:260px;">
+              <label>単元名</label>
+              <input class="input" id="unitName" placeholder="例：電気の通り道" />
+            </div>
+            <div class="field" style="min-width:220px;">
+              <label>授業回（記録用）</label>
+              <select class="select" id="lessonKey"></select>
+            </div>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="split">
+            <div class="row">
+              <span class="badge k"><span class="s">知識・技能</span> <span id="sumK">0</span></span>
+              <span class="badge t"><span class="s">思考・判断・表現</span> <span id="sumT">0</span></span>
+              <span class="badge a"><span class="s">主体的</span> <span id="sumA">0</span></span>
+              <span class="badge total"><span class="s">合計</span> <span id="sumAll">0</span></span>
+            </div>
+            <div class="row">
+              <span class="grade B" id="gradeAll">—</span>
+            </div>
+          </div>
+
+          <div class="line"></div>
+
+          <div class="rubric" id="rubric"></div>
+
+          <div class="line"></div>
+
+          <div class="field">
+            <label>全体メモ（この児童・この授業回）</label>
+            <textarea id="overallMemo" placeholder="気づき、声かけ、次時の手立て など"></textarea>
+          </div>
+
+        </div>
+      </section>
+    </div>
   </main>
-</div>
 
-<!-- 名簿モーダル -->
-<div class="modalBg" id="modalRosterBg" role="dialog" aria-modal="true" aria-label="名簿">
-  <div class="modal">
-    <div class="modalHead">
-      <h3 class="modalTitle">名簿（端末内保存）</h3>
-      <button class="secondary" id="btnCloseRoster">閉じる</button>
-    </div>
-    <div class="modalBody">
-      <div class="mini">※児童名は端末内に保存されます。授業中に増減してもOK。</div>
+  <footer>
+    <div class="foot">
+      <div class="statline" id="statusLine">
+        <span class="pill"><span class="dot" id="dot"></span><strong id="saveState">保存OK</strong></span>
+        <span>※ホーム画面追加で安定（iPad Safari推奨）</span>
+      </div>
       <div class="row">
-        <input id="newStudentName" type="text" placeholder="児童名を追加（例：1 田中）" />
-        <button class="good" id="btnAddStudent">追加</button>
-      </div>
-      <div class="hr"></div>
-      <div class="list" id="rosterList"></div>
-    </div>
-  </div>
-</div>
-
-<!-- 注釈エディタ -->
-<div class="annoBg" id="annoBg" aria-hidden="true">
-  <div class="anno">
-    <div class="annoTop">
-      <div class="left">
-        <button class="secondary" id="btnAnnoClose">戻る</button>
-        <span class="chip" id="annoInfo">注釈</span>
-        <span class="annoHint" id="annoFileHint"></span>
-      </div>
-      <div class="right">
-        <button class="secondary" id="btnUndo">Undo</button>
-        <button class="secondary" id="btnRedo">Redo</button>
-        <button class="danger" id="btnClearAnno">全消し</button>
-        <button class="good" id="btnSaveAnno">保存</button>
+        <button class="btn small" id="btnPrev">◀ 前の児童</button>
+        <button class="btn small" id="btnNext">次の児童 ▶</button>
       </div>
     </div>
+  </footer>
 
-    <div class="annoMid" id="annoStage">
-      <canvas id="annoCanvas"></canvas>
-    </div>
-
-    <div class="annoBottom">
-      <div class="left">
-        <button class="toolBtn" data-tool="pen">ペン</button>
-        <button class="toolBtn" data-tool="erase">消しゴム</button>
-        <button class="toolBtn" data-tool="objerase">オブジェクト消し</button>
-        <button class="toolBtn" data-tool="line">直線</button>
-        <button class="toolBtn" data-tool="rect">四角</button>
-        <button class="toolBtn" data-tool="ellipse">円</button>
-        <button class="toolBtn" data-tool="arrow">矢印</button>
-        <button class="toolBtn" data-tool="text">文字</button>
+  <!-- 注釈モーダル -->
+  <div class="modal" id="modal">
+    <div class="modalCard">
+      <div class="modalTop">
+        <div class="left">
+          <span class="tag gray" id="modalTitle">写真注釈</span>
+          <span class="mini" id="modalSub">—</span>
+        </div>
+        <div class="right">
+          <div class="toolRow">
+            <span class="lab">色</span>
+            <input type="color" id="penColor" value="#ff4d6d" />
+          </div>
+          <div class="toolRow">
+            <span class="lab">太さ</span>
+            <input class="range" type="range" id="penSize" min="1" max="28" value="6" />
+            <span class="mini" id="penSizeVal">6</span>
+          </div>
+          <button class="btn small" id="toolPen">ペン</button>
+          <button class="btn small warn" id="toolEraser">消しゴム</button>
+          <button class="btn small danger" id="toolObjEraser">オブジェクト消し</button>
+          <button class="btn small" id="toolRect">□</button>
+          <button class="btn small" id="toolText">T</button>
+          <button class="btn small" id="btnUndo">戻す</button>
+          <button class="btn small" id="btnClearInk">注釈全消し</button>
+          <button class="btn small ok" id="btnSaveInk">保存</button>
+          <button class="btn small ghost" id="btnClose">閉じる</button>
+        </div>
       </div>
-      <div class="right">
-        <span class="chip">
-          色
-          <input type="color" id="colorPicker" value="#a78bfa" title="色" />
-          <span class="swatches" id="recentSwatches"></span>
-        </span>
-        <span class="chip">
-          太さ
-          <input type="range" id="sizeSlider" min="1" max="40" value="6" />
-          <span id="sizeVal" style="min-width:30px; text-align:right;">6</span>
-        </span>
+      <div class="canvasWrap" id="canvasWrap">
+        <div class="stage" id="stage">
+          <img id="baseImg" alt="photo" />
+          <canvas id="ink"></canvas>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="toast" id="toast"></div>
 </div>
-
-<!-- OCRモーダル -->
-<div class="ocrBg" id="ocrBg" aria-hidden="true">
-  <div class="ocr">
-    <div class="ocrHead">
-      <div>
-        <h3 class="ocrTitle">OCR（文字起こし）</h3>
-        <div class="mini" id="ocrHint">写真から文字を抽出して、メモ/振り返りに追記できます。</div>
-      </div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-        <button class="secondary" id="btnOcrClose">閉じる</button>
-        <button class="secondary" id="btnOcrCopy">コピー</button>
-        <button class="good" id="btnOcrAppend">追記する</button>
-      </div>
-    </div>
-    <div class="ocrBody">
-      <div class="ocrRow">
-        <span class="pill"><span class="dot" style="background:var(--good)"></span><span id="ocrStatus">準備中</span></span>
-        <span class="mini" id="ocrTargetInfo">—</span>
-      </div>
-      <div class="ocrProgress"><div id="ocrBar"></div></div>
-      <textarea class="ocrText" id="ocrText" placeholder="OCR結果がここに出ます。不要部分を消してから追記もOK。"></textarea>
-      <div class="mini">
-        ※手書きは誤認識もあるので、必要な部分だけ残して追記すると安定します。<br>
-        ※初回はOCRの読み込みで少し時間がかかります（ネット推奨）。
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<!-- OCRライブラリ（初回はネット必要） -->
-<script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <script>
 /** =========================
- *  IndexedDB（画像保存）
+ *  1) 設定（ここを後で“評価計画”に合わせて調整）
  * ========================= */
-const DB_NAME = "rika_eval_tool_v3";
-const DB_VER = 1;
-const STORE_FILES = "files";
+const CONFIG = {
+  unitDefault: "電気の通り道",
+  // 授業回（あとで自由に変えられる）
+  lessons: [
+    { key:"L1", name:"第1-2時：回路（理解・技能）" },
+    { key:"L2", name:"第2時：シンキング（つく/つかない）軽め10点" },
+    { key:"L3", name:"第3-5時：通す/通さない（技能+思考+主体）" },
+    { key:"L7", name:"第7時：空き缶は通す？（発展・10点）" },
+    { key:"L8", name:"第8時：まとめテスト" },
+  ],
 
+  // 観点ごとの色（UI用）
+  domains: {
+    K: { label:"知識・技能", color:"var(--k)" },
+    T: { label:"思考・判断・表現", color:"var(--t)" },
+    A: { label:"主体的", color:"var(--a)" },
+  },
+
+  // 評価（A/B+/B/B-/C）を「B幅広め」にする（①で固定）
+  // ※ totalPoints(=合計満点)に対する“割合”で判定
+  //   AとCは狭く、B帯を広げる
+  gradeBands: {
+    A: 0.86,   // 86%以上
+    Bp:0.72,   // 72%以上
+    B: 0.40,   // 40%以上  ← Bを広げる
+    Bm:0.28,   // 28%以上
+    C: 0.00
+  },
+
+  // ルーブリック（仮）…あとであなたの確定版に差し替えやすい構造
+  // 各「rubricGroup」は、観点ドメイン＋項目（点数入力 or チェック加点）＋写真＆メモを持てる
+  rubricByLesson: {
+    // 第1-2時：回路（例）
+    L1: [
+      {
+        id:"K_L1",
+        domain:"K",
+        title:"回路の技能（チェック：達成数）",
+        scoring:{ type:"checkCount", max:5, toPoints:"count" }, // 5つ中いくつできたか
+        criteria:[
+          "乾電池の＋極/−極を意識してつなぐ",
+          "豆電球をソケットにしっかり固定できる",
+          "導線のつなぎが確実（外れない）",
+          "安全（ショート等に注意）",
+          "結果を記録（簡単にでも）",
+        ],
+      },
+      {
+        id:"T_L1",
+        domain:"T",
+        title:"予想（回路図＋理由）※正解でなくてOK",
+        scoring:{ type:"manual", max:10 },
+        criteria:[
+          "回路図が“輪”として描けている",
+          "電池の極や豆電球のつながりが分かる図",
+          "理由が自分の言葉で書けている（視点がある）",
+          "丁寧さ・説明の分かりやすさ",
+        ],
+        note:"※点数はあなたが入力（配点は後で調整可）"
+      },
+    ],
+
+    // 第2時：シンキング（つく/つかない）軽め
+    L2: [
+      {
+        id:"T_L2",
+        domain:"T",
+        title:"シンキングツール（つく/つかない）からの軽い考察（10点）",
+        scoring:{ type:"manual", max:10 },
+        criteria:[
+          "結果をシンキングに正しく整理できている",
+          "整理から気づき（共通点/ちがい）を言えている",
+          "言葉で説明できている",
+        ],
+      },
+      {
+        id:"K_L2",
+        domain:"K",
+        title:"知識・技能（チェック：2つだけ）",
+        scoring:{ type:"checkCount", max:2, toPoints:"count" },
+        criteria:[
+          "用語（乾電池/導線/豆電球/ソケット等）が言える",
+          "回路が“輪”になると電気が通ると説明できる",
+        ],
+      },
+    ],
+
+    // 第3-5時：分類実験
+    L3: [
+      {
+        id:"K_L3",
+        domain:"K",
+        title:"分類実験の技能（シビア版：チェック数）",
+        scoring:{ type:"checkCount", max:5, toPoints:"count" },
+        criteria:[
+          "テスターの動作確認を先にできる",
+          "導線の当て方が確実（接触不良を減らす）",
+          "塗装等を避けて金属部分に当てられる",
+          "結果をその場で正確に記録できる",
+          "同じ条件で再確認（誤差チェック）ができる",
+        ],
+      },
+      {
+        id:"T_L3a",
+        domain:"T",
+        title:"予想（1項目）",
+        scoring:{ type:"manual", max:10 },
+        criteria:[
+          "予想＋理由（材質などの視点）",
+        ],
+      },
+      {
+        id:"T_L3b",
+        domain:"T",
+        title:"シンキング→分析→表現→結論（15点：結論重視）",
+        scoring:{ type:"manual", max:15 },
+        criteria:[
+          "結果をシンキングにまとめられる",
+          "シンキングから分析（共通点/規則性）",
+          "分析を言葉で表現できる",
+          "自分なりの結論を導けている（ここ重視）",
+        ],
+        note:"※配点はあなたが入力（15点満点）"
+      },
+      {
+        id:"A_L3",
+        domain:"A",
+        title:"主体：リクエスト（3個以上でB）",
+        scoring:{ type:"manual", max:5 },
+        criteria:[
+          "調べたい物を3個以上リクエストできたか（量）",
+          "理由や視点があるか（質）",
+        ],
+      },
+    ],
+
+    // 第7時：発展（A低め/C低め）
+    L7: [
+      {
+        id:"T_L7",
+        domain:"T",
+        title:"空き缶は本当は通すはず…なのに通らないのはなぜ？（発展・10点）",
+        scoring:{ type:"manual", max:10 },
+        criteria:[
+          "『中は金属』など本質に触れている",
+          "表面の塗装/コーティングに気づけている",
+          "自分の言葉で筋道立てて説明できる",
+        ],
+        note:"※この回はCライン低め/Aも低めにしたい場合、個別バンド設定も可能（後で追加）"
+      }
+    ],
+
+    // 第8時：まとめテスト
+    L8: [
+      {
+        id:"K_L8",
+        domain:"K",
+        title:"まとめテスト（点数）",
+        scoring:{ type:"manual", max:100 },
+        criteria:[
+          "得点を入力（必要なら別途評価換算）",
+        ],
+        note:"※ここは運用に合わせて後で整えよう"
+      }
+    ]
+  },
+
+  // 主体（8時間通し）—柔軟枠
+  // ※授業回に依存せず常時表示する
+  attitudeAcross: [
+    {
+      id:"A_ALL1",
+      domain:"A",
+      title:"振り返りの蓄積（いつでも記録OK）",
+      scoring:{ type:"manual", max:10 },
+      criteria:[
+        "振り返りが積み上がっている（回数/質）",
+        "学びの言語化が進んでいる"
+      ],
+      note:"※毎回書けない前提。空欄でもOK、記録は柔軟に。"
+    },
+    {
+      id:"A_ALL2",
+      domain:"A",
+      title:"授業中の様子（安全配慮/学習へ向かう/忘れ物等）",
+      scoring:{ type:"manual", max:10 },
+      criteria:[
+        "安全に配慮している",
+        "学習へ向かおうとしている",
+        "忘れ物/提出など",
+      ],
+    }
+  ],
+};
+
+/** =========================
+ *  2) IndexedDB（端末内保存）
+ * ========================= */
+const DB_NAME = "SciEvalDB_v1";
+const DB_VER = 1;
+const STORE = "state";
+
+let db = null;
 function openDB(){
-  return new Promise((resolve, reject)=>{
+  return new Promise((resolve,reject)=>{
     const req = indexedDB.open(DB_NAME, DB_VER);
-    req.onupgradeneeded = ()=>{
-      const db = req.result;
-      if(!db.objectStoreNames.contains(STORE_FILES)){
-        db.createObjectStore(STORE_FILES, { keyPath: "id" });
+    req.onupgradeneeded = (e)=>{
+      const d = req.result;
+      if(!d.objectStoreNames.contains(STORE)){
+        d.createObjectStore(STORE);
       }
     };
-    req.onsuccess = ()=> resolve(req.result);
-    req.onerror = ()=> reject(req.error);
+    req.onsuccess=()=>{ db=req.result; resolve(db); };
+    req.onerror=()=>reject(req.error);
   });
 }
-
-async function idbPutFile(fileId, blob, meta={}){
-  const db = await openDB();
-  return new Promise((resolve, reject)=>{
-    const tx = db.transaction(STORE_FILES, "readwrite");
-    tx.objectStore(STORE_FILES).put({ id: fileId, blob, meta, at: Date.now() });
-    tx.oncomplete = ()=> resolve(true);
-    tx.onerror = ()=> reject(tx.error);
+function idbGet(key){
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(STORE,"readonly");
+    const st=tx.objectStore(STORE);
+    const req=st.get(key);
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
   });
 }
-
-async function idbGetFile(fileId){
-  const db = await openDB();
-  return new Promise((resolve, reject)=>{
-    const tx = db.transaction(STORE_FILES, "readonly");
-    const req = tx.objectStore(STORE_FILES).get(fileId);
-    req.onsuccess = ()=> resolve(req.result || null);
-    req.onerror = ()=> reject(req.error);
+function idbSet(key,val){
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(STORE,"readwrite");
+    const st=tx.objectStore(STORE);
+    const req=st.put(val,key);
+    req.onsuccess=()=>resolve(true);
+    req.onerror=()=>reject(req.error);
   });
 }
-
-async function idbDeleteFile(fileId){
-  const db = await openDB();
-  return new Promise((resolve, reject)=>{
-    const tx = db.transaction(STORE_FILES, "readwrite");
-    tx.objectStore(STORE_FILES).delete(fileId);
-    tx.oncomplete = ()=> resolve(true);
-    tx.onerror = ()=> reject(tx.error);
-  });
-}
-
-async function idbListFiles(){
-  const db = await openDB();
-  return new Promise((resolve, reject)=>{
-    const tx = db.transaction(STORE_FILES, "readonly");
-    const req = tx.objectStore(STORE_FILES).getAllKeys();
-    req.onsuccess = ()=> resolve(req.result || []);
-    req.onerror = ()=> reject(req.error);
+function idbDel(key){
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(STORE,"readwrite");
+    const st=tx.objectStore(STORE);
+    const req=st.delete(key);
+    req.onsuccess=()=>resolve(true);
+    req.onerror=()=>reject(req.error);
   });
 }
 
 /** =========================
- *  データモデル（localStorage）
+ *  3) 状態
  * ========================= */
-const LS_KEY = "rika_eval_state_v3";
-
-const defaultRoster = ["1 児童A","2 児童B","3 児童C","4 児童D","5 児童E","6 児童F"];
+const STATE_KEY = "app_state";
 const nowISO = ()=> new Date().toISOString();
-function uid(){ return Math.random().toString(36).slice(2,10) + "_" + Date.now().toString(36); }
-function clampInt(v, min, max){
-  const n = Number(v);
-  if(!Number.isFinite(n)) return min;
-  return Math.max(min, Math.min(max, Math.floor(n)));
-}
-function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
 
-function loadState(){
-  const raw = localStorage.getItem(LS_KEY);
-  if(!raw){
-    const base = {
-      version: 3,
-      createdAt: nowISO(),
-      updatedAt: nowISO(),
-      roster: defaultRoster,
-      activeStudent: defaultRoster[0],
-      students: {},
-      anno: { docs: {}, recentColors: ["#a78bfa","#38bdf8","#fb923c","#34d399","#fbbf24","#fb7185","#ffffff","#000000"] },
-      ocr: { cache: {} } // fileId => { text, at }
-    };
-    saveState(base, true);
-    return base;
-  }
-  try{
-    const s = JSON.parse(raw);
-    if(!s.anno) s.anno = { docs:{}, recentColors:["#a78bfa","#38bdf8","#fb923c","#34d399","#fbbf24","#fb7185","#ffffff","#000000"] };
-    if(!s.anno.docs) s.anno.docs = {};
-    if(!s.anno.recentColors) s.anno.recentColors = ["#a78bfa","#38bdf8","#fb923c","#34d399","#fbbf24","#fb7185","#ffffff","#000000"];
-    if(!s.ocr) s.ocr = { cache:{} };
-    if(!s.ocr.cache) s.ocr.cache = {};
-    return s;
-  }catch{
-    localStorage.removeItem(LS_KEY);
-    return loadState();
-  }
+let state = {
+  meta:{
+    unitName: CONFIG.unitDefault,
+    updatedAt: nowISO(),
+  },
+  roster: [],
+  currentStudentId: "",
+  currentLessonKey: CONFIG.lessons[0].key,
+  // 記録の構造:
+  // records[studentId][lessonKey][rubricGroupId] = { score, checks[], memo, photos:[{id, baseDataUrl, inkDataUrl, shapes:[], texts:[]}] }
+  records: {},
+};
+
+function makeId(prefix="id"){
+  return prefix + "_" + Math.random().toString(36).slice(2,9) + "_" + Date.now().toString(36);
 }
 
-function saveState(state, silent=false){
-  state.updatedAt = nowISO();
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-  if(!silent) showSaved();
+function ensurePath(studentId, lessonKey){
+  if(!state.records[studentId]) state.records[studentId] = {};
+  if(!state.records[studentId][lessonKey]) state.records[studentId][lessonKey] = {};
+  return state.records[studentId][lessonKey];
+}
+
+function ensureGroup(studentId, lessonKey, groupId){
+  const lesson = ensurePath(studentId, lessonKey);
+  if(!lesson[groupId]){
+    lesson[groupId] = { score:null, checks:[], memo:"", photos:[] };
+  }
+  return lesson[groupId];
 }
 
 let saveTimer = null;
-function scheduleSave(){
-  showSaving();
+function markDirty(){
+  state.meta.updatedAt = nowISO();
+  const dot = document.getElementById("dot");
+  dot.style.background = "var(--danger)";
+  document.getElementById("saveState").textContent="保存中…";
   if(saveTimer) clearTimeout(saveTimer);
-  saveTimer = setTimeout(()=> saveState(APP_STATE), 250);
+  saveTimer = setTimeout(async ()=>{
+    await idbSet(STATE_KEY, state);
+    dot.style.background = "var(--ok)";
+    document.getElementById("saveState").textContent="保存OK";
+  }, 220);
 }
-
-function ensureStudentData(name){
-  if(!APP_STATE.students[name]){
-    APP_STATE.students[name] = {
-      createdAt: nowISO(),
-      updatedAt: nowISO(),
-      items: {},
-      reflection: [],
-    };
-  }
-  return APP_STATE.students[name];
-}
-function ensureItemData(studentName, itemId){
-  const s = ensureStudentData(studentName);
-  if(!s.items[itemId]){
-    s.items[itemId] = { checks:{}, parts:{}, memo:"", photos:[], select:"" };
-  }
-  return s.items[itemId];
-}
-
-/** =========================
- *  評価：換算
- * ========================= */
-function gradeCheck5(score){ if(score>=5) return "A"; if(score===4) return "B+"; if(score===3) return "B"; if(score===2) return "B-"; return "C"; }
-function gradeThink10(score){ if(score>=9) return "A"; if(score>=7) return "B+"; if(score>=4) return "B"; if(score>=3) return "B-"; return "C"; }
-function to3Level(five){ if(five==="A"||five==="B+") return "A"; if(five==="B"||five==="B-") return "B"; return "C"; }
-function gradeLesson7ABC(score10){ if(score10>=8) return "A"; if(score10>=5) return "B"; return "C"; }
-function think15To10(score15){ return Math.round((score15/15)*10); }
-
-/** =========================
- *  評価項目（確定版）
- * ========================= */
-const ITEMS = [
-  { id:"t1", domain:"t", title:"第1時｜思考・判断・表現①｜予想：回路図＋理由（10点）", kind:"scoreParts", max:10,
-    rubric:["正解/不正解では評価しない（図と理由の質を見る）","回路図：輪になっている・器具の位置関係（＋−があればなお良い）","理由：『輪』『通り道』『＋−』『接点（金属部分）』などの視点が入るか"],
-    parts:[
-      {key:"loop", label:"回路図：輪になっている", max:3, hint:"途切れず一周する形にできている"},
-      {key:"layout", label:"回路図：器具の位置関係がわかる", max:2, hint:"電池・導線・豆電球がつながるイメージ"},
-      {key:"reason", label:"理由を書いている", max:2, hint:"『〜だから』など理由として成立"},
-      {key:"view", label:"理由に視点語（輪/通り道/＋−/接点など）", max:3, hint:"電気の流れに関係する視点がある"},
-    ]
-  },
-
-  { id:"k2", domain:"k", title:"第2時｜知識・技能①｜回路操作＋理解（チェック5→0〜5点）", kind:"check5",
-    rubric:["2時は『知識・技能』を同時に見取る（知識2項目入り）","達成数（0〜5）→ 5=A / 4=B+ / 3=B / 2=B- / 0-1=C"],
-    checks:[
-      {key:"a", label:"豆電球をソケットにしっかり固定できている（ぐらつかない）"},
-      {key:"b", label:"導線が電池の金属部分（＋/−いずれか）につながっている"},
-      {key:"c", label:"導線が豆電球の金属部分（口金・へそ）につながっている"},
-      {key:"d", label:"回路が一周（輪）になると電気が流れることを説明できる（口頭でも可）"},
-      {key:"e", label:"器具名称（電池・導線・豆電球など）を言える/書ける（完全一致でなくて可）"},
-    ]
-  },
-
-  { id:"t2", domain:"t", title:"第2時｜思考・判断・表現①’｜結果を『つく/つかない』で整理し考察（10点）", kind:"scoreParts", max:10,
-    rubric:["シンキングツールで『つく／つかない』に整理（軽め）","共通点（条件）に少しでも触れられればOK（短くてよい）","換算は思考10点（案①）"],
-    parts:[
-      {key:"sort", label:"ツールに『つく／つかない』で整理できている", max:4, hint:"結果に基づいて分けられている"},
-      {key:"common", label:"ツールから共通点（条件）に触れている", max:3, hint:"例：輪になっている／どこかが切れている 等"},
-      {key:"words", label:"自分の言葉で簡単に考察を書けている", max:3, hint:"1文でもOK（丸写しでない）"},
-    ]
-  },
-
-  { id:"t3", domain:"t", title:"第3時｜思考・判断・表現②｜電気を通すかの予想と理由（10点）", kind:"scoreParts", max:10,
-    rubric:["正解/不正解は見ない（理由の視点を見る）","材質・見た目・触った感じなど、電気と関係づけようとしているか"],
-    parts:[
-      {key:"pred", label:"予想が明確（通す/通さない がはっきり）", max:2, hint:"図・言葉どちらでもOK"},
-      {key:"reason", label:"理由が書けている（理由として成立）", max:2, hint:"『〜だから』など"},
-      {key:"view", label:"理由に材質・性質の視点がある", max:4, hint:"金属/プラ、冷たい、硬い、光っている 等"},
-      {key:"own", label:"自分の考えとして書けている", max:2, hint:"主体が見える（丸写しではない）"},
-    ]
-  },
-
-  { id:"k35", domain:"k", title:"第3〜5時｜知識・技能②｜導通実験の正確な操作（チェック5→0〜5点）", kind:"check5",
-    rubric:["2時より『正確さ』を重視（慣れてきた前提）","達成数（0〜5）→ 5=A / 4=B+ / 3=B / 2=B- / 0-1=C"],
-    checks:[
-      {key:"a", label:"実験前に動作確認をしている（テスター等が反応するか）"},
-      {key:"b", label:"金属部分を意識して当てている（塗装・ビニール部分を避ける）"},
-      {key:"c", label:"条件をそろえて調べている（当て方・場所・力など）"},
-      {key:"d", label:"結果があやしいとき、確かめ直している（1回で決めつけない）"},
-      {key:"e", label:"役割を意識して実験が滞らないように進める（記録とは別）"},
-    ]
-  },
-
-  { id:"a_req", domain:"a", title:"第3〜5時｜主体②｜調べたいものリクエスト数（A/B/C）", kind:"selectABC",
-    rubric:["量を重視（まず出せること）","A：5個以上（追加提案あり） / B：3〜4個 / C：2個以下"],
-    options:["A","B","C"]
-  },
-
-  { id:"t5", domain:"t", title:"第5時｜思考・判断・表現③｜結果→分析→結論（15点・結論重視）", kind:"scoreParts", max:15,
-    rubric:["シンキングツールを『思考の道具』として使えているか","結論に重きを置く（重点配点）","15点→10点換算→思考10点（案①）で評定"],
-    parts:[
-      {key:"sort", label:"結果をシンキングツールに整理できている", max:3, hint:"通す/通さない が結果に基づいて整理されている"},
-      {key:"anl", label:"共通点・違いを分析している", max:4, hint:"『〜は同じ』『〜はちがう』など"},
-      {key:"exp", label:"分析したことを言葉で表現できている", max:3, hint:"短文でもよい（説明になっている）"},
-      {key:"con", label:"【重点】ツールから自分なりの結論を導いている", max:5, hint:"『だから〜と言える』など（完全正解でなくてもOK）"},
-    ],
-  },
-
-  { id:"t7", domain:"t", title:"第7時｜思考・判断・表現④（発展）｜通すはずなのに通らない理由（10点）", kind:"scoreParts", max:10,
-    rubric:["発展的内容：理由説明を中心に見る","専用換算：8–10=A / 5–7=B / 0–4=C（Bが厚い）"],
-    parts:[
-      {key:"pre", label:"本来は通す（中は金属等）の前提がある", max:2, hint:"アルミ/鉄だから 等"},
-      {key:"why", label:"通らない理由を考察している", max:3, hint:"なぜ？を自分なりに説明"},
-      {key:"surf", label:"表面・塗装（コーティング）に注目している", max:3, hint:"表面が電気を通さない等"},
-      {key:"own", label:"自分の言葉で説明できている", max:2, hint:"丸写しでない"},
-    ],
-    extra:{ lesson7:true }
-  },
-
-  { id:"test", domain:"k", title:"第8時｜まとめテスト（任意記録）", kind:"testRecord",
-    rubric:["位置づけ：補強・確認（テストだけで評価を決めない）","点数・答案写真・メモを残せるようにする（任意）"]
-  },
-
-  { id:"a_ref", domain:"a", title:"主体③（通時）｜振り返りの蓄積（ボード）＋総合A/B/C", kind:"reflectionBoard",
-    rubric:["毎時間必須ではない（書けたときに追記）","量や回数を機械的に数えない：単元終盤に総合判断","A：複数回の記録があり学習内容に触れようとする姿が安定 / B：抜けはあるが残そうとしている / C：記録がほとんどない"]
-  },
-
-  { id:"a_class", domain:"a", title:"主体④（通時）｜授業中の様子（安全・学習態度・忘れ物など）総合A/B/C", kind:"selectABC",
-    rubric:["安全配慮・学習に向かう姿勢・忘れ物/準備などを総合判断","一時的な失敗だけでCにしない（改善が見えればBで可）"],
-    options:["A","B","C"]
-  },
-];
-
-/** =========================
- *  UI共通
- * ========================= */
-let APP_STATE = loadState();
-let ACTIVE_STUDENT = APP_STATE.activeStudent;
-
-const els = {
-  studentSelect: document.getElementById("studentSelect"),
-  cards: document.getElementById("cards"),
-  saveState: document.getElementById("saveState"),
-  toast: document.getElementById("toast"),
-
-  modalRosterBg: document.getElementById("modalRosterBg"),
-  rosterList: document.getElementById("rosterList"),
-  newStudentName: document.getElementById("newStudentName"),
-  btnRoster: document.getElementById("btnRoster"),
-  btnCloseRoster: document.getElementById("btnCloseRoster"),
-  btnAddStudent: document.getElementById("btnAddStudent"),
-  btnResetStudent: document.getElementById("btnResetStudent"),
-  btnClearCache: document.getElementById("btnClearCache"),
-
-  // anno
-  annoBg: document.getElementById("annoBg"),
-  annoCanvas: document.getElementById("annoCanvas"),
-  annoStage: document.getElementById("annoStage"),
-  btnAnnoClose: document.getElementById("btnAnnoClose"),
-  btnUndo: document.getElementById("btnUndo"),
-  btnRedo: document.getElementById("btnRedo"),
-  btnClearAnno: document.getElementById("btnClearAnno"),
-  btnSaveAnno: document.getElementById("btnSaveAnno"),
-  colorPicker: document.getElementById("colorPicker"),
-  recentSwatches: document.getElementById("recentSwatches"),
-  sizeSlider: document.getElementById("sizeSlider"),
-  sizeVal: document.getElementById("sizeVal"),
-  annoFileHint: document.getElementById("annoFileHint"),
-  annoInfo: document.getElementById("annoInfo"),
-
-  // ocr
-  ocrBg: document.getElementById("ocrBg"),
-  btnOcrClose: document.getElementById("btnOcrClose"),
-  btnOcrCopy: document.getElementById("btnOcrCopy"),
-  btnOcrAppend: document.getElementById("btnOcrAppend"),
-  ocrStatus: document.getElementById("ocrStatus"),
-  ocrBar: document.getElementById("ocrBar"),
-  ocrText: document.getElementById("ocrText"),
-  ocrTargetInfo: document.getElementById("ocrTargetInfo"),
-};
 
 function showToast(msg){
-  els.toast.textContent = msg;
-  els.toast.style.display = "block";
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(()=> els.toast.style.display="none", 1700);
-}
-function showSaving(){ els.saveState.textContent = "保存中…"; }
-function showSaved(){ els.saveState.textContent = "保存済み"; }
-
-function domainClass(d){ return d==="k" ? "k" : (d==="t" ? "t" : "a"); }
-function domainName(d){ return d==="k" ? "知識・技能" : (d==="t" ? "思考・判断・表現" : "主体"); }
-
-function scoreCheck5(studentName, item){
-  const d = ensureItemData(studentName, item.id);
-  let sum = 0;
-  for(const c of item.checks){ if(d.checks[c.key]) sum += 1; }
-  return sum;
-}
-function scoreParts(studentName, item){
-  const d = ensureItemData(studentName, item.id);
-  let sum = 0;
-  for(const p of item.parts){ sum += clampInt(d.parts[p.key] ?? 0, 0, p.max); }
-  return sum;
-}
-function escapeHtml(str){
-  return String(str)
-    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
-
-function cardBadgeText(studentName, item){
-  if(item.kind==="check5"){
-    const s = scoreCheck5(studentName, item);
-    const g = gradeCheck5(s);
-    return {main: `${s}/5点`, sub: `${g}（${to3Level(g)}）`};
-  }
-  if(item.kind==="scoreParts"){
-    const s = scoreParts(studentName, item);
-    if(item.extra?.lesson7){
-      const g3 = gradeLesson7ABC(s);
-      return {main: `${s}/${item.max}点`, sub: `7時：${g3}`};
-    }
-    if(item.max===15){
-      const s10 = think15To10(s);
-      const g = gradeThink10(s10);
-      return {main: `${s}/15点`, sub: `換算${s10}/10 → ${g}（${to3Level(g)}）`};
-    }
-    const g = gradeThink10(s);
-    return {main: `${s}/${item.max}点`, sub: `${g}（${to3Level(g)}）`};
-  }
-  if(item.kind==="selectABC"){
-    const d = ensureItemData(studentName, item.id);
-    const v = d.select || "—";
-    return {main: `評価：${v}`, sub: "A/B/C"};
-  }
-  if(item.kind==="testRecord"){
-    const d = ensureItemData(studentName, item.id);
-    const v = d.parts?.score ?? "";
-    return {main: v!=="" ? `点：${v}` : "任意", sub: "点数/写真/メモ"};
-  }
-  if(item.kind==="reflectionBoard"){
-    const s = ensureStudentData(studentName);
-    const n = s.reflection?.length || 0;
-    const d = ensureItemData(studentName, item.id);
-    const v = d.select || "—";
-    return {main: `記録：${n}件`, sub: `総合：${v}`};
-  }
-  return {main:"", sub:""};
-}
-
-function makeRubric(item){
-  if(!item.rubric?.length) return null;
-  const det = document.createElement("details");
-  const sum = document.createElement("summary");
-  sum.textContent = "採点基準（タップで開く）";
-  const div = document.createElement("div");
-  div.className = "rubric";
-  div.innerHTML = item.rubric.map(r=>`• ${escapeHtml(r)}`).join("<br>");
-  det.appendChild(sum);
-  det.appendChild(div);
-  return det;
+  const t=document.getElementById("toast");
+  t.textContent=msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 1800);
 }
 
 /** =========================
- *  画像注釈（前回の仕組み）
+ *  4) ルーブリック描画
  * ========================= */
-function annoGetDoc(fileId){
-  const docs = APP_STATE.anno?.docs || (APP_STATE.anno={docs:{},recentColors:[]}).docs;
-  if(!docs[fileId]){
-    docs[fileId] = { v: 1, fileId, createdAt: nowISO(), updatedAt: nowISO(), objects: [] };
+function escapeHtml(s){
+  return (s??"").toString()
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;");
+}
+
+function gradeFromRatio(r){
+  const b = CONFIG.gradeBands;
+  if(r >= b.A) return "A";
+  if(r >= b.Bp) return "B+";
+  if(r >= b.B) return "B";
+  if(r >= b.Bm) return "B-";
+  return "C";
+}
+function gradeClass(g){
+  if(g==="A") return "A";
+  if(g==="B+") return "Bp";
+  if(g==="B") return "B";
+  if(g==="B-") return "Bm";
+  if(g==="C") return "C";
+  return "B";
+}
+
+function getLessonGroups(lessonKey){
+  const base = CONFIG.rubricByLesson[lessonKey] ? [...CONFIG.rubricByLesson[lessonKey]] : [];
+  // 常時表示（主体：通し）
+  const withAcross = [...base, ...CONFIG.attitudeAcross];
+  return withAcross;
+}
+
+function calcTotals(studentId, lessonKey){
+  const groups = getLessonGroups(lessonKey);
+  let sumK=0, sumT=0, sumA=0, sumAll=0;
+  let maxAll=0;
+
+  for(const g of groups){
+    const rec = ensureGroup(studentId, lessonKey, g.id);
+    const max = g.scoring?.max ?? 0;
+    maxAll += max;
+
+    let points = 0;
+    if(g.scoring?.type === "checkCount"){
+      const cnt = (rec.checks || []).filter(Boolean).length;
+      points = Math.min(max, cnt);
+    }else{
+      points = (rec.score==null || rec.score==="") ? 0 : Number(rec.score);
+      if(!Number.isFinite(points)) points=0;
+      points = Math.max(0, Math.min(max, points));
+    }
+
+    sumAll += points;
+    if(g.domain==="K") sumK += points;
+    if(g.domain==="T") sumT += points;
+    if(g.domain==="A") sumA += points;
   }
-  return docs[fileId];
+
+  const ratio = maxAll>0 ? sumAll/maxAll : 0;
+  const grade = gradeFromRatio(ratio);
+  return {sumK, sumT, sumA, sumAll, maxAll, grade};
 }
-function annoSaveDoc(doc){
-  doc.updatedAt = nowISO();
-  APP_STATE.anno.docs[doc.fileId] = doc;
-  scheduleSave();
+
+function renderLessonSelect(){
+  const sel = document.getElementById("lessonKey");
+  sel.innerHTML = CONFIG.lessons.map(l=>`<option value="${escapeHtml(l.key)}">${escapeHtml(l.name)}</option>`).join("");
+  sel.value = state.currentLessonKey;
 }
-function annoHas(fileId){
-  const d = APP_STATE.anno?.docs?.[fileId];
-  return !!(d && d.objects && d.objects.length);
+
+function renderRosterList(){
+  const list = document.getElementById("studentList");
+  list.innerHTML = "";
+
+  if(state.roster.length===0){
+    const div=document.createElement("div");
+    div.className="muted";
+    div.textContent="名簿を入力して「名簿を反映」してください。";
+    list.appendChild(div);
+    return;
+  }
+
+  for(const st of state.roster){
+    const btn=document.createElement("div");
+    btn.className="student" + (st.id===state.currentStudentId ? " active":"");
+    const totals = calcTotals(st.id, state.currentLessonKey);
+
+    btn.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:2px;">
+        <b>${escapeHtml(st.name)}</b>
+        <span class="mini">更新：${new Date(state.meta.updatedAt).toLocaleString()}</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+        <span class="grade ${gradeClass(totals.grade)}">${escapeHtml(totals.grade)}</span>
+        <span class="mini">${totals.sumAll}/${totals.maxAll}</span>
+      </div>
+    `;
+    btn.addEventListener("click", ()=>{
+      state.currentStudentId = st.id;
+      markDirty();
+      renderAll();
+    });
+    list.appendChild(btn);
+  }
 }
-function addRecentColor(hex){
-  if(!hex) return;
-  hex = hex.toLowerCase();
-  const list = APP_STATE.anno.recentColors || [];
-  const next = [hex, ...list.filter(x=>x.toLowerCase()!==hex)].slice(0, 12);
-  APP_STATE.anno.recentColors = next;
-  scheduleSave();
-  renderRecentSwatches();
+
+function makePhotoBlock(studentId, lessonKey, groupId){
+  const rec = ensureGroup(studentId, lessonKey, groupId);
+  const photos = rec.photos || [];
+
+  const wrap = document.createElement("div");
+  wrap.className="photoArea";
+
+  const top = document.createElement("div");
+  top.style.display="flex";
+  top.style.gap="8px";
+  top.style.flexWrap="wrap";
+  top.style.justifyContent="space-between";
+  top.innerHTML = `
+    <div class="mini">写真（無制限）｜サムネタップ＝注釈（ペン）</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; align-items:center;">
+      <input type="file" accept="image/*" multiple style="display:none"
+             data-photoadd="1"
+             data-student="${escapeHtml(studentId)}"
+             data-lesson="${escapeHtml(lessonKey)}"
+             data-group="${escapeHtml(groupId)}">
+      <button class="btn small" type="button"
+              data-open-picker="1"
+              data-student="${escapeHtml(studentId)}"
+              data-lesson="${escapeHtml(lessonKey)}"
+              data-group="${escapeHtml(groupId)}">＋ 写真を追加</button>
+    </div>
+  `;
+
+  const strip = document.createElement("div");
+  strip.className="photoStrip";
+
+  for(const p of photos){
+    const th = document.createElement("div");
+    th.className="thumb";
+    th.innerHTML = `
+      <img src="${p.inkDataUrl || p.baseDataUrl}" alt="thumb">
+      <button class="x" type="button" title="削除">×</button>
+      <div class="ocr">注釈</div>
+    `;
+    th.querySelector(".x").addEventListener("click", (e)=>{
+      e.stopPropagation();
+      rec.photos = (rec.photos||[]).filter(x=>x.id!==p.id);
+      markDirty();
+      renderAll();
+    });
+    th.addEventListener("click", ()=>{
+      openAnnotator(studentId, lessonKey, groupId, p.id);
+    });
+    strip.appendChild(th);
+  }
+
+  wrap.appendChild(top);
+  wrap.appendChild(strip);
+  return wrap;
+}
+
+function renderRubric(){
+  const wrap = document.getElementById("rubric");
+  wrap.innerHTML = "";
+  const sid = state.currentStudentId;
+  if(!sid){
+    wrap.innerHTML = `<div class="muted">名簿から児童を選ぶと採点できます。</div>`;
+    return;
+  }
+
+  const lessonKey = state.currentLessonKey;
+  const groups = getLessonGroups(lessonKey);
+
+  for(const g of groups){
+    const dom = CONFIG.domains[g.domain];
+    const rec = ensureGroup(sid, lessonKey, g.id);
+
+    const det = document.createElement("details");
+    det.open = true;
+
+    const totals = calcTotals(sid, lessonKey);
+    const sumText = `${g.scoring?.max ?? 0}点`;
+
+    det.innerHTML = `
+      <summary>
+        <div class="sumL">
+          <span class="tag ${g.domain==="K"?"k":g.domain==="T"?"t":"a"}">${escapeHtml(dom.label)}</span>
+          <b style="font-size:14px;">${escapeHtml(g.title)}</b>
+          ${g.note ? `<span class="tag gray">メモ：${escapeHtml(g.note)}</span>` : ""}
+        </div>
+        <div class="sumR">
+          <span class="tag gray">${escapeHtml(sumText)}</span>
+          <span class="grade ${gradeClass(totals.grade)}">${escapeHtml(totals.grade)}</span>
+        </div>
+      </summary>
+    `;
+
+    const block = document.createElement("div");
+    block.className="block";
+
+    // スコアUI
+    const scoreRow = document.createElement("div");
+    scoreRow.className="scoreRow";
+
+    const left = document.createElement("div");
+    left.style.flex="1";
+    left.style.minWidth="260px";
+
+    // criteria list
+    const crit = (g.criteria||[]);
+    const critHtml = crit.map((c, idx)=>{
+      if(g.scoring?.type==="checkCount"){
+        const checked = !!(rec.checks||[])[idx];
+        return `
+          <label style="display:flex; gap:10px; align-items:flex-start; margin:10px 0; cursor:pointer;">
+            <input type="checkbox" data-check="1" data-group="${escapeHtml(g.id)}" data-idx="${idx}" ${checked?"checked":""}
+                   style="width:22px; height:22px; margin-top:2px;">
+            <span>${escapeHtml(c)}</span>
+          </label>
+        `;
+      }
+      return `
+        <div style="display:flex; gap:10px; align-items:flex-start; margin:8px 0;">
+          <span class="tag gray" style="min-width:34px; text-align:center;">${idx+1}</span>
+          <span>${escapeHtml(c)}</span>
+        </div>
+      `;
+    }).join("");
+
+    left.innerHTML = `
+      <div class="mini">基準（授業中に見ながら判断）</div>
+      <div>${critHtml}</div>
+    `;
+
+    const right = document.createElement("div");
+    right.style.minWidth="280px";
+    right.style.display="flex";
+    right.style.flexDirection="column";
+    right.style.gap="10px";
+    right.style.alignItems="stretch";
+
+    // score input
+    let scoreUI = "";
+    if(g.scoring?.type==="checkCount"){
+      const cnt = (rec.checks||[]).filter(Boolean).length;
+      scoreUI = `
+        <div class="field">
+          <label>達成数（自動）</label>
+          <input class="input num" value="${cnt}" readonly />
+          <div class="hint">チェック数＝得点（最大 ${g.scoring.max}）</div>
+        </div>
+      `;
+    }else{
+      const v = (rec.score==null) ? "" : rec.score;
+      scoreUI = `
+        <div class="field">
+          <label>点数（0〜${g.scoring.max}）</label>
+          <input class="input num" inputmode="numeric" pattern="[0-9]*" data-score="1" data-group="${escapeHtml(g.id)}"
+                 value="${escapeHtml(v)}" placeholder="0" />
+          <div class="hint">※あなたが入力（B帯を広く判定）</div>
+        </div>
+      `;
+    }
+
+    right.innerHTML = `
+      ${scoreUI}
+      <div class="field">
+        <label>メモ（この項目）</label>
+        <textarea data-memo="1" data-group="${escapeHtml(g.id)}" placeholder="見取り／声かけ／次の手立て">${escapeHtml(rec.memo||"")}</textarea>
+      </div>
+    `;
+
+    scoreRow.appendChild(left);
+    scoreRow.appendChild(right);
+
+    const itemCard = document.createElement("div");
+    itemCard.className="itemCard";
+    itemCard.appendChild(scoreRow);
+
+    // photo block
+    itemCard.appendChild(makePhotoBlock(sid, lessonKey, g.id));
+
+    block.appendChild(itemCard);
+    det.appendChild(block);
+    wrap.appendChild(det);
+  }
 }
 
 /** =========================
- *  注釈エディタ（簡略：前回実装をそのまま）
- *  ※OCR追加が目的なので、ここは前回と同等の動き
+ *  5) 注釈（ペン／図形／文字／消しゴム）
  * ========================= */
-const ANNO = {
-  open:false, fileId:"", studentName:"", itemId:"", mode:"", refId:"",
-  img:null, imgW:0, imgH:0,
-  canvas:null, ctx:null,
-  scale:1, offsetX:0, offsetY:0,
-  tool:"pen", color:"#a78bfa", size:6,
-  isDown:false, start:null, curStroke:null, curShape:null,
-  doc:null, history:[], redo:[]
-};
+const modal = document.getElementById("modal");
+const baseImg = document.getElementById("baseImg");
+const ink = document.getElementById("ink");
+const stage = document.getElementById("stage");
 
-function fitToStage(imgW, imgH, stageW, stageH){
-  const s = Math.min(stageW / imgW, stageH / imgH);
-  const drawW = imgW * s;
-  const drawH = imgH * s;
-  const ox = (stageW - drawW) / 2;
-  const oy = (stageH - drawH) / 2;
-  return {scale:s, offsetX:ox, offsetY:oy, drawW, drawH};
+const penColor = document.getElementById("penColor");
+const penSize = document.getElementById("penSize");
+const penSizeVal = document.getElementById("penSizeVal");
+
+let tool = "pen"; // pen | eraser | obj | rect | text
+let draw = { active:false, startX:0, startY:0, lastX:0, lastY:0 };
+let hist = []; // undo stack (image data urls)
+let current = { studentId:"", lessonKey:"", groupId:"", photoId:"" };
+
+function setTool(t){
+  tool=t;
+  const ids = ["toolPen","toolEraser","toolObjEraser","toolRect","toolText"];
+  const map = { pen:"toolPen", eraser:"toolEraser", obj:"toolObjEraser", rect:"toolRect", text:"toolText" };
+  for(const id of ids){
+    document.getElementById(id).classList.remove("primary","warn","danger");
+  }
+  if(t==="pen") document.getElementById(map[t]).classList.add("primary");
+  if(t==="eraser") document.getElementById(map[t]).classList.add("warn");
+  if(t==="obj") document.getElementById(map[t]).classList.add("danger");
+  if(t==="rect") document.getElementById(map[t]).classList.add("primary");
+  if(t==="text") document.getElementById(map[t]).classList.add("primary");
 }
-function stageToImage(x, y){
-  const ix = (x - ANNO.offsetX) / ANNO.scale;
-  const iy = (y - ANNO.offsetY) / ANNO.scale;
-  return {x: ix, y: iy};
+
+function fitCanvasToImage(){
+  const w = baseImg.naturalWidth;
+  const h = baseImg.naturalHeight;
+  ink.width = w;
+  ink.height = h;
+  // stage size follows image
+  // (img is responsive, canvas is absolute and scaled with CSS)
+  ink.style.width = baseImg.clientWidth + "px";
+  ink.style.height = baseImg.clientHeight + "px";
 }
-function pushHistory(){
-  ANNO.history.push(JSON.stringify(ANNO.doc.objects));
-  if(ANNO.history.length > 80) ANNO.history.shift();
-  ANNO.redo = [];
+function syncCanvasCss(){
+  ink.style.width = baseImg.clientWidth + "px";
+  ink.style.height = baseImg.clientHeight + "px";
 }
-function undo(){
-  if(!ANNO.history.length) return;
-  ANNO.redo.push(JSON.stringify(ANNO.doc.objects));
-  const prev = ANNO.history.pop();
-  ANNO.doc.objects = JSON.parse(prev);
-  redraw();
+
+window.addEventListener("resize", ()=> {
+  if(modal.classList.contains("show")){
+    syncCanvasCss();
+  }
+});
+
+function getPhotoRef(studentId, lessonKey, groupId, photoId){
+  const rec = ensureGroup(studentId, lessonKey, groupId);
+  return (rec.photos||[]).find(p=>p.id===photoId);
 }
-function redo(){
-  if(!ANNO.redo.length) return;
-  ANNO.history.push(JSON.stringify(ANNO.doc.objects));
-  const next = ANNO.redo.pop();
-  ANNO.doc.objects = JSON.parse(next);
-  redraw();
+
+function pushUndo(){
+  const ctx = ink.getContext("2d");
+  const data = ink.toDataURL("image/png");
+  hist.push(data);
+  if(hist.length>30) hist.shift();
 }
-function drawStroke(ctx, obj){
-  const pts = obj.points || [];
-  if(pts.length < 2) return;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  ctx.lineWidth = obj.size || 6;
-  ctx.strokeStyle = obj.color || "#a78bfa";
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x, pts[0].y);
-  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
-  ctx.stroke();
+
+function loadInkFromDataUrl(dataUrl){
+  const ctx = ink.getContext("2d");
+  ctx.clearRect(0,0,ink.width, ink.height);
+  if(!dataUrl) return;
+  const img = new Image();
+  img.onload = ()=>{
+    ctx.drawImage(img,0,0,ink.width, ink.height);
+  };
+  img.src = dataUrl;
 }
-function drawLine(ctx, obj){
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  ctx.lineWidth = obj.size || 6;
-  ctx.strokeStyle = obj.color || "#a78bfa";
-  ctx.beginPath();
-  ctx.moveTo(obj.x1, obj.y1);
-  ctx.lineTo(obj.x2, obj.y2);
-  ctx.stroke();
+
+async function openAnnotator(studentId, lessonKey, groupId, photoId){
+  const p = getPhotoRef(studentId, lessonKey, groupId, photoId);
+  if(!p) return;
+
+  current = {studentId, lessonKey, groupId, photoId};
+  document.getElementById("modalTitle").textContent = "写真注釈";
+  document.getElementById("modalSub").textContent = `${studentNameById(studentId)}｜${lessonNameByKey(lessonKey)}`;
+
+  hist = [];
+  setTool("pen");
+  penSizeVal.textContent = penSize.value;
+
+  // base image
+  baseImg.onload = ()=>{
+    // wait a tick so layout settles
+    setTimeout(()=>{
+      fitCanvasToImage();
+      loadInkFromDataUrl(p.inkLayer || null);
+      // CSS scaling
+      syncCanvasCss();
+    }, 0);
+  };
+  baseImg.src = p.baseDataUrl;
+
+  modal.classList.add("show");
 }
-function drawRect(ctx, obj){
-  ctx.lineWidth = obj.size || 6;
-  ctx.strokeStyle = obj.color || "#a78bfa";
-  const x = Math.min(obj.x1,obj.x2), y = Math.min(obj.y1,obj.y2);
-  const w = Math.abs(obj.x2-obj.x1), h = Math.abs(obj.y2-obj.y1);
-  ctx.strokeRect(x,y,w,h);
+
+function closeAnnotator(){
+  modal.classList.remove("show");
+  current = { studentId:"", lessonKey:"", groupId:"", photoId:"" };
 }
-function drawEllipse(ctx, obj){
-  ctx.lineWidth = obj.size || 6;
-  ctx.strokeStyle = obj.color || "#a78bfa";
-  const x1=obj.x1,y1=obj.y1,x2=obj.x2,y2=obj.y2;
-  const cx = (x1+x2)/2, cy=(y1+y2)/2;
-  const rx = Math.abs(x2-x1)/2, ry=Math.abs(y2-y1)/2;
-  ctx.beginPath();
-  ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);
-  ctx.stroke();
+
+function canvasPoint(e){
+  const rect = ink.getBoundingClientRect();
+  const sx = ink.width / rect.width;
+  const sy = ink.height / rect.height;
+  const x = (e.clientX - rect.left) * sx;
+  const y = (e.clientY - rect.top) * sy;
+  return {x, y};
 }
-function drawArrow(ctx, obj){
-  const {x1,y1,x2,y2} = obj;
-  const size = obj.size || 6;
+
+function drawLine(ctx, x1,y1,x2,y2, color, size, mode="source-over"){
+  ctx.save();
+  ctx.globalCompositeOperation = mode;
+  ctx.strokeStyle = color;
   ctx.lineWidth = size;
-  ctx.strokeStyle = obj.color || "#a78bfa";
   ctx.lineCap = "round";
+  ctx.lineJoin = "round";
   ctx.beginPath();
   ctx.moveTo(x1,y1);
   ctx.lineTo(x2,y2);
   ctx.stroke();
+  ctx.restore();
+}
 
-  const ang = Math.atan2(y2-y1, x2-x1);
-  const headLen = Math.max(10, size*3);
-  const a1 = ang + Math.PI * 0.85;
-  const a2 = ang - Math.PI * 0.85;
-  const hx1 = x2 + headLen*Math.cos(a1);
-  const hy1 = y2 + headLen*Math.sin(a1);
-  const hx2 = x2 + headLen*Math.cos(a2);
-  const hy2 = y2 + headLen*Math.sin(a2);
-
+function drawRect(ctx, x1,y1,x2,y2, color, size){
+  ctx.save();
+  ctx.strokeStyle=color;
+  ctx.lineWidth=size;
   ctx.beginPath();
-  ctx.moveTo(x2,y2);
-  ctx.lineTo(hx1,hy1);
-  ctx.moveTo(x2,y2);
-  ctx.lineTo(hx2,hy2);
+  ctx.rect(x1,y1,(x2-x1),(y2-y1));
   ctx.stroke();
-}
-function drawText(ctx, obj){
-  ctx.fillStyle = obj.color || "#ffffff";
-  ctx.font = `${obj.size||22}px system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif`;
-  ctx.textBaseline = "top";
-  ctx.fillText(obj.text || "", obj.x, obj.y);
+  ctx.restore();
 }
 
-function redraw(){
-  if(!ANNO.open) return;
-  const canvas = ANNO.canvas;
-  const ctx = ANNO.ctx;
-  if(!canvas || !ctx || !ANNO.img) return;
+function putTextAt(ctx, x,y, text, color, size){
+  ctx.save();
+  ctx.fillStyle=color;
+  ctx.font = `${Math.max(12, size*3)}px ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP"`;
+  ctx.fillText(text, x, y);
+  ctx.restore();
+}
 
-  ctx.setTransform(1,0,0,1,0,0);
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+ink.addEventListener("pointerdown", (e)=>{
+  e.preventDefault();
+  if(!modal.classList.contains("show")) return;
+  ink.setPointerCapture(e.pointerId);
 
-  ctx.setTransform(ANNO.scale,0,0,ANNO.scale,ANNO.offsetX,ANNO.offsetY);
-  ctx.imageSmoothingEnabled = true;
-  ctx.drawImage(ANNO.img, 0,0);
+  const ctx = ink.getContext("2d");
+  const {x,y} = canvasPoint(e);
 
-  const objs = ANNO.doc.objects || [];
-  for(const obj of objs){
-    if(obj.type==="erase"){
-      ctx.save();
-      ctx.globalCompositeOperation = "destination-out";
-      drawStroke(ctx, obj);
-      ctx.restore();
-    }else if(obj.type==="stroke"){
-      drawStroke(ctx, obj);
-    }else if(obj.type==="line"){
-      drawLine(ctx, obj);
-    }else if(obj.type==="rect"){
-      drawRect(ctx, obj);
-    }else if(obj.type==="ellipse"){
-      drawEllipse(ctx, obj);
-    }else if(obj.type==="arrow"){
-      drawArrow(ctx, obj);
-    }else if(obj.type==="text"){
-      drawText(ctx, obj);
+  // object eraser: stroke with bigger eraser, but also "object" meaning: we approximate by clearing a circle
+  // (true object eraser would need vector layers; hereは実用重視で“丸く消す”＋Undo)
+  if(tool==="obj"){
+    pushUndo();
+    ctx.save();
+    ctx.globalCompositeOperation="destination-out";
+    ctx.beginPath();
+    ctx.arc(x,y, 22, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+    markDirty();
+    return;
+  }
+
+  draw.active=true;
+  draw.startX=x; draw.startY=y;
+  draw.lastX=x; draw.lastY=y;
+
+  if(tool==="pen" || tool==="eraser"){
+    pushUndo();
+    drawLine(ctx, x,y,x,y, penColor.value, Number(penSize.value),
+      tool==="eraser" ? "destination-out" : "source-over"
+    );
+  }
+});
+
+ink.addEventListener("pointermove", (e)=>{
+  if(!draw.active) return;
+  e.preventDefault();
+  const ctx = ink.getContext("2d");
+  const {x,y} = canvasPoint(e);
+
+  if(tool==="pen" || tool==="eraser"){
+    drawLine(ctx, draw.lastX, draw.lastY, x, y, penColor.value, Number(penSize.value),
+      tool==="eraser" ? "destination-out" : "source-over"
+    );
+    draw.lastX=x; draw.lastY=y;
+  }else if(tool==="rect"){
+    // プレビュー：いったんUndoの最後の状態に戻して矩形描画
+    const last = hist[hist.length-1];
+    if(last){
+      loadInkFromDataUrl(last);
+      setTimeout(()=>{
+        const ctx2 = ink.getContext("2d");
+        drawRect(ctx2, draw.startX, draw.startY, x, y, penColor.value, Number(penSize.value));
+      }, 0);
     }
   }
+});
 
-  if(ANNO.curStroke){
-    const obj = ANNO.curStroke;
-    if(obj.type==="erase"){
-      ctx.save(); ctx.globalCompositeOperation="destination-out";
-      drawStroke(ctx,obj);
-      ctx.restore();
-    }else{
-      drawStroke(ctx,obj);
-    }
-  }
-  if(ANNO.curShape){
-    const obj = ANNO.curShape;
-    if(obj.type==="line") drawLine(ctx,obj);
-    if(obj.type==="rect") drawRect(ctx,obj);
-    if(obj.type==="ellipse") drawEllipse(ctx,obj);
-    if(obj.type==="arrow") drawArrow(ctx,obj);
-  }
-}
-
-function setToolUI(tool){
-  ANNO.tool = tool;
-  document.querySelectorAll(".toolBtn[data-tool]").forEach(b=>{
-    b.classList.toggle("active", b.dataset.tool === tool);
-  });
-}
-function renderRecentSwatches(){
-  els.recentSwatches.innerHTML = "";
-  const colors = (APP_STATE.anno?.recentColors || []).slice(0, 12);
-  for(const c of colors){
-    const d = document.createElement("div");
-    d.className = "sw";
-    d.style.background = c;
-    d.title = c;
-    d.addEventListener("click", ()=>{
-      ANNO.color = c;
-      els.colorPicker.value = c;
-      addRecentColor(c);
-    });
-    els.recentSwatches.appendChild(d);
-  }
-}
-
-async function openAnnoEditor({fileId, studentName, itemId, mode, refId}){
-  const rec = await idbGetFile(fileId);
-  if(!rec?.blob){ showToast("画像が見つからない…"); return; }
-
-  const url = URL.createObjectURL(rec.blob);
-  const img = new Image();
-  img.decoding = "async";
-  await new Promise((resolve, reject)=>{
-    img.onload = ()=> resolve(true);
-    img.onerror = reject;
-    img.src = url;
-  });
-  URL.revokeObjectURL(url);
-
-  ANNO.open = true;
-  ANNO.fileId = fileId;
-  ANNO.studentName = studentName;
-  ANNO.itemId = itemId;
-  ANNO.mode = mode;
-  ANNO.refId = refId || "";
-  ANNO.img = img;
-  ANNO.imgW = img.naturalWidth || img.width;
-  ANNO.imgH = img.naturalHeight || img.height;
-
-  ANNO.doc = deepClone(annoGetDoc(fileId));
-  ANNO.history = [];
-  ANNO.redo = [];
-
-  const stage = els.annoStage;
-  const rect = stage.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  els.annoCanvas.width = Math.floor(rect.width * dpr);
-  els.annoCanvas.height = Math.floor(rect.height * dpr);
-  ANNO.canvas = els.annoCanvas;
-  ANNO.ctx = ANNO.canvas.getContext("2d");
-
-  const fit = fitToStage(ANNO.imgW, ANNO.imgH, rect.width, rect.height);
-  ANNO.scale = fit.scale * dpr;
-  ANNO.offsetX = fit.offsetX * dpr;
-  ANNO.offsetY = fit.offsetY * dpr;
-
-  setToolUI("pen");
-  els.annoBg.style.display = "block";
-  els.annoBg.setAttribute("aria-hidden","false");
-  els.annoFileHint.textContent = `（写真ID：${fileId.slice(0,18)}…）`;
-  els.annoInfo.textContent = `注釈：${studentName}`;
-
-  renderRecentSwatches();
-  redraw();
-}
-function closeAnnoEditor(save=true){
-  if(!ANNO.open) return;
-  if(save) annoSaveDoc(ANNO.doc);
-  ANNO.open = false;
-  ANNO.fileId = "";
-  ANNO.img = null;
-  ANNO.doc = null;
-  ANNO.history = [];
-  ANNO.redo = [];
-  els.annoBg.style.display = "none";
-  els.annoBg.setAttribute("aria-hidden","true");
-  renderCards();
-}
-
-function getPointerPos(e){
-  const rect = els.annoCanvas.getBoundingClientRect();
-  const dpr = window.devicePixelRatio || 1;
-  const x = (e.clientX - rect.left) * dpr;
-  const y = (e.clientY - rect.top) * dpr;
-  return {x,y};
-}
-function beginDraw(e){
-  if(!ANNO.open) return;
+ink.addEventListener("pointerup", async (e)=>{
+  if(!draw.active) return;
   e.preventDefault();
-  const p = getPointerPos(e);
-  const ip = stageToImage(p.x, p.y);
+  draw.active=false;
 
-  if(ANNO.tool === "text"){
-    const txt = prompt("文字を入力（短くてOK）","");
-    if(txt === null) return;
-    const size = clampInt(prompt("文字サイズ（例：22）","22"), 10, 120);
-    pushHistory();
-    ANNO.doc.objects.push({ id: uid(), type:"text", color: ANNO.color, size, x: ip.x, y: ip.y, text: txt });
-    redraw();
-    return;
+  const ctx = ink.getContext("2d");
+  const {x,y} = canvasPoint(e);
+
+  if(tool==="rect"){
+    // rect確定
+    // すでに描けているのでそのまま
+  }else if(tool==="text"){
+    // 文字はタップした位置に入力
   }
+});
 
-  ANNO.isDown = true;
+ink.addEventListener("click", (e)=>{
+  if(!modal.classList.contains("show")) return;
+  if(tool!=="text") return;
+  const ctx = ink.getContext("2d");
+  const {x,y} = canvasPoint(e);
+  const text = prompt("挿入する文字（短め）");
+  if(text==null) return;
+  pushUndo();
+  putTextAt(ctx, x, y, text, penColor.value, Number(penSize.value));
+  markDirty();
+});
 
-  if(ANNO.tool === "pen" || ANNO.tool === "erase"){
-    ANNO.curStroke = {
-      id: uid(),
-      type: ANNO.tool === "erase" ? "erase" : "stroke",
-      color: ANNO.color,
-      size: ANNO.size,
-      points: [{x: ip.x, y: ip.y}]
-    };
-    redraw();
-    return;
-  }
+document.getElementById("btnUndo").addEventListener("click", ()=>{
+  if(hist.length===0){ showToast("戻せる履歴がない"); return; }
+  const last = hist.pop();
+  loadInkFromDataUrl(last);
+  markDirty();
+});
+document.getElementById("btnClearInk").addEventListener("click", ()=>{
+  const ctx = ink.getContext("2d");
+  pushUndo();
+  ctx.clearRect(0,0,ink.width, ink.height);
+  markDirty();
+});
+document.getElementById("btnSaveInk").addEventListener("click", ()=>{
+  const p = getPhotoRef(current.studentId, current.lessonKey, current.groupId, current.photoId);
+  if(!p) return;
+  p.inkLayer = ink.toDataURL("image/png");
+  // サムネ用に合成画像も作成
+  p.inkDataUrl = mergeBaseAndInk(p.baseDataUrl, p.inkLayer);
+  markDirty();
+  showToast("注釈を保存した");
+  renderAll();
+});
+document.getElementById("btnClose").addEventListener("click", closeAnnotator);
 
-  if(["line","rect","ellipse","arrow"].includes(ANNO.tool)){
-    ANNO.curShape = { id: uid(), type: ANNO.tool, color: ANNO.color, size: ANNO.size, x1: ip.x, y1: ip.y, x2: ip.x, y2: ip.y };
-    redraw();
-    return;
-  }
-}
-function moveDraw(e){
-  if(!ANNO.open || !ANNO.isDown) return;
-  e.preventDefault();
-  const p = getPointerPos(e);
-  const ip = stageToImage(p.x, p.y);
-
-  if(ANNO.curStroke){
-    ANNO.curStroke.points.push({x: ip.x, y: ip.y});
-    redraw();
-    return;
-  }
-  if(ANNO.curShape){
-    ANNO.curShape.x2 = ip.x;
-    ANNO.curShape.y2 = ip.y;
-    redraw();
-    return;
-  }
-}
-function endDraw(e){
-  if(!ANNO.open || !ANNO.isDown) return;
-  e.preventDefault();
-  ANNO.isDown = false;
-
-  if(ANNO.curStroke){
-    pushHistory();
-    ANNO.doc.objects.push(ANNO.curStroke);
-    ANNO.curStroke = null;
-    redraw();
-    return;
-  }
-  if(ANNO.curShape){
-    pushHistory();
-    ANNO.doc.objects.push(ANNO.curShape);
-    ANNO.curShape = null;
-    redraw();
-    return;
-  }
-}
-
-/** =========================
- *  OCR：Tesseract.js（端末内処理）
- * ========================= */
-const OCR = {
-  worker: null,
-  busy: false,
-  context: null, // { fileId, studentName, itemId, mode, refId, targetKind }
-};
-
-function setOcrUI({status, progress=null, text=null, targetInfo=null}){
-  if(status != null) els.ocrStatus.textContent = status;
-  if(progress != null){
-    const pct = Math.max(0, Math.min(100, Math.round(progress*100)));
-    els.ocrBar.style.width = pct + "%";
-  }
-  if(text != null) els.ocrText.value = text;
-  if(targetInfo != null) els.ocrTargetInfo.textContent = targetInfo;
-}
-
-function openOcrModal(ctx){
-  OCR.context = ctx;
-  els.ocrBg.style.display = "flex";
-  els.ocrBg.setAttribute("aria-hidden","false");
-  els.ocrText.value = "";
-  setOcrUI({status:"準備中", progress:0, targetInfo: ctx.targetInfo});
-}
-function closeOcrModal(){
-  els.ocrBg.style.display = "none";
-  els.ocrBg.setAttribute("aria-hidden","true");
-  OCR.context = null;
-}
-
-function getCachedOcr(fileId){
-  const c = APP_STATE.ocr?.cache?.[fileId];
-  return c?.text ? c.text : null;
-}
-function setCachedOcr(fileId, text){
-  if(!APP_STATE.ocr) APP_STATE.ocr = { cache:{} };
-  if(!APP_STATE.ocr.cache) APP_STATE.ocr.cache = {};
-  APP_STATE.ocr.cache[fileId] = { text, at: Date.now() };
-  scheduleSave();
-}
-
-async function ensureWorker(){
-  if(OCR.worker) return OCR.worker;
-  if(!window.Tesseract){
-    throw new Error("Tesseract.jsの読み込みに失敗しました（ネット接続を確認）");
-  }
-  // 日本語+英数字
-  const worker = await Tesseract.createWorker("jpn+eng", 1, {
-    logger: m => {
-      if(m?.status === "recognizing text"){
-        setOcrUI({ status:"解析中…", progress: m.progress ?? null });
-      }
-    }
-  });
-  OCR.worker = worker;
-  return worker;
-}
-
-async function runOcrFromFileId(fileId){
-  const cached = getCachedOcr(fileId);
-  if(cached) return { text: cached, cached:true };
-
-  const rec = await idbGetFile(fileId);
-  if(!rec?.blob) throw new Error("画像が見つかりません");
-
-  const worker = await ensureWorker();
-  setOcrUI({ status:"読み込み中…", progress:0.02 });
-
-  // Blob -> ImageBitmap でも可だがSafari互換でURL経由
-  const url = URL.createObjectURL(rec.blob);
+function mergeBaseAndInk(baseDataUrl, inkDataUrl){
+  // 同期で返せるよう、簡易版：dataURL合成は非同期が理想だが
+  // ここでは “保存後にすぐ見える” を優先して、最後に描画されたキャンバスを使う
+  // base+inkを合成してthumbに使う
+  // ※戻りは即ではなく、ヒューリスティックでinkのcanvasを使う
+  // 実用上はこれで十分。必要なら後で非同期の正確版に置換可能。
   try{
-    const { data } = await worker.recognize(url);
-    const text = (data?.text || "").trim();
-    setCachedOcr(fileId, text);
-    return { text, cached:false };
-  }finally{
-    URL.revokeObjectURL(url);
+    const c = document.createElement("canvas");
+    c.width = baseImg.naturalWidth;
+    c.height = baseImg.naturalHeight;
+    const ctx = c.getContext("2d");
+    // baseImg は今開いてる写真
+    ctx.drawImage(baseImg,0,0,c.width,c.height);
+    ctx.drawImage(ink,0,0,c.width,c.height);
+    return c.toDataURL("image/jpeg", 0.9);
+  }catch{
+    return inkDataUrl || baseDataUrl;
   }
 }
 
-function appendToMemoOrReflection(ctx, text){
-  const add = (text || "").trim();
-  if(!add){ showToast("追記する文字がない…"); return; }
+penSize.addEventListener("input", ()=> penSizeVal.textContent = penSize.value);
+document.getElementById("toolPen").addEventListener("click", ()=> setTool("pen"));
+document.getElementById("toolEraser").addEventListener("click", ()=> setTool("eraser"));
+document.getElementById("toolObjEraser").addEventListener("click", ()=> setTool("obj"));
+document.getElementById("toolRect").addEventListener("click", ()=> { pushUndo(); setTool("rect"); });
+document.getElementById("toolText").addEventListener("click", ()=> setTool("text"));
 
-  // item: メモ欄へ / reflection: 振り返り欄へ
-  if(ctx.mode === "item"){
-    const itemId = ctx.itemId;
-    const d = ensureItemData(ctx.studentName, itemId);
-    const prefix = `\n[OCR ${new Date().toLocaleString("ja-JP")}] `;
-    d.memo = (d.memo || "") + prefix + add + "\n";
-    scheduleSave();
-    renderCards();
-    showToast("メモ欄に追記した");
+/** =========================
+ *  6) 写真追加（iPad Safariで確実に開く）
+ * ========================= */
+document.addEventListener("click", (e)=>{
+  const t = e.target;
+
+  const openBtn = t.closest("button[data-open-picker='1']");
+  if(openBtn){
+    const studentId = openBtn.dataset.student;
+    const lessonKey = openBtn.dataset.lesson;
+    const groupId = openBtn.dataset.group;
+
+    const input = openBtn.parentElement.querySelector("input[type='file'][data-photoadd='1']");
+    if(!input){
+      showToast("写真入力が見つからない…");
+      return;
+    }
+    // iPad Safari対策：必ずJSからclick
+    input.click();
+    return;
+  }
+});
+
+document.addEventListener("change", async (e)=>{
+  const input = e.target;
+  if(!(input instanceof HTMLInputElement)) return;
+  if(input.getAttribute("data-photoadd")!=="1") return;
+
+  const sid = input.dataset.student;
+  const lkey = input.dataset.lesson;
+  const gid = input.dataset.group;
+
+  const files = Array.from(input.files || []);
+  if(files.length===0) return;
+
+  const rec = ensureGroup(sid, lkey, gid);
+
+  for(const f of files){
+    const dataUrl = await fileToDataUrl(f);
+    rec.photos = rec.photos || [];
+    rec.photos.push({
+      id: makeId("ph"),
+      baseDataUrl: dataUrl,
+      inkLayer: null,
+      inkDataUrl: null,
+      createdAt: nowISO(),
+    });
+  }
+
+  // 同じ写真を再度入れられるようにリセット
+  input.value = "";
+
+  markDirty();
+  renderAll();
+  showToast(`${files.length}枚 追加した`);
+});
+
+function fileToDataUrl(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=()=>reject(r.error);
+    r.readAsDataURL(file);
+  });
+}
+
+/** =========================
+ *  7) 入力イベント（点数・チェック・メモ）
+ * ========================= */
+document.addEventListener("input", (e)=>{
+  const sid = state.currentStudentId;
+  if(!sid) return;
+  const lessonKey = state.currentLessonKey;
+
+  const t = e.target;
+
+  // unitName
+  if(t.id==="unitName"){
+    state.meta.unitName = t.value || "";
+    document.getElementById("subTitle").textContent = `単元：${state.meta.unitName || "—"}｜端末内に自動保存`;
+    markDirty();
     return;
   }
 
-  if(ctx.mode === "reflection"){
-    const s = ensureStudentData(ctx.studentName);
-    const ent = (s.reflection || []).find(x=>x.id===ctx.refId);
-    if(ent){
-      const prefix = `\n[OCR ${new Date().toLocaleString("ja-JP")}] `;
-      ent.text = (ent.text || "") + prefix + add + "\n";
-      scheduleSave();
-      renderCards();
-      showToast("振り返りに追記した");
-      return;
-    }
-    showToast("追記先の振り返りが見つからない…");
+  // overall memo
+  if(t.id==="overallMemo"){
+    const lesson = ensurePath(sid, lessonKey);
+    if(!lesson.__overall) lesson.__overall = { memo:"" };
+    lesson.__overall.memo = t.value || "";
+    markDirty();
+    return;
   }
-}
 
-/** =========================
- *  カード描画（UI本体）
- * ========================= */
-function renderStudentSelect(){
-  const roster = APP_STATE.roster || [];
-  if(!roster.length) APP_STATE.roster = deepClone(defaultRoster);
-  els.studentSelect.innerHTML = "";
-  for(const n of APP_STATE.roster){
-    const opt = document.createElement("option");
-    opt.value = n;
-    opt.textContent = n;
-    els.studentSelect.appendChild(opt);
-  }
-  if(!APP_STATE.roster.includes(ACTIVE_STUDENT)){
-    ACTIVE_STUDENT = APP_STATE.roster[0];
-    APP_STATE.activeStudent = ACTIVE_STUDENT;
-    scheduleSave();
-  }
-  els.studentSelect.value = ACTIVE_STUDENT;
-}
-
-function renderCards(){
-  els.cards.innerHTML = "";
-  const studentName = ACTIVE_STUDENT;
-  ensureStudentData(studentName);
-
-  for(const item of ITEMS){
-    const card = document.createElement("section");
-    card.className = "card";
-
-    const head = document.createElement("div");
-    head.className = "cardHead";
-
-    const left = document.createElement("div");
-    const h = document.createElement("h3");
-    h.className = "cardTitle";
-    h.textContent = item.title;
-    const meta = document.createElement("div");
-    meta.className = "cardMeta";
-    meta.innerHTML = `<span class="sectionLabel ${domainClass(item.domain)}Label">${domainName(item.domain)}</span>`;
-    left.appendChild(h);
-    left.appendChild(meta);
-
-    const badge = document.createElement("div");
-    badge.className = `badge ${domainClass(item.domain)}`;
-    const b = cardBadgeText(studentName, item);
-    badge.innerHTML = `<span>${escapeHtml(b.main)}</span><span class="small">${escapeHtml(b.sub)}</span>`;
-
-    head.appendChild(left);
-    head.appendChild(badge);
-
-    const body = document.createElement("div");
-    body.className = "cardBody";
-
-    const rub = makeRubric(item);
-    if(rub) body.appendChild(rub);
-
-    if(item.kind==="check5"){
-      const list = document.createElement("div");
-      list.className = "checkList";
-      const d = ensureItemData(studentName, item.id);
-      for(const c of item.checks){
-        const row = document.createElement("label");
-        row.className = "checkItem";
-        const checked = !!d.checks[c.key];
-        row.innerHTML = `
-          <input type="checkbox" data-item="${item.id}" data-ck="${c.key}" ${checked ? "checked":""} />
-          <div><div class="checkText">${escapeHtml(c.label)}</div></div>
-        `;
-        list.appendChild(row);
-      }
-      body.appendChild(list);
-    }
-
-    if(item.kind==="scoreParts"){
-      const d = ensureItemData(studentName, item.id);
-      const parts = document.createElement("div");
-      parts.className = "parts";
-      for(const p of item.parts){
-        const v = clampInt(d.parts[p.key] ?? 0, 0, p.max);
-        const row = document.createElement("div");
-        row.className = "partRow";
-        row.innerHTML = `
-          <div class="partText">
-            <div class="partLabel">${escapeHtml(p.label)}</div>
-            <div class="partHint">0〜${p.max}点｜${escapeHtml(p.hint || "")}</div>
-          </div>
-          <input type="number" inputmode="numeric" min="0" max="${p.max}"
-                 value="${v}"
-                 data-item="${item.id}" data-part="${p.key}" data-max="${p.max}" />
-        `;
-        parts.appendChild(row);
-      }
-      body.appendChild(parts);
-
-      if(item.max===15){
-        const s15 = scoreParts(studentName, item);
-        const s10 = think15To10(s15);
-        const g = gradeThink10(s10);
-        const info = document.createElement("div");
-        info.className = "mini";
-        info.textContent = `換算：${s15}/15 → ${s10}/10 → ${g}（3段階${to3Level(g)}）`;
-        body.appendChild(info);
-      }
-      if(item.extra?.lesson7){
-        const s = scoreParts(studentName, item);
-        const g = gradeLesson7ABC(s);
-        const info = document.createElement("div");
-        info.className = "mini";
-        info.textContent = `7時専用換算：${s}/10 → ${g}`;
-        body.appendChild(info);
-      }
-    }
-
-    if(item.kind==="selectABC"){
-      const d = ensureItemData(studentName, item.id);
-      const sel = document.createElement("select");
-      sel.dataset.item = item.id;
-      sel.dataset.select = "1";
-      sel.innerHTML = `<option value="">— 選択 —</option>` + item.options.map(o=>`<option value="${o}">${o}</option>`).join("");
-      sel.value = d.select || "";
-      body.appendChild(sel);
-    }
-
-    if(item.kind==="testRecord"){
-      const d = ensureItemData(studentName, item.id);
-      const row = document.createElement("div");
-      row.className = "row";
-      row.innerHTML = `
-        <div class="mini">点数（任意）</div>
-        <input type="number" inputmode="numeric" min="0" max="100"
-               style="width:120px;"
-               data-item="${item.id}" data-part="score" data-max="100"
-               value="${escapeHtml(d.parts?.score ?? "")}">
-      `;
-      body.appendChild(row);
-    }
-
-    if(item.kind==="reflectionBoard"){
-      const s = ensureStudentData(studentName);
-
-      const btnRow = document.createElement("div");
-      btnRow.className = "row";
-      btnRow.innerHTML = `
-        <div class="mini">振り返りは「書けたときに追記」でOK（固定枠なし）</div>
-        <button class="good" data-add-ref="1">＋ 振り返りを追加</button>
-      `;
-      body.appendChild(btnRow);
-
-      const list = document.createElement("div");
-      list.className = "photoArea";
-      const entries = (s.reflection || []);
-      if(entries.length === 0){
-        const empty = document.createElement("div");
-        empty.className = "mini";
-        empty.textContent = "まだ記録がありません。";
-        list.appendChild(empty);
-      }else{
-        for(const ent of entries.slice().reverse()){
-          const box = document.createElement("div");
-          box.className = "card";
-          box.style.boxShadow = "none";
-          box.style.background = "rgba(2,6,23,.22)";
-          box.style.borderRadius = "16px";
-
-          const hd = document.createElement("div");
-          hd.className = "cardHead";
-          hd.style.borderBottom = "1px solid var(--line)";
-          hd.style.padding = "10px 10px 8px";
-          const dt = new Date(ent.at || Date.now());
-          const label = dt.toLocaleString("ja-JP", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
-          hd.innerHTML = `
-            <div>
-              <div class="cardTitle" style="font-size:14px;">${escapeHtml(label)}</div>
-              <div class="mini">振り返りID：${escapeHtml(ent.id)}</div>
-            </div>
-            <button class="danger" data-del-ref="${escapeHtml(ent.id)}">削除</button>
-          `;
-          const bd = document.createElement("div");
-          bd.className = "cardBody";
-          bd.style.padding = "10px";
-
-          const ta = document.createElement("textarea");
-          ta.placeholder = "ここに振り返りを追記（短文でOK）";
-          ta.dataset.refText = ent.id;
-          ta.value = ent.text || "";
-          bd.appendChild(ta);
-
-          bd.appendChild(makePhotoBlock({
-            studentName,
-            itemId: item.id,
-            mode: "reflection",
-            refId: ent.id,
-            photoIds: ent.photos || []
-          }));
-
-          box.appendChild(hd);
-          box.appendChild(bd);
-          list.appendChild(box);
-        }
-      }
-      body.appendChild(list);
-
-      const d = ensureItemData(studentName, item.id);
-      const sel = document.createElement("select");
-      sel.dataset.item = item.id;
-      sel.dataset.select = "1";
-      sel.innerHTML = `<option value="">— 総合評価（A/B/C）—</option><option value="A">A</option><option value="B">B</option><option value="C">C</option>`;
-      sel.value = d.select || "";
-      body.appendChild(sel);
-    }
-
-    if(item.kind !== "reflectionBoard"){
-      const d = ensureItemData(studentName, item.id);
-
-      const memoLabel = document.createElement("div");
-      memoLabel.className = "mini";
-      memoLabel.textContent = "メモ（根拠・気づき・支援など）";
-      body.appendChild(memoLabel);
-
-      const memo = document.createElement("textarea");
-      memo.placeholder = "例：接点が甘い／極を意識できた／説明が具体…など";
-      memo.dataset.item = item.id;
-      memo.dataset.memo = "1";
-      memo.value = d.memo || "";
-      body.appendChild(memo);
-
-      body.appendChild(makePhotoBlock({
-        studentName,
-        itemId: item.id,
-        mode: "item",
-        photoIds: d.photos || []
-      }));
-    }
-
-    card.appendChild(head);
-    card.appendChild(body);
-    els.cards.appendChild(card);
-  }
-}
-
-function makePhotoBlock({studentName, itemId, mode, photoIds, refId}){
-  const wrap = document.createElement("div");
-  wrap.className = "photoArea";
-
-  const row = document.createElement("div");
-  row.className = "row";
-  row.innerHTML = `
-    <div class="mini">写真（無制限）｜サムネタップ＝注釈／左上OCR</div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
-      <label style="display:inline-flex; gap:8px; align-items:center;">
-        <input type="file" accept="image/*" multiple style="display:none"
-               data-photoadd="1"
-               data-mode="${escapeHtml(mode)}"
-               data-item="${escapeHtml(itemId)}"
-               ${refId ? `data-ref="${escapeHtml(refId)}"` : ""}>
-        <button class="secondary" type="button">＋ 写真を追加</button>
-      </label>
-    </div>
-  `;
-  wrap.appendChild(row);
-
-  const thumbs = document.createElement("div");
-  thumbs.className = "thumbs";
-
-  (photoIds || []).forEach(fid=>{
-    const th = document.createElement("div");
-    th.className = "thumb";
-    th.innerHTML = `
-      <img alt="photo" data-photoimg="${escapeHtml(fid)}" data-open-anno="1"
-           data-item="${escapeHtml(itemId)}"
-           data-mode="${escapeHtml(mode)}"
-           ${refId ? `data-ref="${escapeHtml(refId)}"` : ""}>
-      <div class="tag" data-ann-tag="${escapeHtml(fid)}" style="display:none;">注釈</div>
-      <div class="tag" data-ocr-tag="${escapeHtml(fid)}" style="left:auto; right:6px; bottom:6px; display:none;">OCR</div>
-
-      <button type="button" class="ocrBtn"
-              data-ocr="1" data-photoid="${escapeHtml(fid)}"
-              data-mode="${escapeHtml(mode)}"
-              data-item="${escapeHtml(itemId)}"
-              ${refId ? `data-ref="${escapeHtml(refId)}"` : ""}>OCR</button>
-
-      <button type="button" data-photodel="${escapeHtml(fid)}"
-              data-mode="${escapeHtml(mode)}"
-              data-item="${escapeHtml(itemId)}"
-              ${refId ? `data-ref="${escapeHtml(refId)}"` : ""}>削除</button>
-    `;
-    thumbs.appendChild(th);
-  });
-
-  wrap.appendChild(thumbs);
-  setTimeout(()=> hydrateThumbs(thumbs), 0);
-  return wrap;
-}
-
-async function hydrateThumbs(container){
-  const imgs = container.querySelectorAll("img[data-photoimg]");
-  for(const img of imgs){
-    const fid = img.dataset.photoimg;
-    const rec = await idbGetFile(fid);
-    if(!rec?.blob) continue;
-    const url = URL.createObjectURL(rec.blob);
-    img.src = url;
-    img.onload = ()=> URL.revokeObjectURL(url);
-
-    const tagA = container.querySelector(`div[data-ann-tag="${CSS.escape(fid)}"]`);
-    if(tagA) tagA.style.display = annoHas(fid) ? "inline-flex" : "none";
-
-    const tagO = container.querySelector(`div[data-ocr-tag="${CSS.escape(fid)}"]`);
-    if(tagO) tagO.style.display = getCachedOcr(fid) ? "inline-flex" : "none";
-  }
-}
-
-/** =========================
- *  名簿＆整理
- * ========================= */
-function openRosterModal(){ renderRosterList(); els.modalRosterBg.style.display = "flex"; els.newStudentName.focus(); }
-function closeRosterModal(){ els.modalRosterBg.style.display = "none"; }
-function renderRosterList(){
-  els.rosterList.innerHTML = "";
-  for(const name of APP_STATE.roster){
-    const li = document.createElement("div");
-    li.className = "listItem";
-    li.innerHTML = `
-      <div class="name">${escapeHtml(name)}</div>
-      <div class="actions">
-        <button class="secondary" data-set-active="${escapeHtml(name)}">選択</button>
-        <button class="danger" data-del-student="${escapeHtml(name)}">削除</button>
-      </div>
-    `;
-    els.rosterList.appendChild(li);
-  }
-  els.rosterList.querySelectorAll("button[data-set-active]").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      ACTIVE_STUDENT = btn.dataset.setActive;
-      APP_STATE.activeStudent = ACTIVE_STUDENT;
-      scheduleSave();
-      renderStudentSelect();
-      renderCards();
-      showToast("切り替えた");
-    });
-  });
-  els.rosterList.querySelectorAll("button[data-del-student]").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const name = btn.dataset.delStudent;
-      if(!confirm(`「${name}」を名簿から削除します。記録も消えます。OK？`)) return;
-
-      (async()=>{
-        const s = APP_STATE.students[name];
-        if(s){
-          const ids = collectAllPhotoIdsForStudent(s);
-          for(const fid of ids){ await idbDeleteFile(fid); }
-          delete APP_STATE.students[name];
-        }
-        APP_STATE.roster = APP_STATE.roster.filter(x=>x!==name);
-        if(ACTIVE_STUDENT === name){
-          ACTIVE_STUDENT = APP_STATE.roster[0] || "";
-          APP_STATE.activeStudent = ACTIVE_STUDENT;
-        }
-        scheduleSave();
-        renderStudentSelect();
-        renderRosterList();
-        renderCards();
-        showToast("削除した");
-      })();
-    });
-  });
-}
-function collectAllPhotoIdsForStudent(studentData){
-  const set = new Set();
-  for(const itemId in (studentData.items || {})){
-    const it = studentData.items[itemId];
-    (it.photos || []).forEach(id=>set.add(id));
-  }
-  for(const ent of (studentData.reflection || [])){
-    (ent.photos || []).forEach(id=>set.add(id));
-  }
-  return Array.from(set);
-}
-function collectAllUsedFileIds(){
-  const used = new Set();
-  const students = APP_STATE.students || {};
-  for(const name in students){
-    const s = students[name];
-    collectAllPhotoIdsForStudent(s).forEach(id=>used.add(id));
-  }
-  return used;
-}
-
-/** =========================
- *  イベント
- * ========================= */
-function bindEvents(){
-  els.studentSelect.addEventListener("change", ()=>{
-    ACTIVE_STUDENT = els.studentSelect.value;
-    APP_STATE.activeStudent = ACTIVE_STUDENT;
-    scheduleSave();
-    renderCards();
-  });
-
-  els.btnRoster.addEventListener("click", openRosterModal);
-  els.btnCloseRoster.addEventListener("click", closeRosterModal);
-  els.modalRosterBg.addEventListener("click", (e)=>{ if(e.target === els.modalRosterBg) closeRosterModal(); });
-
-  els.btnAddStudent.addEventListener("click", ()=>{
-    const name = els.newStudentName.value.trim();
-    if(!name) return;
-    if(APP_STATE.roster.includes(name)){ showToast("同名があるよ"); return; }
-    APP_STATE.roster.push(name);
-    els.newStudentName.value = "";
-    scheduleSave();
-    renderStudentSelect();
+  // score
+  if(t instanceof HTMLInputElement && t.getAttribute("data-score")==="1"){
+    const gid = t.dataset.group;
+    const g = getLessonGroups(lessonKey).find(x=>x.id===gid);
+    if(!g) return;
+    const rec = ensureGroup(sid, lessonKey, gid);
+    let v = t.value.replace(/[^\d]/g,"");
+    if(v==="") { rec.score=null; markDirty(); updateTotalsUI(); return; }
+    let n = Number(v);
+    if(!Number.isFinite(n)) n=0;
+    n = Math.max(0, Math.min(g.scoring.max, n));
+    rec.score = n;
+    if(String(n)!==t.value) t.value = n;
+    markDirty();
+    updateTotalsUI();
     renderRosterList();
-    showToast("追加した！");
-  });
+    return;
+  }
 
-  els.btnResetStudent.addEventListener("click", ()=>{
-    const name = ACTIVE_STUDENT;
-    if(!name) return;
-    if(!confirm(`「${name}」の記録をリセットします。写真も含めて消えます。OK？`)) return;
-    (async()=>{
-      const s = ensureStudentData(name);
-      const all = collectAllPhotoIdsForStudent(s);
-      for(const fid of all){ await idbDeleteFile(fid); }
-      delete APP_STATE.students[name];
-      scheduleSave();
-      renderCards();
-      showToast("リセット完了");
-    })();
-  });
+  // memo
+  if(t instanceof HTMLTextAreaElement && t.getAttribute("data-memo")==="1"){
+    const gid = t.dataset.group;
+    const rec = ensureGroup(sid, lessonKey, gid);
+    rec.memo = t.value || "";
+    markDirty();
+    return;
+  }
+});
 
-  els.btnClearCache.addEventListener("click", ()=>{
-    (async()=>{
-      const used = collectAllUsedFileIds();
-      const all = await idbListFiles();
-      let removed = 0;
-      for(const id of all){
-        if(!used.has(id)){
-          await idbDeleteFile(id);
-          if(APP_STATE.anno?.docs?.[id]) delete APP_STATE.anno.docs[id];
-          if(APP_STATE.ocr?.cache?.[id]) delete APP_STATE.ocr.cache[id];
-          removed++;
-        }
-      }
-      scheduleSave();
-      showToast(`未使用画像を${removed}件削除`);
-      renderCards();
-    })();
-  });
+document.addEventListener("change", (e)=>{
+  const sid = state.currentStudentId;
+  if(!sid) return;
+  const lessonKey = state.currentLessonKey;
 
-  // 注釈
-  els.btnAnnoClose.addEventListener("click", ()=> closeAnnoEditor(true));
-  els.btnSaveAnno.addEventListener("click", ()=>{ annoSaveDoc(ANNO.doc); showToast("注釈を保存"); renderCards(); });
-  els.btnUndo.addEventListener("click", undo);
-  els.btnRedo.addEventListener("click", redo);
-  els.btnClearAnno.addEventListener("click", ()=>{
-    if(!confirm("注釈をすべて消します。OK？")) return;
-    pushHistory();
-    ANNO.doc.objects = [];
-    redraw();
-  });
+  const t = e.target;
 
-  document.querySelectorAll(".toolBtn[data-tool]").forEach(btn=>{
-    btn.addEventListener("click", ()=> setToolUI(btn.dataset.tool));
-  });
+  // lesson selector
+  if(t.id==="lessonKey"){
+    state.currentLessonKey = t.value;
+    markDirty();
+    renderAll();
+    return;
+  }
 
-  els.colorPicker.addEventListener("input", ()=>{
-    ANNO.color = els.colorPicker.value;
-    addRecentColor(ANNO.color);
-  });
-  els.sizeSlider.addEventListener("input", ()=>{
-    ANNO.size = clampInt(els.sizeSlider.value, 1, 40);
-    els.sizeVal.textContent = String(ANNO.size);
-  });
+  // checkbox
+  if(t instanceof HTMLInputElement && t.getAttribute("data-check")==="1"){
+    const gid = t.dataset.group;
+    const idx = Number(t.dataset.idx);
+    const rec = ensureGroup(sid, lessonKey, gid);
+    rec.checks = rec.checks || [];
+    rec.checks[idx] = t.checked;
+    markDirty();
+    updateTotalsUI();
+    renderRosterList();
+    // チェック数表示など更新のため全再描画
+    renderRubric();
+    return;
+  }
+});
 
-  // pointer for anno
-  els.annoCanvas.addEventListener("pointerdown", (e)=>{ els.annoCanvas.setPointerCapture(e.pointerId); beginDraw(e); });
-  els.annoCanvas.addEventListener("pointermove", moveDraw);
-  els.annoCanvas.addEventListener("pointerup", endDraw);
-  els.annoCanvas.addEventListener("pointercancel", endDraw);
+/** =========================
+ *  8) 名簿・ナビ
+ * ========================= */
+function studentNameById(id){
+  const st = state.roster.find(s=>s.id===id);
+  return st ? st.name : "—";
+}
+function lessonNameByKey(k){
+  const l = CONFIG.lessons.find(x=>x.key===k);
+  return l ? l.name : k;
+}
 
-  // OCRモーダル
-  els.btnOcrClose.addEventListener("click", closeOcrModal);
-  els.ocrBg.addEventListener("click", (e)=>{ if(e.target === els.ocrBg) closeOcrModal(); });
+document.getElementById("btnApplyRoster").addEventListener("click", ()=>{
+  const text = document.getElementById("rosterText").value || "";
+  const lines = text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  const roster = lines.map(name=>({ id: makeId("st"), name }));
+  state.roster = roster;
+  if(!state.currentStudentId && roster.length>0) state.currentStudentId = roster[0].id;
+  markDirty();
+  renderAll();
+  showToast("名簿を反映した");
+});
 
-  els.btnOcrCopy.addEventListener("click", async ()=>{
-    const txt = els.ocrText.value || "";
+document.getElementById("btnPrev").addEventListener("click", ()=>{
+  if(state.roster.length===0) return;
+  const idx = state.roster.findIndex(s=>s.id===state.currentStudentId);
+  const n = (idx<=0) ? state.roster.length-1 : idx-1;
+  state.currentStudentId = state.roster[n].id;
+  markDirty();
+  renderAll();
+});
+document.getElementById("btnNext").addEventListener("click", ()=>{
+  if(state.roster.length===0) return;
+  const idx = state.roster.findIndex(s=>s.id===state.currentStudentId);
+  const n = (idx<0 || idx===state.roster.length-1) ? 0 : idx+1;
+  state.currentStudentId = state.roster[n].id;
+  markDirty();
+  renderAll();
+});
+
+/** =========================
+ *  9) バックアップ／復元／全消去
+ * ========================= */
+document.getElementById("btnBackup").addEventListener("click", ()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `sci_eval_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast("バックアップを書き出した");
+});
+
+document.getElementById("btnRestore").addEventListener("click", ()=>{
+  const input = document.createElement("input");
+  input.type="file";
+  input.accept="application/json";
+  input.onchange = async ()=>{
+    const f = input.files?.[0];
+    if(!f) return;
+    const text = await f.text();
     try{
-      await navigator.clipboard.writeText(txt);
-      showToast("コピーした");
+      const obj = JSON.parse(text);
+      // 軽いバリデーション
+      if(!obj || typeof obj !== "object") throw new Error("invalid");
+      state = obj;
+      if(!state.currentLessonKey) state.currentLessonKey = CONFIG.lessons[0].key;
+      markDirty();
+      renderAll();
+      showToast("復元した");
     }catch{
-      // iOSで失敗することがあるので選択させる
-      els.ocrText.focus();
-      els.ocrText.select();
-      showToast("選択した（手動コピーOK）");
+      showToast("復元に失敗（JSONが不正）");
     }
-  });
+  };
+  input.click();
+});
 
-  els.btnOcrAppend.addEventListener("click", ()=>{
-    if(!OCR.context) return;
-    appendToMemoOrReflection(OCR.context, els.ocrText.value);
-  });
+document.getElementById("btnReset").addEventListener("click", async ()=>{
+  if(!confirm("端末内の記録をすべて消します。よろしいですか？")) return;
+  await idbDel(STATE_KEY);
+  state = {
+    meta:{ unitName: CONFIG.unitDefault, updatedAt: nowISO() },
+    roster: [],
+    currentStudentId: "",
+    currentLessonKey: CONFIG.lessons[0].key,
+    records: {},
+  };
+  renderAll();
+  showToast("全消去しました");
+});
 
-  // 入力系（カード）
-  document.addEventListener("change", async (e)=>{
-    const t = e.target;
+/** =========================
+ *  10) 画面更新
+ * ========================= */
+function updateTotalsUI(){
+  const sid = state.currentStudentId;
+  if(!sid){
+    document.getElementById("sumK").textContent="0";
+    document.getElementById("sumT").textContent="0";
+    document.getElementById("sumA").textContent="0";
+    document.getElementById("sumAll").textContent="0";
+    document.getElementById("gradeAll").textContent="—";
+    document.getElementById("gradeAll").className="grade B";
+    document.getElementById("who").textContent="—";
+    return;
+  }
 
-    if(t.matches('input[type="checkbox"][data-item][data-ck]')){
-      const itemId = t.dataset.item;
-      const ck = t.dataset.ck;
-      const d = ensureItemData(ACTIVE_STUDENT, itemId);
-      d.checks[ck] = !!t.checked;
-      scheduleSave();
-      renderCards();
-      return;
-    }
+  const totals = calcTotals(sid, state.currentLessonKey);
+  document.getElementById("sumK").textContent = totals.sumK;
+  document.getElementById("sumT").textContent = totals.sumT;
+  document.getElementById("sumA").textContent = totals.sumA;
+  document.getElementById("sumAll").textContent = `${totals.sumAll}/${totals.maxAll}`;
+  const g = document.getElementById("gradeAll");
+  g.textContent = totals.grade;
+  g.className = "grade " + gradeClass(totals.grade);
 
-    if(t.matches('input[type="number"][data-item][data-part][data-max]')){
-      const itemId = t.dataset.item;
-      const key = t.dataset.part;
-      const mx = Number(t.dataset.max);
-      const d = ensureItemData(ACTIVE_STUDENT, itemId);
-      if(itemId === "test" && key==="score"){
-        d.parts[key] = t.value === "" ? "" : clampInt(t.value, 0, mx);
-      }else{
-        d.parts[key] = clampInt(t.value, 0, mx);
-      }
-      scheduleSave();
-      renderCards();
-      return;
-    }
+  document.getElementById("who").textContent = `${studentNameById(sid)}｜${lessonNameByKey(state.currentLessonKey)}`;
+}
 
-    if(t.matches('select[data-item][data-select="1"]')){
-      const itemId = t.dataset.item;
-      const d = ensureItemData(ACTIVE_STUDENT, itemId);
-      d.select = t.value || "";
-      scheduleSave();
-      renderCards();
-      return;
-    }
+function renderAll(){
+  document.getElementById("unitName").value = state.meta.unitName || "";
+  document.getElementById("subTitle").textContent = `単元：${state.meta.unitName || "—"}｜端末内に自動保存`;
 
-    if(t.matches('input[type="file"][data-photoadd="1"]')){
-      const files = Array.from(t.files || []);
-      if(!files.length) return;
-      const mode = t.dataset.mode;
-      const itemId = t.dataset.item;
-      const refId = t.dataset.ref || "";
+  renderLessonSelect();
 
-      for(const f of files){
-        if(!f.type.startsWith("image/")) continue;
-        const fid = `${ACTIVE_STUDENT}__${itemId}__${uid()}`;
-        await idbPutFile(fid, f, { name: f.name, type: f.type, size: f.size });
+  // overall memo
+  const sid = state.currentStudentId;
+  if(sid){
+    const lesson = ensurePath(sid, state.currentLessonKey);
+    const memo = lesson.__overall?.memo || "";
+    document.getElementById("overallMemo").value = memo;
+  }else{
+    document.getElementById("overallMemo").value = "";
+  }
 
-        if(mode==="item"){
-          const d = ensureItemData(ACTIVE_STUDENT, itemId);
-          d.photos.push(fid);
-        }else if(mode==="reflection"){
-          const s = ensureStudentData(ACTIVE_STUDENT);
-          const ent = (s.reflection || []).find(x=>x.id===refId);
-          if(ent){
-            ent.photos = ent.photos || [];
-            ent.photos.push(fid);
-          }
-        }
-      }
-      scheduleSave();
-      t.value = "";
-      renderCards();
-      showToast("写真を追加");
-      return;
-    }
-
-    if(t.matches('textarea[data-refText]')){
-      const refId = t.dataset.reftext || t.dataset.refText;
-      const s = ensureStudentData(ACTIVE_STUDENT);
-      const ent = (s.reflection || []).find(x=>x.id===refId);
-      if(ent){
-        ent.text = t.value;
-        scheduleSave();
-      }
-      return;
-    }
-  });
-
-  document.addEventListener("input", (e)=>{
-    const t = e.target;
-    if(t.matches('textarea[data-item][data-memo="1"]')){
-      const itemId = t.dataset.item;
-      const d = ensureItemData(ACTIVE_STUDENT, itemId);
-      d.memo = t.value;
-      scheduleSave();
-      return;
-    }
-    if(t.matches('textarea[data-refText]')){
-      const refId = t.dataset.reftext || t.dataset.refText;
-      const s = ensureStudentData(ACTIVE_STUDENT);
-      const ent = (s.reflection || []).find(x=>x.id===refId);
-      if(ent){
-        ent.text = t.value;
-        scheduleSave();
-      }
-      return;
-    }
-  });
-
-  // クリック系
-  document.addEventListener("click", async (e)=>{
-    const t = e.target;
-
-    // 写真削除
-    const delBtn = t.closest('button[data-photodel]');
-    if(delBtn){
-      const fid = delBtn.dataset.photodel;
-      const mode = delBtn.dataset.mode;
-      const itemId = delBtn.dataset.item;
-      const refId = delBtn.dataset.ref || "";
-      if(!confirm("この写真を削除しますか？（注釈/OCRも消えます）")) return;
-
-      await idbDeleteFile(fid);
-      if(APP_STATE.anno?.docs?.[fid]) delete APP_STATE.anno.docs[fid];
-      if(APP_STATE.ocr?.cache?.[fid]) delete APP_STATE.ocr.cache[fid];
-
-      if(mode==="item"){
-        const d = ensureItemData(ACTIVE_STUDENT, itemId);
-        d.photos = (d.photos || []).filter(x=>x!==fid);
-      }else if(mode==="reflection"){
-        const s = ensureStudentData(ACTIVE_STUDENT);
-        const ent = (s.reflection || []).find(x=>x.id===refId);
-        if(ent) ent.photos = (ent.photos || []).filter(x=>x!==fid);
-      }
-      scheduleSave();
-      renderCards();
-      showToast("削除した");
-      return;
-    }
-
-    // 振り返り追加
-    const addRef = t.closest('button[data-add-ref="1"]');
-    if(addRef){
-      const s = ensureStudentData(ACTIVE_STUDENT);
-      const ent = { id: uid(), at: Date.now(), text: "", photos: [] };
-      s.reflection.push(ent);
-      scheduleSave();
-      renderCards();
-      showToast("振り返り追加");
-      return;
-    }
-
-    // 振り返り削除
-    const delRef = t.closest('button[data-del-ref]');
-    if(delRef){
-      const id = delRef.dataset.delRef;
-      if(!confirm("この振り返りを削除しますか？（写真も消えます）")) return;
-      const s = ensureStudentData(ACTIVE_STUDENT);
-      const idx = (s.reflection || []).findIndex(x=>x.id===id);
-      if(idx >= 0){
-        const photos = s.reflection[idx].photos || [];
-        for(const fid of photos){
-          await idbDeleteFile(fid);
-          if(APP_STATE.anno?.docs?.[fid]) delete APP_STATE.anno.docs[fid];
-          if(APP_STATE.ocr?.cache?.[fid]) delete APP_STATE.ocr.cache[fid];
-        }
-        s.reflection.splice(idx, 1);
-        scheduleSave();
-        renderCards();
-        showToast("削除した");
-      }
-      return;
-    }
-
-    // 画像タップ → 注釈
-    const img = t.closest('img[data-open-anno="1"][data-photoimg]');
-    if(img){
-      const fid = img.dataset.photoimg;
-      const itemId = img.dataset.item;
-      const mode = img.dataset.mode;
-      const ref = img.dataset.ref || "";
-      await openAnnoEditor({ fileId: fid, studentName: ACTIVE_STUDENT, itemId, mode, refId: ref });
-      return;
-    }
-
-    // OCRボタン
-    const ocrBtn = t.closest('button[data-ocr="1"][data-photoid]');
-    if(ocrBtn){
-      const fid = ocrBtn.dataset.photoid;
-      const mode = ocrBtn.dataset.mode;     // item / reflection
-      const itemId = ocrBtn.dataset.item;
-      const refId = ocrBtn.dataset.ref || "";
-
-      const targetInfo = (mode==="item")
-        ? `追記先：${ACTIVE_STUDENT}｜項目「${itemId}」のメモ欄`
-        : `追記先：${ACTIVE_STUDENT}｜振り返りID「${refId}」`;
-
-      openOcrModal({ fileId: fid, studentName: ACTIVE_STUDENT, itemId, mode, refId, targetInfo });
-
-      // 実行
-      try{
-        setOcrUI({ status:"準備中…（初回は少し時間がかかります）", progress:0.01 });
-        const { text, cached } = await runOcrFromFileId(fid);
-        setOcrUI({ status: cached ? "OCR（保存済み）" : "OCR完了", progress:1, text });
-        showToast(cached ? "保存済みOCRを表示" : "OCR完了");
-        renderCards(); // OCRタグ表示更新
-      }catch(err){
-        console.error(err);
-        setOcrUI({ status:"失敗（ネット/写真/権限を確認）", progress:0 });
-        els.ocrText.value = "";
-        showToast("OCRに失敗…（ネット接続推奨）");
-      }
-      return;
-    }
-  });
-
-  // 名簿モーダルの外側クリックで閉じる
-  els.modalRosterBg.addEventListener("click", (e)=>{ if(e.target === els.modalRosterBg) closeRosterModal(); });
-
-  // 注釈画面のツール類
-  els.sizeVal.textContent = String(clampInt(els.sizeSlider.value,1,40));
-  ANNO.color = els.colorPicker.value;
-  ANNO.size = clampInt(els.sizeSlider.value, 1, 40);
-  renderRecentSwatches();
+  renderRosterList();
+  renderRubric();
+  updateTotalsUI();
 }
 
 /** =========================
- *  起動
+ *  11) 起動
  * ========================= */
-function boot(){
-  renderStudentSelect();
-  ensureStudentData(ACTIVE_STUDENT);
-  renderCards();
-  bindEvents();
-  showToast("起動OK（OCRあり）");
-}
-boot();
+(async function init(){
+  await openDB();
+  const saved = await idbGet(STATE_KEY);
+  if(saved){
+    state = saved;
+    if(!state.currentLessonKey) state.currentLessonKey = CONFIG.lessons[0].key;
+  }else{
+    // 初回：名簿例
+    state.roster = [
+      {id:makeId("st"), name:"3年A 児童A"},
+      {id:makeId("st"), name:"3年A 児童B"},
+    ];
+    state.currentStudentId = state.roster[0].id;
+    state.meta.unitName = CONFIG.unitDefault;
+    await idbSet(STATE_KEY, state);
+  }
+
+  // rosterTextに反映
+  document.getElementById("rosterText").value = state.roster.map(s=>s.name).join("\n");
+
+  renderAll();
+
+  showToast("起動しました");
+})();
 </script>
 </body>
 </html>
