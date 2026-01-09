@@ -1,0 +1,2298 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>3年理科｜電気の通り道｜評価記録</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f172a;
+      --card:#0b1327;
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --line:rgba(148,163,184,.18);
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+
+      --k:#38bdf8; /* 知識・技能 */
+      --t:#a78bfa; /* 思考・判断・表現 */
+      --a:#fb923c; /* 主体 */
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --btn:#1f2a44;
+      --btn2:#162038;
+      --focus: rgba(56,189,248,.35);
+    }
+
+    *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 30% -10%, rgba(56,189,248,.18), transparent 60%),
+                  radial-gradient(1200px 600px at 80% 10%, rgba(167,139,250,.14), transparent 55%),
+                  radial-gradient(1200px 800px at 60% 120%, rgba(251,146,60,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+    }
+
+    .app{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) 12px;
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(11,18,32,.92), rgba(11,18,32,.6));
+      border-bottom: 1px solid var(--line);
+      padding: 10px 0 8px;
+    }
+
+    .topRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      min-width: 280px;
+      flex:1;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(15,23,42,.55);
+      font-weight: 700;
+      color: var(--text);
+    }
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--k);}
+    .dot.t{background:var(--t);}
+    .dot.a{background:var(--a);}
+
+    .title{
+      font-weight: 900;
+      letter-spacing: .02em;
+      line-height: 1.1;
+    }
+    .subtitle{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .controls{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+    }
+
+    button, select, input[type="text"], input[type="number"], textarea{
+      font: inherit;
+      color: var(--text);
+    }
+    button{
+      background: var(--btn);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: none;
+      min-height: 44px;
+    }
+    button:active{transform: translateY(1px);}
+    button.secondary{ background: var(--btn2); }
+    button.danger{ background: rgba(251,113,133,.15); border-color: rgba(251,113,133,.28); }
+    button.good{ background: rgba(52,211,153,.12); border-color: rgba(52,211,153,.25); }
+    button:focus{ outline: none; box-shadow: 0 0 0 4px var(--focus); }
+
+    select{
+      background: rgba(15,23,42,.55);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      min-height: 44px;
+      font-weight: 800;
+    }
+    select:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
+
+    .main{ padding: 10px 0 30px; }
+
+    .grid{
+      display:grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+    }
+
+    .card{
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(15,23,42,.55);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .cardHead{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap:12px;
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .cardTitle{
+      font-weight: 900;
+      font-size: 16px;
+      line-height: 1.25;
+      margin:0;
+    }
+    .cardMeta{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.35);
+      min-width: 132px;
+      text-align: center;
+      gap:8px;
+      white-space: nowrap;
+    }
+    .badge .small{ font-size: 12px; color: var(--muted); font-weight: 800; }
+    .badge.k{ border-color: rgba(56,189,248,.35); }
+    .badge.t{ border-color: rgba(167,139,250,.35); }
+    .badge.a{ border-color: rgba(251,146,60,.35); }
+
+    .cardBody{
+      padding: 12px 14px 14px;
+      display:grid;
+      gap: 12px;
+    }
+
+    details{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(2,6,23,.25);
+      overflow:hidden;
+    }
+    summary{
+      cursor:pointer;
+      padding: 12px 12px;
+      font-weight: 900;
+      list-style: none;
+    }
+    summary::-webkit-details-marker{ display:none; }
+    .rubric{
+      padding: 0 12px 12px;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .checkList{ display:grid; gap: 10px; }
+    .checkItem{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding: 10px 10px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(2,6,23,.22);
+    }
+    .checkItem input[type="checkbox"]{
+      width: 22px; height: 22px;
+      margin-top: 2px;
+      accent-color: var(--k);
+      flex: 0 0 auto;
+    }
+    .checkText{ font-weight: 800; line-height: 1.35; }
+
+    .parts{ display:grid; gap: 10px; }
+    .partRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding: 10px 10px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(2,6,23,.22);
+    }
+    .partText{ flex:1; min-width: 0; }
+    .partLabel{ font-weight: 900; line-height: 1.25; }
+    .partHint{ color: var(--muted); font-size: 12px; margin-top: 4px; line-height: 1.35; }
+
+    input[type="number"]{
+      width: 96px;
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(15,23,42,.5);
+      text-align: center;
+      font-weight: 900;
+    }
+    input[type="number"]:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
+
+    textarea{
+      width: 100%;
+      min-height: 88px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.25);
+      padding: 10px 12px;
+      line-height: 1.45;
+      resize: vertical;
+    }
+    textarea:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content: space-between;
+    }
+    .mini{ color: var(--muted); font-size: 12px; line-height: 1.35; }
+
+    .photoArea{ display:grid; gap:10px; }
+
+    .thumbs{
+      display:grid;
+      gap:10px;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    }
+    .thumb{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow:hidden;
+      background: rgba(2,6,23,.25);
+      position: relative;
+    }
+    .thumb img{
+      width:100%;
+      height: 110px;
+      object-fit: cover;
+      display:block;
+      cursor:pointer;
+    }
+    .thumb .tag{
+      position:absolute;
+      left:6px; bottom:6px;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.7);
+      color: var(--text);
+    }
+
+    /* 右上：削除、左上：OCR */
+    .thumb button{
+      position:absolute;
+      top:6px; right:6px;
+      padding: 6px 8px;
+      min-height: 36px;
+      border-radius: 10px;
+      font-weight: 900;
+      background: rgba(251,113,133,.18);
+      border-color: rgba(251,113,133,.35);
+      z-index: 2;
+    }
+    .thumb .ocrBtn{
+      position:absolute;
+      top:6px; left:6px;
+      padding: 6px 8px;
+      min-height: 36px;
+      border-radius: 10px;
+      font-weight: 950;
+      background: rgba(52,211,153,.14);
+      border: 1px solid rgba(52,211,153,.30);
+      z-index: 2;
+    }
+
+    .modalBg{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 50;
+    }
+    .modal{
+      width: min(820px, 100%);
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(15,23,42,.92);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modalHead{
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .modalTitle{
+      font-weight: 950;
+      margin:0;
+    }
+    .modalBody{ padding: 12px 14px 14px; display:grid; gap:12px; }
+    .modalBody input[type="text"]{
+      width:100%;
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.25);
+      padding: 10px 12px;
+      font-weight: 900;
+    }
+    .modalBody input[type="text"]:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
+    .list{ display:grid; gap: 8px; }
+    .listItem{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content: space-between;
+      padding: 10px 10px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(2,6,23,.22);
+    }
+    .listItem .name{ font-weight: 900; }
+    .listItem .actions{ display:flex; gap:8px; }
+
+    .sectionLabel{
+      display:flex; align-items:center; gap:8px;
+      font-weight: 950;
+      margin: 2px 0 0;
+    }
+    .kLabel{ color: var(--k); }
+    .tLabel{ color: var(--t); }
+    .aLabel{ color: var(--a); }
+
+    .hr{ height:1px; background: var(--line); margin: 8px 0; }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: calc(env(safe-area-inset-bottom) + 14px);
+      transform: translateX(-50%);
+      background: rgba(2,6,23,.86);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 900;
+      display:none;
+      z-index: 60;
+    }
+
+    /* 注釈エディタ（全画面） */
+    .annoBg{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      display:none;
+      z-index: 80;
+    }
+    .anno{
+      position:absolute;
+      inset: 0;
+      display:grid;
+      grid-template-rows: auto 1fr auto;
+      padding: env(safe-area-inset-top) 10px env(safe-area-inset-bottom) 10px;
+      gap: 10px;
+    }
+    .annoTop, .annoBottom{
+      display:flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items:center;
+      justify-content: space-between;
+      background: rgba(15,23,42,.80);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 8px 8px;
+      backdrop-filter: blur(10px);
+    }
+    .annoTop .left, .annoTop .right, .annoBottom .left, .annoBottom .right{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+    }
+    .annoMid{
+      position:relative;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(2,6,23,.6);
+      box-shadow: var(--shadow);
+      touch-action: none;
+    }
+    canvas#annoCanvas{
+      width:100%;
+      height:100%;
+      display:block;
+      touch-action: none;
+    }
+    .toolBtn{
+      min-height: 44px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      background: rgba(2,6,23,.25);
+      border: 1px solid var(--line);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .toolBtn.active{
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(167,139,250,.28);
+      border-color: rgba(167,139,250,.45);
+      background: rgba(167,139,250,.16);
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px 10px;
+      background: rgba(2,6,23,.25);
+      min-height: 44px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    input[type="range"]{ width: 160px; accent-color: var(--t); }
+    input[type="color"]{
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: transparent;
+      padding: 0;
+    }
+    .swatches{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .sw{
+      width: 26px; height: 26px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      cursor: pointer;
+    }
+    .annoHint{ color: var(--muted); font-size: 12px; font-weight: 800; }
+
+    /* OCRモーダル */
+    .ocrBg{
+      position: fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      background: rgba(0,0,0,.6);
+      z-index: 90;
+    }
+    .ocr{
+      width: min(900px, 100%);
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(15,23,42,.95);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .ocrHead{
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .ocrTitle{ margin:0; font-weight: 950; }
+    .ocrBody{ padding: 12px 14px 14px; display:grid; gap: 10px; }
+    .ocrProgress{
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.35);
+      overflow:hidden;
+    }
+    .ocrProgress > div{
+      height: 100%;
+      width: 0%;
+      background: rgba(52,211,153,.75);
+      transition: width .15s linear;
+    }
+    .ocrRow{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; align-items:center;
+    }
+    .ocrText{
+      width:100%;
+      min-height: 220px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(2,6,23,.25);
+      padding: 10px 12px;
+      line-height: 1.5;
+      resize: vertical;
+      font-weight: 800;
+    }
+
+    @media (min-width: 840px){
+      .grid{ gap: 14px; }
+      input[type="range"]{ width: 220px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="topRow">
+      <div class="brand">
+        <div>
+          <div class="title">3年理科「電気の通り道」評価記録（iPad）</div>
+          <div class="subtitle">評価入力＋メモ＋写真＋注釈＋OCR（自動保存）</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <select id="studentSelect" aria-label="児童選択"></select>
+        <button class="secondary" id="btnRoster">名簿</button>
+        <button class="secondary" id="btnResetStudent">この児童の記録をリセット</button>
+        <button class="good" id="btnClearCache">画像の整理</button>
+      </div>
+    </div>
+
+    <div class="topRow" style="margin-top:8px;">
+      <span class="pill"><span class="dot"></span>知識・技能</span>
+      <span class="pill"><span class="dot t"></span>思考・判断・表現</span>
+      <span class="pill"><span class="dot a"></span>主体</span>
+      <span class="pill" id="autoSavePill" style="margin-left:auto;">
+        <span class="dot" style="background:var(--good)"></span><span id="saveState">保存済み</span>
+      </span>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="grid" id="cards"></div>
+  </main>
+</div>
+
+<!-- 名簿モーダル -->
+<div class="modalBg" id="modalRosterBg" role="dialog" aria-modal="true" aria-label="名簿">
+  <div class="modal">
+    <div class="modalHead">
+      <h3 class="modalTitle">名簿（端末内保存）</h3>
+      <button class="secondary" id="btnCloseRoster">閉じる</button>
+    </div>
+    <div class="modalBody">
+      <div class="mini">※児童名は端末内に保存されます。授業中に増減してもOK。</div>
+      <div class="row">
+        <input id="newStudentName" type="text" placeholder="児童名を追加（例：1 田中）" />
+        <button class="good" id="btnAddStudent">追加</button>
+      </div>
+      <div class="hr"></div>
+      <div class="list" id="rosterList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 注釈エディタ -->
+<div class="annoBg" id="annoBg" aria-hidden="true">
+  <div class="anno">
+    <div class="annoTop">
+      <div class="left">
+        <button class="secondary" id="btnAnnoClose">戻る</button>
+        <span class="chip" id="annoInfo">注釈</span>
+        <span class="annoHint" id="annoFileHint"></span>
+      </div>
+      <div class="right">
+        <button class="secondary" id="btnUndo">Undo</button>
+        <button class="secondary" id="btnRedo">Redo</button>
+        <button class="danger" id="btnClearAnno">全消し</button>
+        <button class="good" id="btnSaveAnno">保存</button>
+      </div>
+    </div>
+
+    <div class="annoMid" id="annoStage">
+      <canvas id="annoCanvas"></canvas>
+    </div>
+
+    <div class="annoBottom">
+      <div class="left">
+        <button class="toolBtn" data-tool="pen">ペン</button>
+        <button class="toolBtn" data-tool="erase">消しゴム</button>
+        <button class="toolBtn" data-tool="objerase">オブジェクト消し</button>
+        <button class="toolBtn" data-tool="line">直線</button>
+        <button class="toolBtn" data-tool="rect">四角</button>
+        <button class="toolBtn" data-tool="ellipse">円</button>
+        <button class="toolBtn" data-tool="arrow">矢印</button>
+        <button class="toolBtn" data-tool="text">文字</button>
+      </div>
+      <div class="right">
+        <span class="chip">
+          色
+          <input type="color" id="colorPicker" value="#a78bfa" title="色" />
+          <span class="swatches" id="recentSwatches"></span>
+        </span>
+        <span class="chip">
+          太さ
+          <input type="range" id="sizeSlider" min="1" max="40" value="6" />
+          <span id="sizeVal" style="min-width:30px; text-align:right;">6</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OCRモーダル -->
+<div class="ocrBg" id="ocrBg" aria-hidden="true">
+  <div class="ocr">
+    <div class="ocrHead">
+      <div>
+        <h3 class="ocrTitle">OCR（文字起こし）</h3>
+        <div class="mini" id="ocrHint">写真から文字を抽出して、メモ/振り返りに追記できます。</div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+        <button class="secondary" id="btnOcrClose">閉じる</button>
+        <button class="secondary" id="btnOcrCopy">コピー</button>
+        <button class="good" id="btnOcrAppend">追記する</button>
+      </div>
+    </div>
+    <div class="ocrBody">
+      <div class="ocrRow">
+        <span class="pill"><span class="dot" style="background:var(--good)"></span><span id="ocrStatus">準備中</span></span>
+        <span class="mini" id="ocrTargetInfo">—</span>
+      </div>
+      <div class="ocrProgress"><div id="ocrBar"></div></div>
+      <textarea class="ocrText" id="ocrText" placeholder="OCR結果がここに出ます。不要部分を消してから追記もOK。"></textarea>
+      <div class="mini">
+        ※手書きは誤認識もあるので、必要な部分だけ残して追記すると安定します。<br>
+        ※初回はOCRの読み込みで少し時間がかかります（ネット推奨）。
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- OCRライブラリ（初回はネット必要） -->
+<script src="https://unpkg.com/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+/** =========================
+ *  IndexedDB（画像保存）
+ * ========================= */
+const DB_NAME = "rika_eval_tool_v3";
+const DB_VER = 1;
+const STORE_FILES = "files";
+
+function openDB(){
+  return new Promise((resolve, reject)=>{
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = ()=>{
+      const db = req.result;
+      if(!db.objectStoreNames.contains(STORE_FILES)){
+        db.createObjectStore(STORE_FILES, { keyPath: "id" });
+      }
+    };
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function idbPutFile(fileId, blob, meta={}){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(STORE_FILES, "readwrite");
+    tx.objectStore(STORE_FILES).put({ id: fileId, blob, meta, at: Date.now() });
+    tx.oncomplete = ()=> resolve(true);
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function idbGetFile(fileId){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(STORE_FILES, "readonly");
+    const req = tx.objectStore(STORE_FILES).get(fileId);
+    req.onsuccess = ()=> resolve(req.result || null);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+async function idbDeleteFile(fileId){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(STORE_FILES, "readwrite");
+    tx.objectStore(STORE_FILES).delete(fileId);
+    tx.oncomplete = ()=> resolve(true);
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function idbListFiles(){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(STORE_FILES, "readonly");
+    const req = tx.objectStore(STORE_FILES).getAllKeys();
+    req.onsuccess = ()=> resolve(req.result || []);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+
+/** =========================
+ *  データモデル（localStorage）
+ * ========================= */
+const LS_KEY = "rika_eval_state_v3";
+
+const defaultRoster = ["1 児童A","2 児童B","3 児童C","4 児童D","5 児童E","6 児童F"];
+const nowISO = ()=> new Date().toISOString();
+function uid(){ return Math.random().toString(36).slice(2,10) + "_" + Date.now().toString(36); }
+function clampInt(v, min, max){
+  const n = Number(v);
+  if(!Number.isFinite(n)) return min;
+  return Math.max(min, Math.min(max, Math.floor(n)));
+}
+function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
+
+function loadState(){
+  const raw = localStorage.getItem(LS_KEY);
+  if(!raw){
+    const base = {
+      version: 3,
+      createdAt: nowISO(),
+      updatedAt: nowISO(),
+      roster: defaultRoster,
+      activeStudent: defaultRoster[0],
+      students: {},
+      anno: { docs: {}, recentColors: ["#a78bfa","#38bdf8","#fb923c","#34d399","#fbbf24","#fb7185","#ffffff","#000000"] },
+      ocr: { cache: {} } // fileId => { text, at }
+    };
+    saveState(base, true);
+    return base;
+  }
+  try{
+    const s = JSON.parse(raw);
+    if(!s.anno) s.anno = { docs:{}, recentColors:["#a78bfa","#38bdf8","#fb923c","#34d399","#fbbf24","#fb7185","#ffffff","#000000"] };
+    if(!s.anno.docs) s.anno.docs = {};
+    if(!s.anno.recentColors) s.anno.recentColors = ["#a78bfa","#38bdf8","#fb923c","#34d399","#fbbf24","#fb7185","#ffffff","#000000"];
+    if(!s.ocr) s.ocr = { cache:{} };
+    if(!s.ocr.cache) s.ocr.cache = {};
+    return s;
+  }catch{
+    localStorage.removeItem(LS_KEY);
+    return loadState();
+  }
+}
+
+function saveState(state, silent=false){
+  state.updatedAt = nowISO();
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+  if(!silent) showSaved();
+}
+
+let saveTimer = null;
+function scheduleSave(){
+  showSaving();
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=> saveState(APP_STATE), 250);
+}
+
+function ensureStudentData(name){
+  if(!APP_STATE.students[name]){
+    APP_STATE.students[name] = {
+      createdAt: nowISO(),
+      updatedAt: nowISO(),
+      items: {},
+      reflection: [],
+    };
+  }
+  return APP_STATE.students[name];
+}
+function ensureItemData(studentName, itemId){
+  const s = ensureStudentData(studentName);
+  if(!s.items[itemId]){
+    s.items[itemId] = { checks:{}, parts:{}, memo:"", photos:[], select:"" };
+  }
+  return s.items[itemId];
+}
+
+/** =========================
+ *  評価：換算
+ * ========================= */
+function gradeCheck5(score){ if(score>=5) return "A"; if(score===4) return "B+"; if(score===3) return "B"; if(score===2) return "B-"; return "C"; }
+function gradeThink10(score){ if(score>=9) return "A"; if(score>=7) return "B+"; if(score>=4) return "B"; if(score>=3) return "B-"; return "C"; }
+function to3Level(five){ if(five==="A"||five==="B+") return "A"; if(five==="B"||five==="B-") return "B"; return "C"; }
+function gradeLesson7ABC(score10){ if(score10>=8) return "A"; if(score10>=5) return "B"; return "C"; }
+function think15To10(score15){ return Math.round((score15/15)*10); }
+
+/** =========================
+ *  評価項目（確定版）
+ * ========================= */
+const ITEMS = [
+  { id:"t1", domain:"t", title:"第1時｜思考・判断・表現①｜予想：回路図＋理由（10点）", kind:"scoreParts", max:10,
+    rubric:["正解/不正解では評価しない（図と理由の質を見る）","回路図：輪になっている・器具の位置関係（＋−があればなお良い）","理由：『輪』『通り道』『＋−』『接点（金属部分）』などの視点が入るか"],
+    parts:[
+      {key:"loop", label:"回路図：輪になっている", max:3, hint:"途切れず一周する形にできている"},
+      {key:"layout", label:"回路図：器具の位置関係がわかる", max:2, hint:"電池・導線・豆電球がつながるイメージ"},
+      {key:"reason", label:"理由を書いている", max:2, hint:"『〜だから』など理由として成立"},
+      {key:"view", label:"理由に視点語（輪/通り道/＋−/接点など）", max:3, hint:"電気の流れに関係する視点がある"},
+    ]
+  },
+
+  { id:"k2", domain:"k", title:"第2時｜知識・技能①｜回路操作＋理解（チェック5→0〜5点）", kind:"check5",
+    rubric:["2時は『知識・技能』を同時に見取る（知識2項目入り）","達成数（0〜5）→ 5=A / 4=B+ / 3=B / 2=B- / 0-1=C"],
+    checks:[
+      {key:"a", label:"豆電球をソケットにしっかり固定できている（ぐらつかない）"},
+      {key:"b", label:"導線が電池の金属部分（＋/−いずれか）につながっている"},
+      {key:"c", label:"導線が豆電球の金属部分（口金・へそ）につながっている"},
+      {key:"d", label:"回路が一周（輪）になると電気が流れることを説明できる（口頭でも可）"},
+      {key:"e", label:"器具名称（電池・導線・豆電球など）を言える/書ける（完全一致でなくて可）"},
+    ]
+  },
+
+  { id:"t2", domain:"t", title:"第2時｜思考・判断・表現①’｜結果を『つく/つかない』で整理し考察（10点）", kind:"scoreParts", max:10,
+    rubric:["シンキングツールで『つく／つかない』に整理（軽め）","共通点（条件）に少しでも触れられればOK（短くてよい）","換算は思考10点（案①）"],
+    parts:[
+      {key:"sort", label:"ツールに『つく／つかない』で整理できている", max:4, hint:"結果に基づいて分けられている"},
+      {key:"common", label:"ツールから共通点（条件）に触れている", max:3, hint:"例：輪になっている／どこかが切れている 等"},
+      {key:"words", label:"自分の言葉で簡単に考察を書けている", max:3, hint:"1文でもOK（丸写しでない）"},
+    ]
+  },
+
+  { id:"t3", domain:"t", title:"第3時｜思考・判断・表現②｜電気を通すかの予想と理由（10点）", kind:"scoreParts", max:10,
+    rubric:["正解/不正解は見ない（理由の視点を見る）","材質・見た目・触った感じなど、電気と関係づけようとしているか"],
+    parts:[
+      {key:"pred", label:"予想が明確（通す/通さない がはっきり）", max:2, hint:"図・言葉どちらでもOK"},
+      {key:"reason", label:"理由が書けている（理由として成立）", max:2, hint:"『〜だから』など"},
+      {key:"view", label:"理由に材質・性質の視点がある", max:4, hint:"金属/プラ、冷たい、硬い、光っている 等"},
+      {key:"own", label:"自分の考えとして書けている", max:2, hint:"主体が見える（丸写しではない）"},
+    ]
+  },
+
+  { id:"k35", domain:"k", title:"第3〜5時｜知識・技能②｜導通実験の正確な操作（チェック5→0〜5点）", kind:"check5",
+    rubric:["2時より『正確さ』を重視（慣れてきた前提）","達成数（0〜5）→ 5=A / 4=B+ / 3=B / 2=B- / 0-1=C"],
+    checks:[
+      {key:"a", label:"実験前に動作確認をしている（テスター等が反応するか）"},
+      {key:"b", label:"金属部分を意識して当てている（塗装・ビニール部分を避ける）"},
+      {key:"c", label:"条件をそろえて調べている（当て方・場所・力など）"},
+      {key:"d", label:"結果があやしいとき、確かめ直している（1回で決めつけない）"},
+      {key:"e", label:"役割を意識して実験が滞らないように進める（記録とは別）"},
+    ]
+  },
+
+  { id:"a_req", domain:"a", title:"第3〜5時｜主体②｜調べたいものリクエスト数（A/B/C）", kind:"selectABC",
+    rubric:["量を重視（まず出せること）","A：5個以上（追加提案あり） / B：3〜4個 / C：2個以下"],
+    options:["A","B","C"]
+  },
+
+  { id:"t5", domain:"t", title:"第5時｜思考・判断・表現③｜結果→分析→結論（15点・結論重視）", kind:"scoreParts", max:15,
+    rubric:["シンキングツールを『思考の道具』として使えているか","結論に重きを置く（重点配点）","15点→10点換算→思考10点（案①）で評定"],
+    parts:[
+      {key:"sort", label:"結果をシンキングツールに整理できている", max:3, hint:"通す/通さない が結果に基づいて整理されている"},
+      {key:"anl", label:"共通点・違いを分析している", max:4, hint:"『〜は同じ』『〜はちがう』など"},
+      {key:"exp", label:"分析したことを言葉で表現できている", max:3, hint:"短文でもよい（説明になっている）"},
+      {key:"con", label:"【重点】ツールから自分なりの結論を導いている", max:5, hint:"『だから〜と言える』など（完全正解でなくてもOK）"},
+    ],
+  },
+
+  { id:"t7", domain:"t", title:"第7時｜思考・判断・表現④（発展）｜通すはずなのに通らない理由（10点）", kind:"scoreParts", max:10,
+    rubric:["発展的内容：理由説明を中心に見る","専用換算：8–10=A / 5–7=B / 0–4=C（Bが厚い）"],
+    parts:[
+      {key:"pre", label:"本来は通す（中は金属等）の前提がある", max:2, hint:"アルミ/鉄だから 等"},
+      {key:"why", label:"通らない理由を考察している", max:3, hint:"なぜ？を自分なりに説明"},
+      {key:"surf", label:"表面・塗装（コーティング）に注目している", max:3, hint:"表面が電気を通さない等"},
+      {key:"own", label:"自分の言葉で説明できている", max:2, hint:"丸写しでない"},
+    ],
+    extra:{ lesson7:true }
+  },
+
+  { id:"test", domain:"k", title:"第8時｜まとめテスト（任意記録）", kind:"testRecord",
+    rubric:["位置づけ：補強・確認（テストだけで評価を決めない）","点数・答案写真・メモを残せるようにする（任意）"]
+  },
+
+  { id:"a_ref", domain:"a", title:"主体③（通時）｜振り返りの蓄積（ボード）＋総合A/B/C", kind:"reflectionBoard",
+    rubric:["毎時間必須ではない（書けたときに追記）","量や回数を機械的に数えない：単元終盤に総合判断","A：複数回の記録があり学習内容に触れようとする姿が安定 / B：抜けはあるが残そうとしている / C：記録がほとんどない"]
+  },
+
+  { id:"a_class", domain:"a", title:"主体④（通時）｜授業中の様子（安全・学習態度・忘れ物など）総合A/B/C", kind:"selectABC",
+    rubric:["安全配慮・学習に向かう姿勢・忘れ物/準備などを総合判断","一時的な失敗だけでCにしない（改善が見えればBで可）"],
+    options:["A","B","C"]
+  },
+];
+
+/** =========================
+ *  UI共通
+ * ========================= */
+let APP_STATE = loadState();
+let ACTIVE_STUDENT = APP_STATE.activeStudent;
+
+const els = {
+  studentSelect: document.getElementById("studentSelect"),
+  cards: document.getElementById("cards"),
+  saveState: document.getElementById("saveState"),
+  toast: document.getElementById("toast"),
+
+  modalRosterBg: document.getElementById("modalRosterBg"),
+  rosterList: document.getElementById("rosterList"),
+  newStudentName: document.getElementById("newStudentName"),
+  btnRoster: document.getElementById("btnRoster"),
+  btnCloseRoster: document.getElementById("btnCloseRoster"),
+  btnAddStudent: document.getElementById("btnAddStudent"),
+  btnResetStudent: document.getElementById("btnResetStudent"),
+  btnClearCache: document.getElementById("btnClearCache"),
+
+  // anno
+  annoBg: document.getElementById("annoBg"),
+  annoCanvas: document.getElementById("annoCanvas"),
+  annoStage: document.getElementById("annoStage"),
+  btnAnnoClose: document.getElementById("btnAnnoClose"),
+  btnUndo: document.getElementById("btnUndo"),
+  btnRedo: document.getElementById("btnRedo"),
+  btnClearAnno: document.getElementById("btnClearAnno"),
+  btnSaveAnno: document.getElementById("btnSaveAnno"),
+  colorPicker: document.getElementById("colorPicker"),
+  recentSwatches: document.getElementById("recentSwatches"),
+  sizeSlider: document.getElementById("sizeSlider"),
+  sizeVal: document.getElementById("sizeVal"),
+  annoFileHint: document.getElementById("annoFileHint"),
+  annoInfo: document.getElementById("annoInfo"),
+
+  // ocr
+  ocrBg: document.getElementById("ocrBg"),
+  btnOcrClose: document.getElementById("btnOcrClose"),
+  btnOcrCopy: document.getElementById("btnOcrCopy"),
+  btnOcrAppend: document.getElementById("btnOcrAppend"),
+  ocrStatus: document.getElementById("ocrStatus"),
+  ocrBar: document.getElementById("ocrBar"),
+  ocrText: document.getElementById("ocrText"),
+  ocrTargetInfo: document.getElementById("ocrTargetInfo"),
+};
+
+function showToast(msg){
+  els.toast.textContent = msg;
+  els.toast.style.display = "block";
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> els.toast.style.display="none", 1700);
+}
+function showSaving(){ els.saveState.textContent = "保存中…"; }
+function showSaved(){ els.saveState.textContent = "保存済み"; }
+
+function domainClass(d){ return d==="k" ? "k" : (d==="t" ? "t" : "a"); }
+function domainName(d){ return d==="k" ? "知識・技能" : (d==="t" ? "思考・判断・表現" : "主体"); }
+
+function scoreCheck5(studentName, item){
+  const d = ensureItemData(studentName, item.id);
+  let sum = 0;
+  for(const c of item.checks){ if(d.checks[c.key]) sum += 1; }
+  return sum;
+}
+function scoreParts(studentName, item){
+  const d = ensureItemData(studentName, item.id);
+  let sum = 0;
+  for(const p of item.parts){ sum += clampInt(d.parts[p.key] ?? 0, 0, p.max); }
+  return sum;
+}
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+
+function cardBadgeText(studentName, item){
+  if(item.kind==="check5"){
+    const s = scoreCheck5(studentName, item);
+    const g = gradeCheck5(s);
+    return {main: `${s}/5点`, sub: `${g}（${to3Level(g)}）`};
+  }
+  if(item.kind==="scoreParts"){
+    const s = scoreParts(studentName, item);
+    if(item.extra?.lesson7){
+      const g3 = gradeLesson7ABC(s);
+      return {main: `${s}/${item.max}点`, sub: `7時：${g3}`};
+    }
+    if(item.max===15){
+      const s10 = think15To10(s);
+      const g = gradeThink10(s10);
+      return {main: `${s}/15点`, sub: `換算${s10}/10 → ${g}（${to3Level(g)}）`};
+    }
+    const g = gradeThink10(s);
+    return {main: `${s}/${item.max}点`, sub: `${g}（${to3Level(g)}）`};
+  }
+  if(item.kind==="selectABC"){
+    const d = ensureItemData(studentName, item.id);
+    const v = d.select || "—";
+    return {main: `評価：${v}`, sub: "A/B/C"};
+  }
+  if(item.kind==="testRecord"){
+    const d = ensureItemData(studentName, item.id);
+    const v = d.parts?.score ?? "";
+    return {main: v!=="" ? `点：${v}` : "任意", sub: "点数/写真/メモ"};
+  }
+  if(item.kind==="reflectionBoard"){
+    const s = ensureStudentData(studentName);
+    const n = s.reflection?.length || 0;
+    const d = ensureItemData(studentName, item.id);
+    const v = d.select || "—";
+    return {main: `記録：${n}件`, sub: `総合：${v}`};
+  }
+  return {main:"", sub:""};
+}
+
+function makeRubric(item){
+  if(!item.rubric?.length) return null;
+  const det = document.createElement("details");
+  const sum = document.createElement("summary");
+  sum.textContent = "採点基準（タップで開く）";
+  const div = document.createElement("div");
+  div.className = "rubric";
+  div.innerHTML = item.rubric.map(r=>`• ${escapeHtml(r)}`).join("<br>");
+  det.appendChild(sum);
+  det.appendChild(div);
+  return det;
+}
+
+/** =========================
+ *  画像注釈（前回の仕組み）
+ * ========================= */
+function annoGetDoc(fileId){
+  const docs = APP_STATE.anno?.docs || (APP_STATE.anno={docs:{},recentColors:[]}).docs;
+  if(!docs[fileId]){
+    docs[fileId] = { v: 1, fileId, createdAt: nowISO(), updatedAt: nowISO(), objects: [] };
+  }
+  return docs[fileId];
+}
+function annoSaveDoc(doc){
+  doc.updatedAt = nowISO();
+  APP_STATE.anno.docs[doc.fileId] = doc;
+  scheduleSave();
+}
+function annoHas(fileId){
+  const d = APP_STATE.anno?.docs?.[fileId];
+  return !!(d && d.objects && d.objects.length);
+}
+function addRecentColor(hex){
+  if(!hex) return;
+  hex = hex.toLowerCase();
+  const list = APP_STATE.anno.recentColors || [];
+  const next = [hex, ...list.filter(x=>x.toLowerCase()!==hex)].slice(0, 12);
+  APP_STATE.anno.recentColors = next;
+  scheduleSave();
+  renderRecentSwatches();
+}
+
+/** =========================
+ *  注釈エディタ（簡略：前回実装をそのまま）
+ *  ※OCR追加が目的なので、ここは前回と同等の動き
+ * ========================= */
+const ANNO = {
+  open:false, fileId:"", studentName:"", itemId:"", mode:"", refId:"",
+  img:null, imgW:0, imgH:0,
+  canvas:null, ctx:null,
+  scale:1, offsetX:0, offsetY:0,
+  tool:"pen", color:"#a78bfa", size:6,
+  isDown:false, start:null, curStroke:null, curShape:null,
+  doc:null, history:[], redo:[]
+};
+
+function fitToStage(imgW, imgH, stageW, stageH){
+  const s = Math.min(stageW / imgW, stageH / imgH);
+  const drawW = imgW * s;
+  const drawH = imgH * s;
+  const ox = (stageW - drawW) / 2;
+  const oy = (stageH - drawH) / 2;
+  return {scale:s, offsetX:ox, offsetY:oy, drawW, drawH};
+}
+function stageToImage(x, y){
+  const ix = (x - ANNO.offsetX) / ANNO.scale;
+  const iy = (y - ANNO.offsetY) / ANNO.scale;
+  return {x: ix, y: iy};
+}
+function pushHistory(){
+  ANNO.history.push(JSON.stringify(ANNO.doc.objects));
+  if(ANNO.history.length > 80) ANNO.history.shift();
+  ANNO.redo = [];
+}
+function undo(){
+  if(!ANNO.history.length) return;
+  ANNO.redo.push(JSON.stringify(ANNO.doc.objects));
+  const prev = ANNO.history.pop();
+  ANNO.doc.objects = JSON.parse(prev);
+  redraw();
+}
+function redo(){
+  if(!ANNO.redo.length) return;
+  ANNO.history.push(JSON.stringify(ANNO.doc.objects));
+  const next = ANNO.redo.pop();
+  ANNO.doc.objects = JSON.parse(next);
+  redraw();
+}
+function drawStroke(ctx, obj){
+  const pts = obj.points || [];
+  if(pts.length < 2) return;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.lineWidth = obj.size || 6;
+  ctx.strokeStyle = obj.color || "#a78bfa";
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
+  ctx.stroke();
+}
+function drawLine(ctx, obj){
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.lineWidth = obj.size || 6;
+  ctx.strokeStyle = obj.color || "#a78bfa";
+  ctx.beginPath();
+  ctx.moveTo(obj.x1, obj.y1);
+  ctx.lineTo(obj.x2, obj.y2);
+  ctx.stroke();
+}
+function drawRect(ctx, obj){
+  ctx.lineWidth = obj.size || 6;
+  ctx.strokeStyle = obj.color || "#a78bfa";
+  const x = Math.min(obj.x1,obj.x2), y = Math.min(obj.y1,obj.y2);
+  const w = Math.abs(obj.x2-obj.x1), h = Math.abs(obj.y2-obj.y1);
+  ctx.strokeRect(x,y,w,h);
+}
+function drawEllipse(ctx, obj){
+  ctx.lineWidth = obj.size || 6;
+  ctx.strokeStyle = obj.color || "#a78bfa";
+  const x1=obj.x1,y1=obj.y1,x2=obj.x2,y2=obj.y2;
+  const cx = (x1+x2)/2, cy=(y1+y2)/2;
+  const rx = Math.abs(x2-x1)/2, ry=Math.abs(y2-y1)/2;
+  ctx.beginPath();
+  ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);
+  ctx.stroke();
+}
+function drawArrow(ctx, obj){
+  const {x1,y1,x2,y2} = obj;
+  const size = obj.size || 6;
+  ctx.lineWidth = size;
+  ctx.strokeStyle = obj.color || "#a78bfa";
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(x1,y1);
+  ctx.lineTo(x2,y2);
+  ctx.stroke();
+
+  const ang = Math.atan2(y2-y1, x2-x1);
+  const headLen = Math.max(10, size*3);
+  const a1 = ang + Math.PI * 0.85;
+  const a2 = ang - Math.PI * 0.85;
+  const hx1 = x2 + headLen*Math.cos(a1);
+  const hy1 = y2 + headLen*Math.sin(a1);
+  const hx2 = x2 + headLen*Math.cos(a2);
+  const hy2 = y2 + headLen*Math.sin(a2);
+
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(hx1,hy1);
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(hx2,hy2);
+  ctx.stroke();
+}
+function drawText(ctx, obj){
+  ctx.fillStyle = obj.color || "#ffffff";
+  ctx.font = `${obj.size||22}px system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif`;
+  ctx.textBaseline = "top";
+  ctx.fillText(obj.text || "", obj.x, obj.y);
+}
+
+function redraw(){
+  if(!ANNO.open) return;
+  const canvas = ANNO.canvas;
+  const ctx = ANNO.ctx;
+  if(!canvas || !ctx || !ANNO.img) return;
+
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.setTransform(ANNO.scale,0,0,ANNO.scale,ANNO.offsetX,ANNO.offsetY);
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(ANNO.img, 0,0);
+
+  const objs = ANNO.doc.objects || [];
+  for(const obj of objs){
+    if(obj.type==="erase"){
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-out";
+      drawStroke(ctx, obj);
+      ctx.restore();
+    }else if(obj.type==="stroke"){
+      drawStroke(ctx, obj);
+    }else if(obj.type==="line"){
+      drawLine(ctx, obj);
+    }else if(obj.type==="rect"){
+      drawRect(ctx, obj);
+    }else if(obj.type==="ellipse"){
+      drawEllipse(ctx, obj);
+    }else if(obj.type==="arrow"){
+      drawArrow(ctx, obj);
+    }else if(obj.type==="text"){
+      drawText(ctx, obj);
+    }
+  }
+
+  if(ANNO.curStroke){
+    const obj = ANNO.curStroke;
+    if(obj.type==="erase"){
+      ctx.save(); ctx.globalCompositeOperation="destination-out";
+      drawStroke(ctx,obj);
+      ctx.restore();
+    }else{
+      drawStroke(ctx,obj);
+    }
+  }
+  if(ANNO.curShape){
+    const obj = ANNO.curShape;
+    if(obj.type==="line") drawLine(ctx,obj);
+    if(obj.type==="rect") drawRect(ctx,obj);
+    if(obj.type==="ellipse") drawEllipse(ctx,obj);
+    if(obj.type==="arrow") drawArrow(ctx,obj);
+  }
+}
+
+function setToolUI(tool){
+  ANNO.tool = tool;
+  document.querySelectorAll(".toolBtn[data-tool]").forEach(b=>{
+    b.classList.toggle("active", b.dataset.tool === tool);
+  });
+}
+function renderRecentSwatches(){
+  els.recentSwatches.innerHTML = "";
+  const colors = (APP_STATE.anno?.recentColors || []).slice(0, 12);
+  for(const c of colors){
+    const d = document.createElement("div");
+    d.className = "sw";
+    d.style.background = c;
+    d.title = c;
+    d.addEventListener("click", ()=>{
+      ANNO.color = c;
+      els.colorPicker.value = c;
+      addRecentColor(c);
+    });
+    els.recentSwatches.appendChild(d);
+  }
+}
+
+async function openAnnoEditor({fileId, studentName, itemId, mode, refId}){
+  const rec = await idbGetFile(fileId);
+  if(!rec?.blob){ showToast("画像が見つからない…"); return; }
+
+  const url = URL.createObjectURL(rec.blob);
+  const img = new Image();
+  img.decoding = "async";
+  await new Promise((resolve, reject)=>{
+    img.onload = ()=> resolve(true);
+    img.onerror = reject;
+    img.src = url;
+  });
+  URL.revokeObjectURL(url);
+
+  ANNO.open = true;
+  ANNO.fileId = fileId;
+  ANNO.studentName = studentName;
+  ANNO.itemId = itemId;
+  ANNO.mode = mode;
+  ANNO.refId = refId || "";
+  ANNO.img = img;
+  ANNO.imgW = img.naturalWidth || img.width;
+  ANNO.imgH = img.naturalHeight || img.height;
+
+  ANNO.doc = deepClone(annoGetDoc(fileId));
+  ANNO.history = [];
+  ANNO.redo = [];
+
+  const stage = els.annoStage;
+  const rect = stage.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  els.annoCanvas.width = Math.floor(rect.width * dpr);
+  els.annoCanvas.height = Math.floor(rect.height * dpr);
+  ANNO.canvas = els.annoCanvas;
+  ANNO.ctx = ANNO.canvas.getContext("2d");
+
+  const fit = fitToStage(ANNO.imgW, ANNO.imgH, rect.width, rect.height);
+  ANNO.scale = fit.scale * dpr;
+  ANNO.offsetX = fit.offsetX * dpr;
+  ANNO.offsetY = fit.offsetY * dpr;
+
+  setToolUI("pen");
+  els.annoBg.style.display = "block";
+  els.annoBg.setAttribute("aria-hidden","false");
+  els.annoFileHint.textContent = `（写真ID：${fileId.slice(0,18)}…）`;
+  els.annoInfo.textContent = `注釈：${studentName}`;
+
+  renderRecentSwatches();
+  redraw();
+}
+function closeAnnoEditor(save=true){
+  if(!ANNO.open) return;
+  if(save) annoSaveDoc(ANNO.doc);
+  ANNO.open = false;
+  ANNO.fileId = "";
+  ANNO.img = null;
+  ANNO.doc = null;
+  ANNO.history = [];
+  ANNO.redo = [];
+  els.annoBg.style.display = "none";
+  els.annoBg.setAttribute("aria-hidden","true");
+  renderCards();
+}
+
+function getPointerPos(e){
+  const rect = els.annoCanvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const x = (e.clientX - rect.left) * dpr;
+  const y = (e.clientY - rect.top) * dpr;
+  return {x,y};
+}
+function beginDraw(e){
+  if(!ANNO.open) return;
+  e.preventDefault();
+  const p = getPointerPos(e);
+  const ip = stageToImage(p.x, p.y);
+
+  if(ANNO.tool === "text"){
+    const txt = prompt("文字を入力（短くてOK）","");
+    if(txt === null) return;
+    const size = clampInt(prompt("文字サイズ（例：22）","22"), 10, 120);
+    pushHistory();
+    ANNO.doc.objects.push({ id: uid(), type:"text", color: ANNO.color, size, x: ip.x, y: ip.y, text: txt });
+    redraw();
+    return;
+  }
+
+  ANNO.isDown = true;
+
+  if(ANNO.tool === "pen" || ANNO.tool === "erase"){
+    ANNO.curStroke = {
+      id: uid(),
+      type: ANNO.tool === "erase" ? "erase" : "stroke",
+      color: ANNO.color,
+      size: ANNO.size,
+      points: [{x: ip.x, y: ip.y}]
+    };
+    redraw();
+    return;
+  }
+
+  if(["line","rect","ellipse","arrow"].includes(ANNO.tool)){
+    ANNO.curShape = { id: uid(), type: ANNO.tool, color: ANNO.color, size: ANNO.size, x1: ip.x, y1: ip.y, x2: ip.x, y2: ip.y };
+    redraw();
+    return;
+  }
+}
+function moveDraw(e){
+  if(!ANNO.open || !ANNO.isDown) return;
+  e.preventDefault();
+  const p = getPointerPos(e);
+  const ip = stageToImage(p.x, p.y);
+
+  if(ANNO.curStroke){
+    ANNO.curStroke.points.push({x: ip.x, y: ip.y});
+    redraw();
+    return;
+  }
+  if(ANNO.curShape){
+    ANNO.curShape.x2 = ip.x;
+    ANNO.curShape.y2 = ip.y;
+    redraw();
+    return;
+  }
+}
+function endDraw(e){
+  if(!ANNO.open || !ANNO.isDown) return;
+  e.preventDefault();
+  ANNO.isDown = false;
+
+  if(ANNO.curStroke){
+    pushHistory();
+    ANNO.doc.objects.push(ANNO.curStroke);
+    ANNO.curStroke = null;
+    redraw();
+    return;
+  }
+  if(ANNO.curShape){
+    pushHistory();
+    ANNO.doc.objects.push(ANNO.curShape);
+    ANNO.curShape = null;
+    redraw();
+    return;
+  }
+}
+
+/** =========================
+ *  OCR：Tesseract.js（端末内処理）
+ * ========================= */
+const OCR = {
+  worker: null,
+  busy: false,
+  context: null, // { fileId, studentName, itemId, mode, refId, targetKind }
+};
+
+function setOcrUI({status, progress=null, text=null, targetInfo=null}){
+  if(status != null) els.ocrStatus.textContent = status;
+  if(progress != null){
+    const pct = Math.max(0, Math.min(100, Math.round(progress*100)));
+    els.ocrBar.style.width = pct + "%";
+  }
+  if(text != null) els.ocrText.value = text;
+  if(targetInfo != null) els.ocrTargetInfo.textContent = targetInfo;
+}
+
+function openOcrModal(ctx){
+  OCR.context = ctx;
+  els.ocrBg.style.display = "flex";
+  els.ocrBg.setAttribute("aria-hidden","false");
+  els.ocrText.value = "";
+  setOcrUI({status:"準備中", progress:0, targetInfo: ctx.targetInfo});
+}
+function closeOcrModal(){
+  els.ocrBg.style.display = "none";
+  els.ocrBg.setAttribute("aria-hidden","true");
+  OCR.context = null;
+}
+
+function getCachedOcr(fileId){
+  const c = APP_STATE.ocr?.cache?.[fileId];
+  return c?.text ? c.text : null;
+}
+function setCachedOcr(fileId, text){
+  if(!APP_STATE.ocr) APP_STATE.ocr = { cache:{} };
+  if(!APP_STATE.ocr.cache) APP_STATE.ocr.cache = {};
+  APP_STATE.ocr.cache[fileId] = { text, at: Date.now() };
+  scheduleSave();
+}
+
+async function ensureWorker(){
+  if(OCR.worker) return OCR.worker;
+  if(!window.Tesseract){
+    throw new Error("Tesseract.jsの読み込みに失敗しました（ネット接続を確認）");
+  }
+  // 日本語+英数字
+  const worker = await Tesseract.createWorker("jpn+eng", 1, {
+    logger: m => {
+      if(m?.status === "recognizing text"){
+        setOcrUI({ status:"解析中…", progress: m.progress ?? null });
+      }
+    }
+  });
+  OCR.worker = worker;
+  return worker;
+}
+
+async function runOcrFromFileId(fileId){
+  const cached = getCachedOcr(fileId);
+  if(cached) return { text: cached, cached:true };
+
+  const rec = await idbGetFile(fileId);
+  if(!rec?.blob) throw new Error("画像が見つかりません");
+
+  const worker = await ensureWorker();
+  setOcrUI({ status:"読み込み中…", progress:0.02 });
+
+  // Blob -> ImageBitmap でも可だがSafari互換でURL経由
+  const url = URL.createObjectURL(rec.blob);
+  try{
+    const { data } = await worker.recognize(url);
+    const text = (data?.text || "").trim();
+    setCachedOcr(fileId, text);
+    return { text, cached:false };
+  }finally{
+    URL.revokeObjectURL(url);
+  }
+}
+
+function appendToMemoOrReflection(ctx, text){
+  const add = (text || "").trim();
+  if(!add){ showToast("追記する文字がない…"); return; }
+
+  // item: メモ欄へ / reflection: 振り返り欄へ
+  if(ctx.mode === "item"){
+    const itemId = ctx.itemId;
+    const d = ensureItemData(ctx.studentName, itemId);
+    const prefix = `\n[OCR ${new Date().toLocaleString("ja-JP")}] `;
+    d.memo = (d.memo || "") + prefix + add + "\n";
+    scheduleSave();
+    renderCards();
+    showToast("メモ欄に追記した");
+    return;
+  }
+
+  if(ctx.mode === "reflection"){
+    const s = ensureStudentData(ctx.studentName);
+    const ent = (s.reflection || []).find(x=>x.id===ctx.refId);
+    if(ent){
+      const prefix = `\n[OCR ${new Date().toLocaleString("ja-JP")}] `;
+      ent.text = (ent.text || "") + prefix + add + "\n";
+      scheduleSave();
+      renderCards();
+      showToast("振り返りに追記した");
+      return;
+    }
+    showToast("追記先の振り返りが見つからない…");
+  }
+}
+
+/** =========================
+ *  カード描画（UI本体）
+ * ========================= */
+function renderStudentSelect(){
+  const roster = APP_STATE.roster || [];
+  if(!roster.length) APP_STATE.roster = deepClone(defaultRoster);
+  els.studentSelect.innerHTML = "";
+  for(const n of APP_STATE.roster){
+    const opt = document.createElement("option");
+    opt.value = n;
+    opt.textContent = n;
+    els.studentSelect.appendChild(opt);
+  }
+  if(!APP_STATE.roster.includes(ACTIVE_STUDENT)){
+    ACTIVE_STUDENT = APP_STATE.roster[0];
+    APP_STATE.activeStudent = ACTIVE_STUDENT;
+    scheduleSave();
+  }
+  els.studentSelect.value = ACTIVE_STUDENT;
+}
+
+function renderCards(){
+  els.cards.innerHTML = "";
+  const studentName = ACTIVE_STUDENT;
+  ensureStudentData(studentName);
+
+  for(const item of ITEMS){
+    const card = document.createElement("section");
+    card.className = "card";
+
+    const head = document.createElement("div");
+    head.className = "cardHead";
+
+    const left = document.createElement("div");
+    const h = document.createElement("h3");
+    h.className = "cardTitle";
+    h.textContent = item.title;
+    const meta = document.createElement("div");
+    meta.className = "cardMeta";
+    meta.innerHTML = `<span class="sectionLabel ${domainClass(item.domain)}Label">${domainName(item.domain)}</span>`;
+    left.appendChild(h);
+    left.appendChild(meta);
+
+    const badge = document.createElement("div");
+    badge.className = `badge ${domainClass(item.domain)}`;
+    const b = cardBadgeText(studentName, item);
+    badge.innerHTML = `<span>${escapeHtml(b.main)}</span><span class="small">${escapeHtml(b.sub)}</span>`;
+
+    head.appendChild(left);
+    head.appendChild(badge);
+
+    const body = document.createElement("div");
+    body.className = "cardBody";
+
+    const rub = makeRubric(item);
+    if(rub) body.appendChild(rub);
+
+    if(item.kind==="check5"){
+      const list = document.createElement("div");
+      list.className = "checkList";
+      const d = ensureItemData(studentName, item.id);
+      for(const c of item.checks){
+        const row = document.createElement("label");
+        row.className = "checkItem";
+        const checked = !!d.checks[c.key];
+        row.innerHTML = `
+          <input type="checkbox" data-item="${item.id}" data-ck="${c.key}" ${checked ? "checked":""} />
+          <div><div class="checkText">${escapeHtml(c.label)}</div></div>
+        `;
+        list.appendChild(row);
+      }
+      body.appendChild(list);
+    }
+
+    if(item.kind==="scoreParts"){
+      const d = ensureItemData(studentName, item.id);
+      const parts = document.createElement("div");
+      parts.className = "parts";
+      for(const p of item.parts){
+        const v = clampInt(d.parts[p.key] ?? 0, 0, p.max);
+        const row = document.createElement("div");
+        row.className = "partRow";
+        row.innerHTML = `
+          <div class="partText">
+            <div class="partLabel">${escapeHtml(p.label)}</div>
+            <div class="partHint">0〜${p.max}点｜${escapeHtml(p.hint || "")}</div>
+          </div>
+          <input type="number" inputmode="numeric" min="0" max="${p.max}"
+                 value="${v}"
+                 data-item="${item.id}" data-part="${p.key}" data-max="${p.max}" />
+        `;
+        parts.appendChild(row);
+      }
+      body.appendChild(parts);
+
+      if(item.max===15){
+        const s15 = scoreParts(studentName, item);
+        const s10 = think15To10(s15);
+        const g = gradeThink10(s10);
+        const info = document.createElement("div");
+        info.className = "mini";
+        info.textContent = `換算：${s15}/15 → ${s10}/10 → ${g}（3段階${to3Level(g)}）`;
+        body.appendChild(info);
+      }
+      if(item.extra?.lesson7){
+        const s = scoreParts(studentName, item);
+        const g = gradeLesson7ABC(s);
+        const info = document.createElement("div");
+        info.className = "mini";
+        info.textContent = `7時専用換算：${s}/10 → ${g}`;
+        body.appendChild(info);
+      }
+    }
+
+    if(item.kind==="selectABC"){
+      const d = ensureItemData(studentName, item.id);
+      const sel = document.createElement("select");
+      sel.dataset.item = item.id;
+      sel.dataset.select = "1";
+      sel.innerHTML = `<option value="">— 選択 —</option>` + item.options.map(o=>`<option value="${o}">${o}</option>`).join("");
+      sel.value = d.select || "";
+      body.appendChild(sel);
+    }
+
+    if(item.kind==="testRecord"){
+      const d = ensureItemData(studentName, item.id);
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="mini">点数（任意）</div>
+        <input type="number" inputmode="numeric" min="0" max="100"
+               style="width:120px;"
+               data-item="${item.id}" data-part="score" data-max="100"
+               value="${escapeHtml(d.parts?.score ?? "")}">
+      `;
+      body.appendChild(row);
+    }
+
+    if(item.kind==="reflectionBoard"){
+      const s = ensureStudentData(studentName);
+
+      const btnRow = document.createElement("div");
+      btnRow.className = "row";
+      btnRow.innerHTML = `
+        <div class="mini">振り返りは「書けたときに追記」でOK（固定枠なし）</div>
+        <button class="good" data-add-ref="1">＋ 振り返りを追加</button>
+      `;
+      body.appendChild(btnRow);
+
+      const list = document.createElement("div");
+      list.className = "photoArea";
+      const entries = (s.reflection || []);
+      if(entries.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "mini";
+        empty.textContent = "まだ記録がありません。";
+        list.appendChild(empty);
+      }else{
+        for(const ent of entries.slice().reverse()){
+          const box = document.createElement("div");
+          box.className = "card";
+          box.style.boxShadow = "none";
+          box.style.background = "rgba(2,6,23,.22)";
+          box.style.borderRadius = "16px";
+
+          const hd = document.createElement("div");
+          hd.className = "cardHead";
+          hd.style.borderBottom = "1px solid var(--line)";
+          hd.style.padding = "10px 10px 8px";
+          const dt = new Date(ent.at || Date.now());
+          const label = dt.toLocaleString("ja-JP", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+          hd.innerHTML = `
+            <div>
+              <div class="cardTitle" style="font-size:14px;">${escapeHtml(label)}</div>
+              <div class="mini">振り返りID：${escapeHtml(ent.id)}</div>
+            </div>
+            <button class="danger" data-del-ref="${escapeHtml(ent.id)}">削除</button>
+          `;
+          const bd = document.createElement("div");
+          bd.className = "cardBody";
+          bd.style.padding = "10px";
+
+          const ta = document.createElement("textarea");
+          ta.placeholder = "ここに振り返りを追記（短文でOK）";
+          ta.dataset.refText = ent.id;
+          ta.value = ent.text || "";
+          bd.appendChild(ta);
+
+          bd.appendChild(makePhotoBlock({
+            studentName,
+            itemId: item.id,
+            mode: "reflection",
+            refId: ent.id,
+            photoIds: ent.photos || []
+          }));
+
+          box.appendChild(hd);
+          box.appendChild(bd);
+          list.appendChild(box);
+        }
+      }
+      body.appendChild(list);
+
+      const d = ensureItemData(studentName, item.id);
+      const sel = document.createElement("select");
+      sel.dataset.item = item.id;
+      sel.dataset.select = "1";
+      sel.innerHTML = `<option value="">— 総合評価（A/B/C）—</option><option value="A">A</option><option value="B">B</option><option value="C">C</option>`;
+      sel.value = d.select || "";
+      body.appendChild(sel);
+    }
+
+    if(item.kind !== "reflectionBoard"){
+      const d = ensureItemData(studentName, item.id);
+
+      const memoLabel = document.createElement("div");
+      memoLabel.className = "mini";
+      memoLabel.textContent = "メモ（根拠・気づき・支援など）";
+      body.appendChild(memoLabel);
+
+      const memo = document.createElement("textarea");
+      memo.placeholder = "例：接点が甘い／極を意識できた／説明が具体…など";
+      memo.dataset.item = item.id;
+      memo.dataset.memo = "1";
+      memo.value = d.memo || "";
+      body.appendChild(memo);
+
+      body.appendChild(makePhotoBlock({
+        studentName,
+        itemId: item.id,
+        mode: "item",
+        photoIds: d.photos || []
+      }));
+    }
+
+    card.appendChild(head);
+    card.appendChild(body);
+    els.cards.appendChild(card);
+  }
+}
+
+function makePhotoBlock({studentName, itemId, mode, photoIds, refId}){
+  const wrap = document.createElement("div");
+  wrap.className = "photoArea";
+
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `
+    <div class="mini">写真（無制限）｜サムネタップ＝注釈／左上OCR</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+      <label style="display:inline-flex; gap:8px; align-items:center;">
+        <input type="file" accept="image/*" multiple style="display:none"
+               data-photoadd="1"
+               data-mode="${escapeHtml(mode)}"
+               data-item="${escapeHtml(itemId)}"
+               ${refId ? `data-ref="${escapeHtml(refId)}"` : ""}>
+        <button class="secondary" type="button">＋ 写真を追加</button>
+      </label>
+    </div>
+  `;
+  wrap.appendChild(row);
+
+  const thumbs = document.createElement("div");
+  thumbs.className = "thumbs";
+
+  (photoIds || []).forEach(fid=>{
+    const th = document.createElement("div");
+    th.className = "thumb";
+    th.innerHTML = `
+      <img alt="photo" data-photoimg="${escapeHtml(fid)}" data-open-anno="1"
+           data-item="${escapeHtml(itemId)}"
+           data-mode="${escapeHtml(mode)}"
+           ${refId ? `data-ref="${escapeHtml(refId)}"` : ""}>
+      <div class="tag" data-ann-tag="${escapeHtml(fid)}" style="display:none;">注釈</div>
+      <div class="tag" data-ocr-tag="${escapeHtml(fid)}" style="left:auto; right:6px; bottom:6px; display:none;">OCR</div>
+
+      <button type="button" class="ocrBtn"
+              data-ocr="1" data-photoid="${escapeHtml(fid)}"
+              data-mode="${escapeHtml(mode)}"
+              data-item="${escapeHtml(itemId)}"
+              ${refId ? `data-ref="${escapeHtml(refId)}"` : ""}>OCR</button>
+
+      <button type="button" data-photodel="${escapeHtml(fid)}"
+              data-mode="${escapeHtml(mode)}"
+              data-item="${escapeHtml(itemId)}"
+              ${refId ? `data-ref="${escapeHtml(refId)}"` : ""}>削除</button>
+    `;
+    thumbs.appendChild(th);
+  });
+
+  wrap.appendChild(thumbs);
+  setTimeout(()=> hydrateThumbs(thumbs), 0);
+  return wrap;
+}
+
+async function hydrateThumbs(container){
+  const imgs = container.querySelectorAll("img[data-photoimg]");
+  for(const img of imgs){
+    const fid = img.dataset.photoimg;
+    const rec = await idbGetFile(fid);
+    if(!rec?.blob) continue;
+    const url = URL.createObjectURL(rec.blob);
+    img.src = url;
+    img.onload = ()=> URL.revokeObjectURL(url);
+
+    const tagA = container.querySelector(`div[data-ann-tag="${CSS.escape(fid)}"]`);
+    if(tagA) tagA.style.display = annoHas(fid) ? "inline-flex" : "none";
+
+    const tagO = container.querySelector(`div[data-ocr-tag="${CSS.escape(fid)}"]`);
+    if(tagO) tagO.style.display = getCachedOcr(fid) ? "inline-flex" : "none";
+  }
+}
+
+/** =========================
+ *  名簿＆整理
+ * ========================= */
+function openRosterModal(){ renderRosterList(); els.modalRosterBg.style.display = "flex"; els.newStudentName.focus(); }
+function closeRosterModal(){ els.modalRosterBg.style.display = "none"; }
+function renderRosterList(){
+  els.rosterList.innerHTML = "";
+  for(const name of APP_STATE.roster){
+    const li = document.createElement("div");
+    li.className = "listItem";
+    li.innerHTML = `
+      <div class="name">${escapeHtml(name)}</div>
+      <div class="actions">
+        <button class="secondary" data-set-active="${escapeHtml(name)}">選択</button>
+        <button class="danger" data-del-student="${escapeHtml(name)}">削除</button>
+      </div>
+    `;
+    els.rosterList.appendChild(li);
+  }
+  els.rosterList.querySelectorAll("button[data-set-active]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      ACTIVE_STUDENT = btn.dataset.setActive;
+      APP_STATE.activeStudent = ACTIVE_STUDENT;
+      scheduleSave();
+      renderStudentSelect();
+      renderCards();
+      showToast("切り替えた");
+    });
+  });
+  els.rosterList.querySelectorAll("button[data-del-student]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const name = btn.dataset.delStudent;
+      if(!confirm(`「${name}」を名簿から削除します。記録も消えます。OK？`)) return;
+
+      (async()=>{
+        const s = APP_STATE.students[name];
+        if(s){
+          const ids = collectAllPhotoIdsForStudent(s);
+          for(const fid of ids){ await idbDeleteFile(fid); }
+          delete APP_STATE.students[name];
+        }
+        APP_STATE.roster = APP_STATE.roster.filter(x=>x!==name);
+        if(ACTIVE_STUDENT === name){
+          ACTIVE_STUDENT = APP_STATE.roster[0] || "";
+          APP_STATE.activeStudent = ACTIVE_STUDENT;
+        }
+        scheduleSave();
+        renderStudentSelect();
+        renderRosterList();
+        renderCards();
+        showToast("削除した");
+      })();
+    });
+  });
+}
+function collectAllPhotoIdsForStudent(studentData){
+  const set = new Set();
+  for(const itemId in (studentData.items || {})){
+    const it = studentData.items[itemId];
+    (it.photos || []).forEach(id=>set.add(id));
+  }
+  for(const ent of (studentData.reflection || [])){
+    (ent.photos || []).forEach(id=>set.add(id));
+  }
+  return Array.from(set);
+}
+function collectAllUsedFileIds(){
+  const used = new Set();
+  const students = APP_STATE.students || {};
+  for(const name in students){
+    const s = students[name];
+    collectAllPhotoIdsForStudent(s).forEach(id=>used.add(id));
+  }
+  return used;
+}
+
+/** =========================
+ *  イベント
+ * ========================= */
+function bindEvents(){
+  els.studentSelect.addEventListener("change", ()=>{
+    ACTIVE_STUDENT = els.studentSelect.value;
+    APP_STATE.activeStudent = ACTIVE_STUDENT;
+    scheduleSave();
+    renderCards();
+  });
+
+  els.btnRoster.addEventListener("click", openRosterModal);
+  els.btnCloseRoster.addEventListener("click", closeRosterModal);
+  els.modalRosterBg.addEventListener("click", (e)=>{ if(e.target === els.modalRosterBg) closeRosterModal(); });
+
+  els.btnAddStudent.addEventListener("click", ()=>{
+    const name = els.newStudentName.value.trim();
+    if(!name) return;
+    if(APP_STATE.roster.includes(name)){ showToast("同名があるよ"); return; }
+    APP_STATE.roster.push(name);
+    els.newStudentName.value = "";
+    scheduleSave();
+    renderStudentSelect();
+    renderRosterList();
+    showToast("追加した！");
+  });
+
+  els.btnResetStudent.addEventListener("click", ()=>{
+    const name = ACTIVE_STUDENT;
+    if(!name) return;
+    if(!confirm(`「${name}」の記録をリセットします。写真も含めて消えます。OK？`)) return;
+    (async()=>{
+      const s = ensureStudentData(name);
+      const all = collectAllPhotoIdsForStudent(s);
+      for(const fid of all){ await idbDeleteFile(fid); }
+      delete APP_STATE.students[name];
+      scheduleSave();
+      renderCards();
+      showToast("リセット完了");
+    })();
+  });
+
+  els.btnClearCache.addEventListener("click", ()=>{
+    (async()=>{
+      const used = collectAllUsedFileIds();
+      const all = await idbListFiles();
+      let removed = 0;
+      for(const id of all){
+        if(!used.has(id)){
+          await idbDeleteFile(id);
+          if(APP_STATE.anno?.docs?.[id]) delete APP_STATE.anno.docs[id];
+          if(APP_STATE.ocr?.cache?.[id]) delete APP_STATE.ocr.cache[id];
+          removed++;
+        }
+      }
+      scheduleSave();
+      showToast(`未使用画像を${removed}件削除`);
+      renderCards();
+    })();
+  });
+
+  // 注釈
+  els.btnAnnoClose.addEventListener("click", ()=> closeAnnoEditor(true));
+  els.btnSaveAnno.addEventListener("click", ()=>{ annoSaveDoc(ANNO.doc); showToast("注釈を保存"); renderCards(); });
+  els.btnUndo.addEventListener("click", undo);
+  els.btnRedo.addEventListener("click", redo);
+  els.btnClearAnno.addEventListener("click", ()=>{
+    if(!confirm("注釈をすべて消します。OK？")) return;
+    pushHistory();
+    ANNO.doc.objects = [];
+    redraw();
+  });
+
+  document.querySelectorAll(".toolBtn[data-tool]").forEach(btn=>{
+    btn.addEventListener("click", ()=> setToolUI(btn.dataset.tool));
+  });
+
+  els.colorPicker.addEventListener("input", ()=>{
+    ANNO.color = els.colorPicker.value;
+    addRecentColor(ANNO.color);
+  });
+  els.sizeSlider.addEventListener("input", ()=>{
+    ANNO.size = clampInt(els.sizeSlider.value, 1, 40);
+    els.sizeVal.textContent = String(ANNO.size);
+  });
+
+  // pointer for anno
+  els.annoCanvas.addEventListener("pointerdown", (e)=>{ els.annoCanvas.setPointerCapture(e.pointerId); beginDraw(e); });
+  els.annoCanvas.addEventListener("pointermove", moveDraw);
+  els.annoCanvas.addEventListener("pointerup", endDraw);
+  els.annoCanvas.addEventListener("pointercancel", endDraw);
+
+  // OCRモーダル
+  els.btnOcrClose.addEventListener("click", closeOcrModal);
+  els.ocrBg.addEventListener("click", (e)=>{ if(e.target === els.ocrBg) closeOcrModal(); });
+
+  els.btnOcrCopy.addEventListener("click", async ()=>{
+    const txt = els.ocrText.value || "";
+    try{
+      await navigator.clipboard.writeText(txt);
+      showToast("コピーした");
+    }catch{
+      // iOSで失敗することがあるので選択させる
+      els.ocrText.focus();
+      els.ocrText.select();
+      showToast("選択した（手動コピーOK）");
+    }
+  });
+
+  els.btnOcrAppend.addEventListener("click", ()=>{
+    if(!OCR.context) return;
+    appendToMemoOrReflection(OCR.context, els.ocrText.value);
+  });
+
+  // 入力系（カード）
+  document.addEventListener("change", async (e)=>{
+    const t = e.target;
+
+    if(t.matches('input[type="checkbox"][data-item][data-ck]')){
+      const itemId = t.dataset.item;
+      const ck = t.dataset.ck;
+      const d = ensureItemData(ACTIVE_STUDENT, itemId);
+      d.checks[ck] = !!t.checked;
+      scheduleSave();
+      renderCards();
+      return;
+    }
+
+    if(t.matches('input[type="number"][data-item][data-part][data-max]')){
+      const itemId = t.dataset.item;
+      const key = t.dataset.part;
+      const mx = Number(t.dataset.max);
+      const d = ensureItemData(ACTIVE_STUDENT, itemId);
+      if(itemId === "test" && key==="score"){
+        d.parts[key] = t.value === "" ? "" : clampInt(t.value, 0, mx);
+      }else{
+        d.parts[key] = clampInt(t.value, 0, mx);
+      }
+      scheduleSave();
+      renderCards();
+      return;
+    }
+
+    if(t.matches('select[data-item][data-select="1"]')){
+      const itemId = t.dataset.item;
+      const d = ensureItemData(ACTIVE_STUDENT, itemId);
+      d.select = t.value || "";
+      scheduleSave();
+      renderCards();
+      return;
+    }
+
+    if(t.matches('input[type="file"][data-photoadd="1"]')){
+      const files = Array.from(t.files || []);
+      if(!files.length) return;
+      const mode = t.dataset.mode;
+      const itemId = t.dataset.item;
+      const refId = t.dataset.ref || "";
+
+      for(const f of files){
+        if(!f.type.startsWith("image/")) continue;
+        const fid = `${ACTIVE_STUDENT}__${itemId}__${uid()}`;
+        await idbPutFile(fid, f, { name: f.name, type: f.type, size: f.size });
+
+        if(mode==="item"){
+          const d = ensureItemData(ACTIVE_STUDENT, itemId);
+          d.photos.push(fid);
+        }else if(mode==="reflection"){
+          const s = ensureStudentData(ACTIVE_STUDENT);
+          const ent = (s.reflection || []).find(x=>x.id===refId);
+          if(ent){
+            ent.photos = ent.photos || [];
+            ent.photos.push(fid);
+          }
+        }
+      }
+      scheduleSave();
+      t.value = "";
+      renderCards();
+      showToast("写真を追加");
+      return;
+    }
+
+    if(t.matches('textarea[data-refText]')){
+      const refId = t.dataset.reftext || t.dataset.refText;
+      const s = ensureStudentData(ACTIVE_STUDENT);
+      const ent = (s.reflection || []).find(x=>x.id===refId);
+      if(ent){
+        ent.text = t.value;
+        scheduleSave();
+      }
+      return;
+    }
+  });
+
+  document.addEventListener("input", (e)=>{
+    const t = e.target;
+    if(t.matches('textarea[data-item][data-memo="1"]')){
+      const itemId = t.dataset.item;
+      const d = ensureItemData(ACTIVE_STUDENT, itemId);
+      d.memo = t.value;
+      scheduleSave();
+      return;
+    }
+    if(t.matches('textarea[data-refText]')){
+      const refId = t.dataset.reftext || t.dataset.refText;
+      const s = ensureStudentData(ACTIVE_STUDENT);
+      const ent = (s.reflection || []).find(x=>x.id===refId);
+      if(ent){
+        ent.text = t.value;
+        scheduleSave();
+      }
+      return;
+    }
+  });
+
+  // クリック系
+  document.addEventListener("click", async (e)=>{
+    const t = e.target;
+
+    // 写真削除
+    const delBtn = t.closest('button[data-photodel]');
+    if(delBtn){
+      const fid = delBtn.dataset.photodel;
+      const mode = delBtn.dataset.mode;
+      const itemId = delBtn.dataset.item;
+      const refId = delBtn.dataset.ref || "";
+      if(!confirm("この写真を削除しますか？（注釈/OCRも消えます）")) return;
+
+      await idbDeleteFile(fid);
+      if(APP_STATE.anno?.docs?.[fid]) delete APP_STATE.anno.docs[fid];
+      if(APP_STATE.ocr?.cache?.[fid]) delete APP_STATE.ocr.cache[fid];
+
+      if(mode==="item"){
+        const d = ensureItemData(ACTIVE_STUDENT, itemId);
+        d.photos = (d.photos || []).filter(x=>x!==fid);
+      }else if(mode==="reflection"){
+        const s = ensureStudentData(ACTIVE_STUDENT);
+        const ent = (s.reflection || []).find(x=>x.id===refId);
+        if(ent) ent.photos = (ent.photos || []).filter(x=>x!==fid);
+      }
+      scheduleSave();
+      renderCards();
+      showToast("削除した");
+      return;
+    }
+
+    // 振り返り追加
+    const addRef = t.closest('button[data-add-ref="1"]');
+    if(addRef){
+      const s = ensureStudentData(ACTIVE_STUDENT);
+      const ent = { id: uid(), at: Date.now(), text: "", photos: [] };
+      s.reflection.push(ent);
+      scheduleSave();
+      renderCards();
+      showToast("振り返り追加");
+      return;
+    }
+
+    // 振り返り削除
+    const delRef = t.closest('button[data-del-ref]');
+    if(delRef){
+      const id = delRef.dataset.delRef;
+      if(!confirm("この振り返りを削除しますか？（写真も消えます）")) return;
+      const s = ensureStudentData(ACTIVE_STUDENT);
+      const idx = (s.reflection || []).findIndex(x=>x.id===id);
+      if(idx >= 0){
+        const photos = s.reflection[idx].photos || [];
+        for(const fid of photos){
+          await idbDeleteFile(fid);
+          if(APP_STATE.anno?.docs?.[fid]) delete APP_STATE.anno.docs[fid];
+          if(APP_STATE.ocr?.cache?.[fid]) delete APP_STATE.ocr.cache[fid];
+        }
+        s.reflection.splice(idx, 1);
+        scheduleSave();
+        renderCards();
+        showToast("削除した");
+      }
+      return;
+    }
+
+    // 画像タップ → 注釈
+    const img = t.closest('img[data-open-anno="1"][data-photoimg]');
+    if(img){
+      const fid = img.dataset.photoimg;
+      const itemId = img.dataset.item;
+      const mode = img.dataset.mode;
+      const ref = img.dataset.ref || "";
+      await openAnnoEditor({ fileId: fid, studentName: ACTIVE_STUDENT, itemId, mode, refId: ref });
+      return;
+    }
+
+    // OCRボタン
+    const ocrBtn = t.closest('button[data-ocr="1"][data-photoid]');
+    if(ocrBtn){
+      const fid = ocrBtn.dataset.photoid;
+      const mode = ocrBtn.dataset.mode;     // item / reflection
+      const itemId = ocrBtn.dataset.item;
+      const refId = ocrBtn.dataset.ref || "";
+
+      const targetInfo = (mode==="item")
+        ? `追記先：${ACTIVE_STUDENT}｜項目「${itemId}」のメモ欄`
+        : `追記先：${ACTIVE_STUDENT}｜振り返りID「${refId}」`;
+
+      openOcrModal({ fileId: fid, studentName: ACTIVE_STUDENT, itemId, mode, refId, targetInfo });
+
+      // 実行
+      try{
+        setOcrUI({ status:"準備中…（初回は少し時間がかかります）", progress:0.01 });
+        const { text, cached } = await runOcrFromFileId(fid);
+        setOcrUI({ status: cached ? "OCR（保存済み）" : "OCR完了", progress:1, text });
+        showToast(cached ? "保存済みOCRを表示" : "OCR完了");
+        renderCards(); // OCRタグ表示更新
+      }catch(err){
+        console.error(err);
+        setOcrUI({ status:"失敗（ネット/写真/権限を確認）", progress:0 });
+        els.ocrText.value = "";
+        showToast("OCRに失敗…（ネット接続推奨）");
+      }
+      return;
+    }
+  });
+
+  // 名簿モーダルの外側クリックで閉じる
+  els.modalRosterBg.addEventListener("click", (e)=>{ if(e.target === els.modalRosterBg) closeRosterModal(); });
+
+  // 注釈画面のツール類
+  els.sizeVal.textContent = String(clampInt(els.sizeSlider.value,1,40));
+  ANNO.color = els.colorPicker.value;
+  ANNO.size = clampInt(els.sizeSlider.value, 1, 40);
+  renderRecentSwatches();
+}
+
+/** =========================
+ *  起動
+ * ========================= */
+function boot(){
+  renderStudentSelect();
+  ensureStudentData(ACTIVE_STUDENT);
+  renderCards();
+  bindEvents();
+  showToast("起動OK（OCRあり）");
+}
+boot();
+</script>
+</body>
+</html>
