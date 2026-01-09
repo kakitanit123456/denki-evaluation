@@ -8,27 +8,27 @@
   <title>理科評価 記録ツール（iPad）</title>
   <style>
     :root{
-      --bg:#0b1020;
-      --card:#121a33;
-      --card2:#0f1630;
-      --text:#f2f4ff;
-      --muted:#aab3d1;
-      --line:#2a3562;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --card2:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --shadow: 0 10px 26px rgba(0,0,0,.10);
       --radius:18px;
 
-      --k:#2dd4bf;  /* 知識・技能 */
-      --t:#60a5fa;  /* 思考・判断・表現 */
+      --k:#0ea5e9;  /* 知識・技能 */
+      --t:#6366f1;  /* 思考・判断・表現 */
       --a:#f59e0b;  /* 主体的 */
-      --danger:#fb7185;
-      --ok:#34d399;
+      --danger:#ef4444;
+      --ok:#10b981;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Segoe UI", Arial;
-      background: radial-gradient(1200px 800px at 10% 10%, #18234a 0%, var(--bg) 55%, #050814 100%);
+      background: var(--bg);
       color:var(--text);
       -webkit-font-smoothing:antialiased;
       touch-action:manipulation;
@@ -41,11 +41,12 @@
       display:flex;
       flex-direction:column;
     }
+
     header{
       position:sticky; top:0; z-index:50;
+      background: rgba(255,255,255,.82);
       backdrop-filter: blur(10px);
-      background: rgba(7,10,20,.7);
-      border-bottom:1px solid rgba(255,255,255,.08);
+      border-bottom:1px solid rgba(0,0,0,.08);
     }
     .topbar{
       padding:14px 14px 10px;
@@ -53,31 +54,34 @@
       gap:10px;
       align-items:center;
       justify-content:space-between;
+      flex-wrap:wrap;
     }
     .title{
       display:flex; flex-direction:column; gap:2px;
     }
     .title b{font-size:16px}
     .title small{color:var(--muted); font-size:12px}
+
     .pill{
       display:inline-flex; align-items:center; gap:8px;
       padding:10px 12px;
       border-radius:999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      box-shadow: 0 8px 20px rgba(0,0,0,.22);
+      background: rgba(255,255,255,.9);
+      border:1px solid rgba(0,0,0,.10);
+      box-shadow: 0 8px 20px rgba(0,0,0,.08);
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
     .pill strong{font-size:14px}
     .pill .dot{width:10px;height:10px;border-radius:999px;background:var(--ok)}
+
     .actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
     .btn{
       border:none;
       border-radius:14px;
       padding:12px 14px;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(0,0,0,.10);
       box-shadow: var(--shadow);
       cursor:pointer;
       min-height:44px;
@@ -85,12 +89,13 @@
       user-select:none;
     }
     .btn:active{transform: translateY(1px)}
-    .btn.primary{background: rgba(96,165,250,.18); border-color: rgba(96,165,250,.35)}
-    .btn.warn{background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.35)}
-    .btn.danger{background: rgba(251,113,133,.14); border-color: rgba(251,113,133,.35)}
-    .btn.ok{background: rgba(52,211,153,.14); border-color: rgba(52,211,153,.35)}
+    .btn.primary{background: rgba(99,102,241,.10); border-color: rgba(99,102,241,.25)}
+    .btn.warn{background: rgba(245,158,11,.10); border-color: rgba(245,158,11,.25)}
+    .btn.danger{background: rgba(239,68,68,.10); border-color: rgba(239,68,68,.25)}
+    .btn.ok{background: rgba(16,185,129,.10); border-color: rgba(16,185,129,.25)}
     .btn.small{padding:10px 12px; border-radius:12px; font-size:13px}
     .btn.ghost{background: transparent; box-shadow:none}
+
     .row{
       display:flex; gap:10px; align-items:center; flex-wrap:wrap;
     }
@@ -113,8 +118,8 @@
     }
 
     .card{
-      background: rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.10);
+      background: var(--card);
+      border:1px solid rgba(0,0,0,.10);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
@@ -124,8 +129,8 @@
       padding:14px 14px 10px;
       font-size:14px;
       color:var(--muted);
-      border-bottom:1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.03);
+      border-bottom:1px solid rgba(0,0,0,.08);
+      background: rgba(0,0,0,.02);
       display:flex; align-items:center; justify-content:space-between; gap:8px;
     }
     .card .body{padding:14px}
@@ -140,8 +145,8 @@
     }
     .field label{font-size:12px; color:var(--muted)}
     .input, textarea{
-      background: rgba(0,0,0,.22);
-      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.95);
+      border:1px solid rgba(0,0,0,.12);
       border-radius: 14px;
       padding:12px 12px;
       min-height:44px;
@@ -149,8 +154,8 @@
     }
     textarea{min-height:72px; resize:vertical;}
     .select{
-      background: rgba(0,0,0,.22);
-      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.95);
+      border:1px solid rgba(0,0,0,.12);
       border-radius: 14px;
       padding:12px 12px;
       min-height:44px;
@@ -162,53 +167,55 @@
     .student{
       padding:12px 12px;
       border-radius:16px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.95);
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       cursor:pointer;
       -webkit-tap-highlight-color: transparent;
       user-select:none;
     }
     .student.active{
-      background: rgba(96,165,250,.16);
-      border-color: rgba(96,165,250,.35);
+      background: rgba(99,102,241,.08);
+      border-color: rgba(99,102,241,.25);
     }
     .student b{font-size:15px}
     .badge{
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.92);
       font-size:12px;
       display:inline-flex; align-items:center; gap:6px;
       user-select:none;
     }
     .badge .s{font-weight:700}
-    .badge.k{border-color: rgba(45,212,191,.45); background: rgba(45,212,191,.12)}
-    .badge.t{border-color: rgba(96,165,250,.45); background: rgba(96,165,250,.12)}
-    .badge.a{border-color: rgba(245,158,11,.45); background: rgba(245,158,11,.12)}
-    .badge.total{border-color: rgba(255,255,255,.20); background: rgba(255,255,255,.08)}
+    .badge.k{border-color: rgba(14,165,233,.35); background: rgba(14,165,233,.08)}
+    .badge.t{border-color: rgba(99,102,241,.35); background: rgba(99,102,241,.08)}
+    .badge.a{border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.08)}
+    .badge.total{border-color: rgba(0,0,0,.14); background: rgba(0,0,0,.03)}
+
     .grade{
       font-weight:800;
       padding:6px 10px;
       border-radius:12px;
-      border:1px solid rgba(255,255,255,.18);
+      border:1px solid rgba(0,0,0,.12);
       min-width:44px;
       text-align:center;
+      background: rgba(255,255,255,.95);
     }
-    .grade.A{background: rgba(52,211,153,.14); border-color: rgba(52,211,153,.35)}
-    .grade.Bp{background: rgba(96,165,250,.14); border-color: rgba(96,165,250,.35)}
-    .grade.B{background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.18)}
-    .grade.Bm{background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.35)}
-    .grade.C{background: rgba(251,113,133,.14); border-color: rgba(251,113,133,.35)}
+    .grade.A{background: rgba(16,185,129,.10); border-color: rgba(16,185,129,.25)}
+    .grade.Bp{background: rgba(14,165,233,.10); border-color: rgba(14,165,233,.25)}
+    .grade.B{background: rgba(0,0,0,.03); border-color: rgba(0,0,0,.14)}
+    .grade.Bm{background: rgba(245,158,11,.10); border-color: rgba(245,158,11,.25)}
+    .grade.C{background: rgba(239,68,68,.10); border-color: rgba(239,68,68,.25)}
 
     .rubric{
       display:flex; flex-direction:column; gap:12px;
     }
     details{
       border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.16);
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.95);
       overflow:hidden;
     }
     summary{
@@ -218,6 +225,8 @@
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
+      background: rgba(0,0,0,.02);
+      border-bottom:1px solid rgba(0,0,0,.06);
     }
     summary::-webkit-details-marker{display:none}
     .sumL{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
@@ -225,17 +234,17 @@
       padding:6px 10px;
       border-radius:999px;
       font-size:12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.92);
       user-select:none;
     }
-    .tag.k{border-color: rgba(45,212,191,.45); background: rgba(45,212,191,.10)}
-    .tag.t{border-color: rgba(96,165,250,.45); background: rgba(96,165,250,.10)}
-    .tag.a{border-color: rgba(245,158,11,.45); background: rgba(245,158,11,.10)}
-    .tag.gray{border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.06)}
+    .tag.k{border-color: rgba(14,165,233,.35); background: rgba(14,165,233,.08)}
+    .tag.t{border-color: rgba(99,102,241,.35); background: rgba(99,102,241,.08)}
+    .tag.a{border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.08)}
+    .tag.gray{border-color: rgba(0,0,0,.14); background: rgba(0,0,0,.03)}
     .sumR{display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end}
     .mini{font-size:12px;color:var(--muted)}
-    .line{height:1px;background: rgba(255,255,255,.08); margin:10px 0}
+    .line{height:1px;background: rgba(0,0,0,.08); margin:10px 0}
     .block{padding:12px}
     .scoreRow{
       display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;
@@ -252,18 +261,10 @@
       letter-spacing:.5px;
     }
     .hint{font-size:12px;color:var(--muted)}
-    .chips{display:flex; gap:8px; flex-wrap:wrap}
-
-    .itemGrid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
     .itemCard{
       border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.95);
       padding:12px;
       display:flex; flex-direction:column; gap:10px;
     }
@@ -277,8 +278,8 @@
     .thumb{
       width:110px; height:90px;
       border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(0,0,0,.03);
       overflow:hidden;
       position:relative;
       cursor:pointer;
@@ -293,8 +294,8 @@
       position:absolute; top:6px; right:6px;
       width:26px; height:26px; border-radius:999px;
       border:none;
-      background: rgba(0,0,0,.55);
-      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.88);
+      border:1px solid rgba(0,0,0,.12);
       cursor:pointer;
     }
     .thumb .x:active{transform:translateY(1px)}
@@ -303,15 +304,15 @@
       font-size:11px;
       padding:4px 8px;
       border-radius:999px;
-      background: rgba(0,0,0,.55);
-      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.88);
+      border:1px solid rgba(0,0,0,.12);
       user-select:none;
     }
 
-    /* モーダル（注釈） */
+    /* モーダル */
     .modal{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
+      background: rgba(0,0,0,.45);
       display:none;
       align-items:center;
       justify-content:center;
@@ -323,8 +324,8 @@
       width:min(980px, 100%);
       max-height: 92vh;
       border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(10,14,28,.92);
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.96);
       box-shadow: var(--shadow);
       overflow:hidden;
       display:flex;
@@ -333,15 +334,15 @@
     .modalTop{
       display:flex; align-items:center; justify-content:space-between; gap:10px;
       padding:12px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.03);
+      border-bottom:1px solid rgba(0,0,0,.10);
+      background: rgba(0,0,0,.02);
       flex-wrap:wrap;
     }
     .modalTop .left{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
     .modalTop .right{display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end}
     .canvasWrap{
       position:relative;
-      background: rgba(0,0,0,.2);
+      background: rgba(0,0,0,.03);
       flex:1;
       display:flex;
       align-items:center;
@@ -354,26 +355,28 @@
       position:relative;
       border-radius: 14px;
       overflow:hidden;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.2);
+      border:1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.96);
     }
     .stage img{display:block; max-width: 100%; height:auto}
     canvas{
       position:absolute; left:0; top:0;
-      touch-action: none; /* ペン描画 */
+      touch-action: none;
     }
     .toolRow{
       display:flex; gap:8px; align-items:center; flex-wrap:wrap;
     }
     .toolRow .lab{font-size:12px;color:var(--muted)}
     .range{width:140px}
+
     .toast{
       position:fixed;
       left:50%;
       bottom: calc(18px + env(safe-area-inset-bottom));
       transform: translateX(-50%);
-      background: rgba(0,0,0,.65);
-      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.72);
+      color:white;
+      border:1px solid rgba(255,255,255,.18);
       border-radius:999px;
       padding:10px 14px;
       font-size:13px;
@@ -390,8 +393,8 @@
       position:fixed;
       left:0; right:0; bottom:0;
       padding:10px 12px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(7,10,20,.75);
-      border-top:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.86);
+      border-top:1px solid rgba(0,0,0,.08);
       backdrop-filter: blur(10px);
       z-index:40;
     }
@@ -409,8 +412,26 @@
       color:var(--muted);
       font-size:12px;
     }
+
+    /* 項目モード */
+    .itemRow{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.95);
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .smallChecks{
+      display:flex; gap:6px; flex-wrap:wrap; align-items:center;
+    }
+    .smallChecks input{ width:22px; height:22px; }
   </style>
 </head>
+
 <body>
 <div class="app safe">
   <header>
@@ -420,6 +441,7 @@
         <small id="subTitle">単元：電気の通り道（サンプル）｜端末内に自動保存</small>
       </div>
       <div class="actions">
+        <button class="btn small" id="btnMode">表示：児童</button>
         <button class="btn small primary" id="btnBackup">バックアップ(JSON)</button>
         <button class="btn small warn" id="btnRestore">復元(JSON)</button>
         <button class="btn small danger" id="btnReset">全消去</button>
@@ -437,7 +459,7 @@
         </h3>
         <div class="body">
           <div class="field">
-            <label>児童名（改行で複数。例：3-1 田中太郎）</label>
+            <label>児童名（改行で複数）</label>
             <textarea id="rosterText" placeholder="例）&#10;3-1 田中太郎&#10;3-1 佐藤花子"></textarea>
           </div>
           <div class="row" style="margin-top:10px; justify-content:flex-end;">
@@ -453,7 +475,7 @@
       <!-- 右：採点 -->
       <section class="card">
         <h3>
-          <span>採点（1画面）</span>
+          <span>採点</span>
           <span class="mini" id="who">—</span>
         </h3>
         <div class="body">
@@ -484,6 +506,18 @@
 
           <div class="line"></div>
 
+          <!-- 項目モード（A） -->
+          <div id="itemModePanel" style="display:none;">
+            <div class="field">
+              <label>項目を選択（この項目を全員分まとめて入力）</label>
+              <select class="select" id="itemGroupSelect"></select>
+            </div>
+            <div class="line"></div>
+            <div id="itemList" class="list"></div>
+            <div class="line"></div>
+          </div>
+
+          <!-- 児童モード -->
           <div class="rubric" id="rubric"></div>
 
           <div class="line"></div>
@@ -492,7 +526,6 @@
             <label>全体メモ（この児童・この授業回）</label>
             <textarea id="overallMemo" placeholder="気づき、声かけ、次時の手立て など"></textarea>
           </div>
-
         </div>
       </section>
     </div>
@@ -522,17 +555,25 @@
         <div class="right">
           <div class="toolRow">
             <span class="lab">色</span>
-            <input type="color" id="penColor" value="#ff4d6d" />
+            <input type="color" id="penColor" value="#ef4444" />
           </div>
           <div class="toolRow">
             <span class="lab">太さ</span>
             <input class="range" type="range" id="penSize" min="1" max="28" value="6" />
             <span class="mini" id="penSizeVal">6</span>
           </div>
+
           <button class="btn small" id="toolPen">ペン</button>
           <button class="btn small warn" id="toolEraser">消しゴム</button>
           <button class="btn small danger" id="toolObjEraser">オブジェクト消し</button>
+
+          <button class="btn small" id="toolLine">／</button>
+          <button class="btn small" id="toolArrow">→</button>
           <button class="btn small" id="toolRect">□</button>
+          <button class="btn small" id="toolCircle">○</button>
+          <button class="btn small" id="toolEllipse">◯</button>
+          <button class="btn small" id="toolTri">△</button>
+
           <button class="btn small" id="toolText">T</button>
           <button class="btn small" id="btnUndo">戻す</button>
           <button class="btn small" id="btnClearInk">注釈全消し</button>
@@ -540,6 +581,7 @@
           <button class="btn small ghost" id="btnClose">閉じる</button>
         </div>
       </div>
+
       <div class="canvasWrap" id="canvasWrap">
         <div class="stage" id="stage">
           <img id="baseImg" alt="photo" />
@@ -554,11 +596,10 @@
 
 <script>
 /** =========================
- *  1) 設定（ここを後で“評価計画”に合わせて調整）
+ *  1) 設定（後で評価計画に合わせてここを調整）
  * ========================= */
 const CONFIG = {
   unitDefault: "電気の通り道",
-  // 授業回（あとで自由に変えられる）
   lessons: [
     { key:"L1", name:"第1-2時：回路（理解・技能）" },
     { key:"L2", name:"第2時：シンキング（つく/つかない）軽め10点" },
@@ -566,35 +607,28 @@ const CONFIG = {
     { key:"L7", name:"第7時：空き缶は通す？（発展・10点）" },
     { key:"L8", name:"第8時：まとめテスト" },
   ],
-
-  // 観点ごとの色（UI用）
   domains: {
     K: { label:"知識・技能", color:"var(--k)" },
     T: { label:"思考・判断・表現", color:"var(--t)" },
     A: { label:"主体的", color:"var(--a)" },
   },
 
-  // 評価（A/B+/B/B-/C）を「B幅広め」にする（①で固定）
-  // ※ totalPoints(=合計満点)に対する“割合”で判定
-  //   AとCは狭く、B帯を広げる
+  // B帯を広げた判定（合計満点に対する割合）
   gradeBands: {
     A: 0.86,   // 86%以上
     Bp:0.72,   // 72%以上
-    B: 0.40,   // 40%以上  ← Bを広げる
+    B: 0.40,   // 40%以上（B広め）
     Bm:0.28,   // 28%以上
     C: 0.00
   },
 
-  // ルーブリック（仮）…あとであなたの確定版に差し替えやすい構造
-  // 各「rubricGroup」は、観点ドメイン＋項目（点数入力 or チェック加点）＋写真＆メモを持てる
   rubricByLesson: {
-    // 第1-2時：回路（例）
     L1: [
       {
         id:"K_L1",
         domain:"K",
         title:"回路の技能（チェック：達成数）",
-        scoring:{ type:"checkCount", max:5, toPoints:"count" }, // 5つ中いくつできたか
+        scoring:{ type:"checkCount", max:5 },
         criteria:[
           "乾電池の＋極/−極を意識してつなぐ",
           "豆電球をソケットにしっかり固定できる",
@@ -606,7 +640,7 @@ const CONFIG = {
       {
         id:"T_L1",
         domain:"T",
-        title:"予想（回路図＋理由）※正解でなくてOK",
+        title:"予想（回路図＋理由）※正解でなくてOK（10点）",
         scoring:{ type:"manual", max:10 },
         criteria:[
           "回路図が“輪”として描けている",
@@ -614,11 +648,8 @@ const CONFIG = {
           "理由が自分の言葉で書けている（視点がある）",
           "丁寧さ・説明の分かりやすさ",
         ],
-        note:"※点数はあなたが入力（配点は後で調整可）"
       },
     ],
-
-    // 第2時：シンキング（つく/つかない）軽め
     L2: [
       {
         id:"T_L2",
@@ -635,21 +666,19 @@ const CONFIG = {
         id:"K_L2",
         domain:"K",
         title:"知識・技能（チェック：2つだけ）",
-        scoring:{ type:"checkCount", max:2, toPoints:"count" },
+        scoring:{ type:"checkCount", max:2 },
         criteria:[
           "用語（乾電池/導線/豆電球/ソケット等）が言える",
           "回路が“輪”になると電気が通ると説明できる",
         ],
       },
     ],
-
-    // 第3-5時：分類実験
     L3: [
       {
         id:"K_L3",
         domain:"K",
         title:"分類実験の技能（シビア版：チェック数）",
-        scoring:{ type:"checkCount", max:5, toPoints:"count" },
+        scoring:{ type:"checkCount", max:5 },
         criteria:[
           "テスターの動作確認を先にできる",
           "導線の当て方が確実（接触不良を減らす）",
@@ -661,7 +690,7 @@ const CONFIG = {
       {
         id:"T_L3a",
         domain:"T",
-        title:"予想（1項目）",
+        title:"予想（10点）",
         scoring:{ type:"manual", max:10 },
         criteria:[
           "予想＋理由（材質などの視点）",
@@ -678,7 +707,6 @@ const CONFIG = {
           "分析を言葉で表現できる",
           "自分なりの結論を導けている（ここ重視）",
         ],
-        note:"※配点はあなたが入力（15点満点）"
       },
       {
         id:"A_L3",
@@ -691,8 +719,6 @@ const CONFIG = {
         ],
       },
     ],
-
-    // 第7時：発展（A低め/C低め）
     L7: [
       {
         id:"T_L7",
@@ -704,27 +730,22 @@ const CONFIG = {
           "表面の塗装/コーティングに気づけている",
           "自分の言葉で筋道立てて説明できる",
         ],
-        note:"※この回はCライン低め/Aも低めにしたい場合、個別バンド設定も可能（後で追加）"
       }
     ],
-
-    // 第8時：まとめテスト
     L8: [
       {
         id:"K_L8",
         domain:"K",
-        title:"まとめテスト（点数）",
+        title:"まとめテスト（得点入力）",
         scoring:{ type:"manual", max:100 },
         criteria:[
-          "得点を入力（必要なら別途評価換算）",
+          "得点を入力（必要なら別途換算）",
         ],
-        note:"※ここは運用に合わせて後で整えよう"
       }
     ]
   },
 
-  // 主体（8時間通し）—柔軟枠
-  // ※授業回に依存せず常時表示する
+  // 主体（8時間通し）
   attitudeAcross: [
     {
       id:"A_ALL1",
@@ -754,7 +775,7 @@ const CONFIG = {
 /** =========================
  *  2) IndexedDB（端末内保存）
  * ========================= */
-const DB_NAME = "SciEvalDB_v1";
+const DB_NAME = "SciEvalDB_v2";
 const DB_VER = 1;
 const STORE = "state";
 
@@ -762,7 +783,7 @@ let db = null;
 function openDB(){
   return new Promise((resolve,reject)=>{
     const req = indexedDB.open(DB_NAME, DB_VER);
-    req.onupgradeneeded = (e)=>{
+    req.onupgradeneeded = ()=>{
       const d = req.result;
       if(!d.objectStoreNames.contains(STORE)){
         d.createObjectStore(STORE);
@@ -814,21 +835,21 @@ let state = {
   roster: [],
   currentStudentId: "",
   currentLessonKey: CONFIG.lessons[0].key,
-  // 記録の構造:
-  // records[studentId][lessonKey][rubricGroupId] = { score, checks[], memo, photos:[{id, baseDataUrl, inkDataUrl, shapes:[], texts:[]}] }
-  records: {},
+
+  uiMode: "student",        // "student" | "item"
+  currentItemGroupId: "",   // 項目モードで表示中のgroup
+
+  records: {}, // records[studentId][lessonKey][groupId] = { score, checks[], memo, photos[] }
 };
 
 function makeId(prefix="id"){
   return prefix + "_" + Math.random().toString(36).slice(2,9) + "_" + Date.now().toString(36);
 }
-
 function ensurePath(studentId, lessonKey){
   if(!state.records[studentId]) state.records[studentId] = {};
   if(!state.records[studentId][lessonKey]) state.records[studentId][lessonKey] = {};
   return state.records[studentId][lessonKey];
 }
-
 function ensureGroup(studentId, lessonKey, groupId){
   const lesson = ensurePath(studentId, lessonKey);
   if(!lesson[groupId]){
@@ -858,9 +879,6 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove("show"), 1800);
 }
 
-/** =========================
- *  4) ルーブリック描画
- * ========================= */
 function escapeHtml(s){
   return (s??"").toString()
     .replaceAll("&","&amp;")
@@ -889,9 +907,7 @@ function gradeClass(g){
 
 function getLessonGroups(lessonKey){
   const base = CONFIG.rubricByLesson[lessonKey] ? [...CONFIG.rubricByLesson[lessonKey]] : [];
-  // 常時表示（主体：通し）
-  const withAcross = [...base, ...CONFIG.attitudeAcross];
-  return withAcross;
+  return [...base, ...CONFIG.attitudeAcross];
 }
 
 function calcTotals(studentId, lessonKey){
@@ -931,6 +947,18 @@ function renderLessonSelect(){
   sel.value = state.currentLessonKey;
 }
 
+function studentNameById(id){
+  const st = state.roster.find(s=>s.id===id);
+  return st ? st.name : "—";
+}
+function lessonNameByKey(k){
+  const l = CONFIG.lessons.find(x=>x.key===k);
+  return l ? l.name : k;
+}
+
+/** =========================
+ *  4) 名簿表示
+ * ========================= */
 function renderRosterList(){
   const list = document.getElementById("studentList");
   list.innerHTML = "";
@@ -967,6 +995,9 @@ function renderRosterList(){
   }
 }
 
+/** =========================
+ *  5) 写真（無制限）＋注釈
+ * ========================= */
 function makePhotoBlock(studentId, lessonKey, groupId){
   const rec = ensureGroup(studentId, lessonKey, groupId);
   const photos = rec.photos || [];
@@ -980,7 +1011,7 @@ function makePhotoBlock(studentId, lessonKey, groupId){
   top.style.flexWrap="wrap";
   top.style.justifyContent="space-between";
   top.innerHTML = `
-    <div class="mini">写真（無制限）｜サムネタップ＝注釈（ペン）</div>
+    <div class="mini">写真（無制限）｜サムネタップ＝注釈（ペン/図形）</div>
     <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; align-items:center;">
       <input type="file" accept="image/*" multiple style="display:none"
              data-photoadd="1"
@@ -1002,7 +1033,7 @@ function makePhotoBlock(studentId, lessonKey, groupId){
     const th = document.createElement("div");
     th.className="thumb";
     th.innerHTML = `
-      <img src="${p.inkDataUrl || p.baseDataUrl}" alt="thumb">
+      <img src="${p.thumbDataUrl || p.baseDataUrl}" alt="thumb">
       <button class="x" type="button" title="削除">×</button>
       <div class="ocr">注釈</div>
     `;
@@ -1023,6 +1054,18 @@ function makePhotoBlock(studentId, lessonKey, groupId){
   return wrap;
 }
 
+function fileToDataUrl(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=()=>reject(r.error);
+    r.readAsDataURL(file);
+  });
+}
+
+/** =========================
+ *  6) 児童モード（1人ずつ）
+ * ========================= */
 function renderRubric(){
   const wrap = document.getElementById("rubric");
   wrap.innerHTML = "";
@@ -1042,19 +1085,15 @@ function renderRubric(){
     const det = document.createElement("details");
     det.open = true;
 
-    const totals = calcTotals(sid, lessonKey);
-    const sumText = `${g.scoring?.max ?? 0}点`;
-
     det.innerHTML = `
       <summary>
         <div class="sumL">
           <span class="tag ${g.domain==="K"?"k":g.domain==="T"?"t":"a"}">${escapeHtml(dom.label)}</span>
           <b style="font-size:14px;">${escapeHtml(g.title)}</b>
-          ${g.note ? `<span class="tag gray">メモ：${escapeHtml(g.note)}</span>` : ""}
+          ${g.note ? `<span class="tag gray">${escapeHtml(g.note)}</span>` : ""}
         </div>
         <div class="sumR">
-          <span class="tag gray">${escapeHtml(sumText)}</span>
-          <span class="grade ${gradeClass(totals.grade)}">${escapeHtml(totals.grade)}</span>
+          <span class="tag gray">${g.scoring?.max ?? 0}点</span>
         </div>
       </summary>
     `;
@@ -1062,7 +1101,6 @@ function renderRubric(){
     const block = document.createElement("div");
     block.className="block";
 
-    // スコアUI
     const scoreRow = document.createElement("div");
     scoreRow.className="scoreRow";
 
@@ -1070,7 +1108,6 @@ function renderRubric(){
     left.style.flex="1";
     left.style.minWidth="260px";
 
-    // criteria list
     const crit = (g.criteria||[]);
     const critHtml = crit.map((c, idx)=>{
       if(g.scoring?.type==="checkCount"){
@@ -1103,7 +1140,6 @@ function renderRubric(){
     right.style.gap="10px";
     right.style.alignItems="stretch";
 
-    // score input
     let scoreUI = "";
     if(g.scoring?.type==="checkCount"){
       const cnt = (rec.checks||[]).filter(Boolean).length;
@@ -1121,7 +1157,7 @@ function renderRubric(){
           <label>点数（0〜${g.scoring.max}）</label>
           <input class="input num" inputmode="numeric" pattern="[0-9]*" data-score="1" data-group="${escapeHtml(g.id)}"
                  value="${escapeHtml(v)}" placeholder="0" />
-          <div class="hint">※あなたが入力（B帯を広く判定）</div>
+          <div class="hint">※あなたが入力</div>
         </div>
       `;
     }
@@ -1140,8 +1176,6 @@ function renderRubric(){
     const itemCard = document.createElement("div");
     itemCard.className="itemCard";
     itemCard.appendChild(scoreRow);
-
-    // photo block
     itemCard.appendChild(makePhotoBlock(sid, lessonKey, g.id));
 
     block.appendChild(itemCard);
@@ -1151,34 +1185,161 @@ function renderRubric(){
 }
 
 /** =========================
- *  5) 注釈（ペン／図形／文字／消しゴム）
+ *  7) 項目モードA（項目1つ→全員分入力）
+ * ========================= */
+function renderItemMode(){
+  const panel = document.getElementById("itemModePanel");
+  const sel = document.getElementById("itemGroupSelect");
+  const list = document.getElementById("itemList");
+  panel.style.display = "block";
+  list.innerHTML = "";
+
+  if(state.roster.length===0){
+    list.innerHTML = `<div class="muted">名簿を入力してください。</div>`;
+    return;
+  }
+
+  const lessonKey = state.currentLessonKey;
+  const groups = getLessonGroups(lessonKey);
+
+  sel.innerHTML = groups.map(g=>{
+    const dom = CONFIG.domains[g.domain];
+    return `<option value="${escapeHtml(g.id)}">${escapeHtml(dom.label)}｜${escapeHtml(g.title)}</option>`;
+  }).join("");
+
+  if(!state.currentItemGroupId || !groups.find(g=>g.id===state.currentItemGroupId)){
+    state.currentItemGroupId = groups[0]?.id || "";
+  }
+  sel.value = state.currentItemGroupId;
+
+  const group = groups.find(g=>g.id===state.currentItemGroupId);
+  if(!group){
+    list.innerHTML = `<div class="muted">項目がありません。</div>`;
+    return;
+  }
+
+  for(const st of state.roster){
+    const rec = ensureGroup(st.id, lessonKey, group.id);
+
+    const row = document.createElement("div");
+    row.className = "itemRow";
+
+    const left = document.createElement("div");
+    left.style.minWidth="220px";
+    left.style.flex="1";
+    left.innerHTML = `
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <b>${escapeHtml(st.name)}</b>
+        <span class="tag ${group.domain==="K"?"k":group.domain==="T"?"t":"a"}">${escapeHtml(CONFIG.domains[group.domain].label)}</span>
+        <span class="tag gray">${group.scoring.max}点</span>
+      </div>
+      <div class="mini">${escapeHtml(group.title)}</div>
+    `;
+
+    const right = document.createElement("div");
+    right.style.display="flex";
+    right.style.gap="8px";
+    right.style.alignItems="center";
+    right.style.flexWrap="wrap";
+    right.style.justifyContent="flex-end";
+
+    if(group.scoring.type === "checkCount"){
+      const checks = rec.checks || [];
+      const max = group.scoring.max;
+
+      const checksWrap = document.createElement("div");
+      checksWrap.className = "smallChecks";
+      for(let i=0;i<max;i++){
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.checked = !!checks[i];
+        cb.addEventListener("change", ()=>{
+          rec.checks = rec.checks || [];
+          rec.checks[i] = cb.checked;
+          markDirty();
+          renderRosterList();
+          updateTotalsUI();
+        });
+        checksWrap.appendChild(cb);
+      }
+      right.appendChild(checksWrap);
+
+      const cnt = checks.filter(Boolean).length;
+      const cntTag = document.createElement("span");
+      cntTag.className="tag gray";
+      cntTag.textContent = `達成：${cnt}/${max}`;
+      right.appendChild(cntTag);
+    }else{
+      const inp = document.createElement("input");
+      inp.className = "input num";
+      inp.inputMode = "numeric";
+      inp.placeholder = "0";
+      inp.value = (rec.score==null) ? "" : rec.score;
+      inp.addEventListener("input", ()=>{
+        let v = inp.value.replace(/[^\d]/g,"");
+        if(v===""){ rec.score=null; markDirty(); renderRosterList(); updateTotalsUI(); return; }
+        let n = Number(v);
+        if(!Number.isFinite(n)) n=0;
+        n = Math.max(0, Math.min(group.scoring.max, n));
+        rec.score = n;
+        if(String(n)!==inp.value) inp.value = n;
+        markDirty();
+        renderRosterList();
+        updateTotalsUI();
+      });
+      right.appendChild(inp);
+    }
+
+    const detailBtn = document.createElement("button");
+    detailBtn.className="btn small";
+    detailBtn.type="button";
+    detailBtn.textContent="詳細";
+    detailBtn.addEventListener("click", ()=>{
+      state.uiMode = "student";
+      state.currentStudentId = st.id;
+      markDirty();
+      renderAll();
+      showToast("児童モードに切替");
+    });
+    right.appendChild(detailBtn);
+
+    row.appendChild(left);
+    row.appendChild(right);
+    list.appendChild(row);
+  }
+}
+
+/** =========================
+ *  8) 注釈（ペン／図形／文字／消しゴム）
  * ========================= */
 const modal = document.getElementById("modal");
 const baseImg = document.getElementById("baseImg");
 const ink = document.getElementById("ink");
-const stage = document.getElementById("stage");
 
 const penColor = document.getElementById("penColor");
 const penSize = document.getElementById("penSize");
 const penSizeVal = document.getElementById("penSizeVal");
 
-let tool = "pen"; // pen | eraser | obj | rect | text
+let tool = "pen"; // pen | eraser | obj | rect | text | line | arrow | circle | ellipse | tri
 let draw = { active:false, startX:0, startY:0, lastX:0, lastY:0 };
-let hist = []; // undo stack (image data urls)
+let hist = []; // undo stack (ink layer data urls)
 let current = { studentId:"", lessonKey:"", groupId:"", photoId:"" };
 
 function setTool(t){
   tool=t;
-  const ids = ["toolPen","toolEraser","toolObjEraser","toolRect","toolText"];
-  const map = { pen:"toolPen", eraser:"toolEraser", obj:"toolObjEraser", rect:"toolRect", text:"toolText" };
+  const ids = ["toolPen","toolEraser","toolObjEraser","toolLine","toolArrow","toolRect","toolCircle","toolEllipse","toolTri","toolText"];
   for(const id of ids){
-    document.getElementById(id).classList.remove("primary","warn","danger");
+    const el = document.getElementById(id);
+    if(!el) continue;
+    el.classList.remove("primary","warn","danger");
   }
-  if(t==="pen") document.getElementById(map[t]).classList.add("primary");
-  if(t==="eraser") document.getElementById(map[t]).classList.add("warn");
-  if(t==="obj") document.getElementById(map[t]).classList.add("danger");
-  if(t==="rect") document.getElementById(map[t]).classList.add("primary");
-  if(t==="text") document.getElementById(map[t]).classList.add("primary");
+  if(t==="pen") document.getElementById("toolPen").classList.add("primary");
+  if(t==="eraser") document.getElementById("toolEraser").classList.add("warn");
+  if(t==="obj") document.getElementById("toolObjEraser").classList.add("danger");
+  if(["line","arrow","rect","circle","ellipse","tri","text"].includes(t)){
+    const map = {line:"toolLine",arrow:"toolArrow",rect:"toolRect",circle:"toolCircle",ellipse:"toolEllipse",tri:"toolTri",text:"toolText"};
+    document.getElementById(map[t]).classList.add("primary");
+  }
 }
 
 function fitCanvasToImage(){
@@ -1186,8 +1347,6 @@ function fitCanvasToImage(){
   const h = baseImg.naturalHeight;
   ink.width = w;
   ink.height = h;
-  // stage size follows image
-  // (img is responsive, canvas is absolute and scaled with CSS)
   ink.style.width = baseImg.clientWidth + "px";
   ink.style.height = baseImg.clientHeight + "px";
 }
@@ -1195,7 +1354,6 @@ function syncCanvasCss(){
   ink.style.width = baseImg.clientWidth + "px";
   ink.style.height = baseImg.clientHeight + "px";
 }
-
 window.addEventListener("resize", ()=> {
   if(modal.classList.contains("show")){
     syncCanvasCss();
@@ -1208,62 +1366,16 @@ function getPhotoRef(studentId, lessonKey, groupId, photoId){
 }
 
 function pushUndo(){
-  const ctx = ink.getContext("2d");
-  const data = ink.toDataURL("image/png");
-  hist.push(data);
+  hist.push(ink.toDataURL("image/png"));
   if(hist.length>30) hist.shift();
 }
-
 function loadInkFromDataUrl(dataUrl){
   const ctx = ink.getContext("2d");
   ctx.clearRect(0,0,ink.width, ink.height);
   if(!dataUrl) return;
   const img = new Image();
-  img.onload = ()=>{
-    ctx.drawImage(img,0,0,ink.width, ink.height);
-  };
+  img.onload = ()=> ctx.drawImage(img,0,0,ink.width, ink.height);
   img.src = dataUrl;
-}
-
-async function openAnnotator(studentId, lessonKey, groupId, photoId){
-  const p = getPhotoRef(studentId, lessonKey, groupId, photoId);
-  if(!p) return;
-
-  current = {studentId, lessonKey, groupId, photoId};
-  document.getElementById("modalTitle").textContent = "写真注釈";
-  document.getElementById("modalSub").textContent = `${studentNameById(studentId)}｜${lessonNameByKey(lessonKey)}`;
-
-  hist = [];
-  setTool("pen");
-  penSizeVal.textContent = penSize.value;
-
-  // base image
-  baseImg.onload = ()=>{
-    // wait a tick so layout settles
-    setTimeout(()=>{
-      fitCanvasToImage();
-      loadInkFromDataUrl(p.inkLayer || null);
-      // CSS scaling
-      syncCanvasCss();
-    }, 0);
-  };
-  baseImg.src = p.baseDataUrl;
-
-  modal.classList.add("show");
-}
-
-function closeAnnotator(){
-  modal.classList.remove("show");
-  current = { studentId:"", lessonKey:"", groupId:"", photoId:"" };
-}
-
-function canvasPoint(e){
-  const rect = ink.getBoundingClientRect();
-  const sx = ink.width / rect.width;
-  const sy = ink.height / rect.height;
-  const x = (e.clientX - rect.left) * sx;
-  const y = (e.clientY - rect.top) * sy;
-  return {x, y};
 }
 
 function drawLine(ctx, x1,y1,x2,y2, color, size, mode="source-over"){
@@ -1279,7 +1391,6 @@ function drawLine(ctx, x1,y1,x2,y2, color, size, mode="source-over"){
   ctx.stroke();
   ctx.restore();
 }
-
 function drawRect(ctx, x1,y1,x2,y2, color, size){
   ctx.save();
   ctx.strokeStyle=color;
@@ -1289,13 +1400,98 @@ function drawRect(ctx, x1,y1,x2,y2, color, size){
   ctx.stroke();
   ctx.restore();
 }
-
+function drawLineSeg(ctx, x1,y1,x2,y2, color, size){
+  drawLine(ctx, x1,y1,x2,y2, color, size, "source-over");
+}
+function drawArrow(ctx, x1,y1,x2,y2, color, size){
+  drawLineSeg(ctx, x1,y1,x2,y2, color, size);
+  const ang = Math.atan2(y2-y1, x2-x1);
+  const head = Math.max(10, size*4);
+  const a1 = ang + Math.PI*0.85;
+  const a2 = ang - Math.PI*0.85;
+  ctx.save();
+  ctx.strokeStyle=color;
+  ctx.lineWidth=size;
+  ctx.lineCap="round";
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2 + head*Math.cos(a1), y2 + head*Math.sin(a1));
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2 + head*Math.cos(a2), y2 + head*Math.sin(a2));
+  ctx.stroke();
+  ctx.restore();
+}
+function drawEllipse(ctx, x1,y1,x2,y2, color, size){
+  const cx = (x1+x2)/2, cy=(y1+y2)/2;
+  const rx = Math.abs(x2-x1)/2, ry=Math.abs(y2-y1)/2;
+  ctx.save();
+  ctx.strokeStyle=color;
+  ctx.lineWidth=size;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, Math.max(1,rx), Math.max(1,ry), 0, 0, Math.PI*2);
+  ctx.stroke();
+  ctx.restore();
+}
+function drawTriangle(ctx, x1,y1,x2,y2, color, size){
+  const topY = Math.min(y1,y2);
+  const botY = Math.max(y1,y2);
+  const leftX = Math.min(x1,x2);
+  const rightX = Math.max(x1,x2);
+  const cx = (leftX+rightX)/2;
+  ctx.save();
+  ctx.strokeStyle=color;
+  ctx.lineWidth=size;
+  ctx.beginPath();
+  ctx.moveTo(cx, topY);
+  ctx.lineTo(rightX, botY);
+  ctx.lineTo(leftX, botY);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.restore();
+}
 function putTextAt(ctx, x,y, text, color, size){
   ctx.save();
   ctx.fillStyle=color;
   ctx.font = `${Math.max(12, size*3)}px ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP"`;
   ctx.fillText(text, x, y);
   ctx.restore();
+}
+
+async function openAnnotator(studentId, lessonKey, groupId, photoId){
+  const p = getPhotoRef(studentId, lessonKey, groupId, photoId);
+  if(!p) return;
+
+  current = {studentId, lessonKey, groupId, photoId};
+  document.getElementById("modalTitle").textContent = "写真注釈";
+  document.getElementById("modalSub").textContent = `${studentNameById(studentId)}｜${lessonNameByKey(lessonKey)}`;
+
+  hist = [];
+  setTool("pen");
+  penSizeVal.textContent = penSize.value;
+
+  baseImg.onload = ()=>{
+    setTimeout(()=>{
+      fitCanvasToImage();
+      loadInkFromDataUrl(p.inkLayer || null);
+      syncCanvasCss();
+    }, 0);
+  };
+  baseImg.src = p.baseDataUrl;
+
+  modal.classList.add("show");
+}
+function closeAnnotator(){
+  modal.classList.remove("show");
+  current = { studentId:"", lessonKey:"", groupId:"", photoId:"" };
+}
+
+function canvasPoint(e){
+  const rect = ink.getBoundingClientRect();
+  const sx = ink.width / rect.width;
+  const sy = ink.height / rect.height;
+  const x = (e.clientX - rect.left) * sx;
+  const y = (e.clientY - rect.top) * sy;
+  return {x, y};
 }
 
 ink.addEventListener("pointerdown", (e)=>{
@@ -1306,8 +1502,6 @@ ink.addEventListener("pointerdown", (e)=>{
   const ctx = ink.getContext("2d");
   const {x,y} = canvasPoint(e);
 
-  // object eraser: stroke with bigger eraser, but also "object" meaning: we approximate by clearing a circle
-  // (true object eraser would need vector layers; hereは実用重視で“丸く消す”＋Undo)
   if(tool==="obj"){
     pushUndo();
     ctx.save();
@@ -1329,6 +1523,8 @@ ink.addEventListener("pointerdown", (e)=>{
     drawLine(ctx, x,y,x,y, penColor.value, Number(penSize.value),
       tool==="eraser" ? "destination-out" : "source-over"
     );
+  }else if(["rect","line","arrow","circle","ellipse","tri"].includes(tool)){
+    pushUndo();
   }
 });
 
@@ -1343,33 +1539,41 @@ ink.addEventListener("pointermove", (e)=>{
       tool==="eraser" ? "destination-out" : "source-over"
     );
     draw.lastX=x; draw.lastY=y;
-  }else if(tool==="rect"){
-    // プレビュー：いったんUndoの最後の状態に戻して矩形描画
+  }else if(["rect","line","arrow","circle","ellipse","tri"].includes(tool)){
     const last = hist[hist.length-1];
     if(last){
       loadInkFromDataUrl(last);
       setTimeout(()=>{
         const ctx2 = ink.getContext("2d");
-        drawRect(ctx2, draw.startX, draw.startY, x, y, penColor.value, Number(penSize.value));
+        const c = penColor.value;
+        const s = Number(penSize.value);
+
+        if(tool==="rect") drawRect(ctx2, draw.startX, draw.startY, x, y, c, s);
+        if(tool==="line") drawLineSeg(ctx2, draw.startX, draw.startY, x, y, c, s);
+        if(tool==="arrow") drawArrow(ctx2, draw.startX, draw.startY, x, y, c, s);
+
+        if(tool==="circle"){
+          const dx = x - draw.startX, dy = y - draw.startY;
+          const r = Math.max(Math.abs(dx), Math.abs(dy));
+          drawEllipse(
+            ctx2,
+            draw.startX, draw.startY,
+            draw.startX + Math.sign(dx||1)*r,
+            draw.startY + Math.sign(dy||1)*r,
+            c, s
+          );
+        }
+        if(tool==="ellipse") drawEllipse(ctx2, draw.startX, draw.startY, x, y, c, s);
+        if(tool==="tri") drawTriangle(ctx2, draw.startX, draw.startY, x, y, c, s);
       }, 0);
     }
   }
 });
 
-ink.addEventListener("pointerup", async (e)=>{
+ink.addEventListener("pointerup", (e)=>{
   if(!draw.active) return;
   e.preventDefault();
   draw.active=false;
-
-  const ctx = ink.getContext("2d");
-  const {x,y} = canvasPoint(e);
-
-  if(tool==="rect"){
-    // rect確定
-    // すでに描けているのでそのまま
-  }else if(tool==="text"){
-    // 文字はタップした位置に入力
-  }
 });
 
 ink.addEventListener("click", (e)=>{
@@ -1383,6 +1587,20 @@ ink.addEventListener("click", (e)=>{
   putTextAt(ctx, x, y, text, penColor.value, Number(penSize.value));
   markDirty();
 });
+
+function makeThumbFromBaseAndInk(baseDataUrl){
+  try{
+    const c = document.createElement("canvas");
+    c.width = baseImg.naturalWidth;
+    c.height = baseImg.naturalHeight;
+    const ctx = c.getContext("2d");
+    ctx.drawImage(baseImg,0,0,c.width,c.height);
+    ctx.drawImage(ink,0,0,c.width,c.height);
+    return c.toDataURL("image/jpeg", 0.9);
+  }catch{
+    return baseDataUrl;
+  }
+}
 
 document.getElementById("btnUndo").addEventListener("click", ()=>{
   if(hist.length===0){ showToast("戻せる履歴がない"); return; }
@@ -1400,61 +1618,39 @@ document.getElementById("btnSaveInk").addEventListener("click", ()=>{
   const p = getPhotoRef(current.studentId, current.lessonKey, current.groupId, current.photoId);
   if(!p) return;
   p.inkLayer = ink.toDataURL("image/png");
-  // サムネ用に合成画像も作成
-  p.inkDataUrl = mergeBaseAndInk(p.baseDataUrl, p.inkLayer);
+  p.thumbDataUrl = makeThumbFromBaseAndInk(p.baseDataUrl);
   markDirty();
   showToast("注釈を保存した");
   renderAll();
 });
 document.getElementById("btnClose").addEventListener("click", closeAnnotator);
 
-function mergeBaseAndInk(baseDataUrl, inkDataUrl){
-  // 同期で返せるよう、簡易版：dataURL合成は非同期が理想だが
-  // ここでは “保存後にすぐ見える” を優先して、最後に描画されたキャンバスを使う
-  // base+inkを合成してthumbに使う
-  // ※戻りは即ではなく、ヒューリスティックでinkのcanvasを使う
-  // 実用上はこれで十分。必要なら後で非同期の正確版に置換可能。
-  try{
-    const c = document.createElement("canvas");
-    c.width = baseImg.naturalWidth;
-    c.height = baseImg.naturalHeight;
-    const ctx = c.getContext("2d");
-    // baseImg は今開いてる写真
-    ctx.drawImage(baseImg,0,0,c.width,c.height);
-    ctx.drawImage(ink,0,0,c.width,c.height);
-    return c.toDataURL("image/jpeg", 0.9);
-  }catch{
-    return inkDataUrl || baseDataUrl;
-  }
-}
-
 penSize.addEventListener("input", ()=> penSizeVal.textContent = penSize.value);
+
 document.getElementById("toolPen").addEventListener("click", ()=> setTool("pen"));
 document.getElementById("toolEraser").addEventListener("click", ()=> setTool("eraser"));
 document.getElementById("toolObjEraser").addEventListener("click", ()=> setTool("obj"));
-document.getElementById("toolRect").addEventListener("click", ()=> { pushUndo(); setTool("rect"); });
+document.getElementById("toolLine").addEventListener("click", ()=> setTool("line"));
+document.getElementById("toolArrow").addEventListener("click", ()=> setTool("arrow"));
+document.getElementById("toolRect").addEventListener("click", ()=> setTool("rect"));
+document.getElementById("toolCircle").addEventListener("click", ()=> setTool("circle"));
+document.getElementById("toolEllipse").addEventListener("click", ()=> setTool("ellipse"));
+document.getElementById("toolTri").addEventListener("click", ()=> setTool("tri"));
 document.getElementById("toolText").addEventListener("click", ()=> setTool("text"));
 
 /** =========================
- *  6) 写真追加（iPad Safariで確実に開く）
+ *  9) 写真追加（iPad Safariで確実に開く）
  * ========================= */
 document.addEventListener("click", (e)=>{
   const t = e.target;
-
   const openBtn = t.closest("button[data-open-picker='1']");
   if(openBtn){
-    const studentId = openBtn.dataset.student;
-    const lessonKey = openBtn.dataset.lesson;
-    const groupId = openBtn.dataset.group;
-
     const input = openBtn.parentElement.querySelector("input[type='file'][data-photoadd='1']");
     if(!input){
       showToast("写真入力が見つからない…");
       return;
     }
-    // iPad Safari対策：必ずJSからclick
     input.click();
-    return;
   }
 });
 
@@ -1471,7 +1667,6 @@ document.addEventListener("change", async (e)=>{
   if(files.length===0) return;
 
   const rec = ensureGroup(sid, lkey, gid);
-
   for(const f of files){
     const dataUrl = await fileToDataUrl(f);
     rec.photos = rec.photos || [];
@@ -1479,39 +1674,25 @@ document.addEventListener("change", async (e)=>{
       id: makeId("ph"),
       baseDataUrl: dataUrl,
       inkLayer: null,
-      inkDataUrl: null,
+      thumbDataUrl: null,
       createdAt: nowISO(),
     });
   }
 
-  // 同じ写真を再度入れられるようにリセット
   input.value = "";
-
   markDirty();
   renderAll();
   showToast(`${files.length}枚 追加した`);
 });
 
-function fileToDataUrl(file){
-  return new Promise((resolve,reject)=>{
-    const r = new FileReader();
-    r.onload=()=>resolve(r.result);
-    r.onerror=()=>reject(r.error);
-    r.readAsDataURL(file);
-  });
-}
-
 /** =========================
- *  7) 入力イベント（点数・チェック・メモ）
+ *  10) 入力イベント（点数・チェック・メモ）
  * ========================= */
 document.addEventListener("input", (e)=>{
   const sid = state.currentStudentId;
-  if(!sid) return;
   const lessonKey = state.currentLessonKey;
-
   const t = e.target;
 
-  // unitName
   if(t.id==="unitName"){
     state.meta.unitName = t.value || "";
     document.getElementById("subTitle").textContent = `単元：${state.meta.unitName || "—"}｜端末内に自動保存`;
@@ -1519,8 +1700,8 @@ document.addEventListener("input", (e)=>{
     return;
   }
 
-  // overall memo
   if(t.id==="overallMemo"){
+    if(!sid) return;
     const lesson = ensurePath(sid, lessonKey);
     if(!lesson.__overall) lesson.__overall = { memo:"" };
     lesson.__overall.memo = t.value || "";
@@ -1528,27 +1709,30 @@ document.addEventListener("input", (e)=>{
     return;
   }
 
-  // score
   if(t instanceof HTMLInputElement && t.getAttribute("data-score")==="1"){
+    if(!sid) return;
     const gid = t.dataset.group;
-    const g = getLessonGroups(lessonKey).find(x=>x.id===gid);
+    const groups = getLessonGroups(lessonKey);
+    const g = groups.find(x=>x.id===gid);
     if(!g) return;
+
     const rec = ensureGroup(sid, lessonKey, gid);
     let v = t.value.replace(/[^\d]/g,"");
-    if(v==="") { rec.score=null; markDirty(); updateTotalsUI(); return; }
+    if(v===""){ rec.score=null; markDirty(); updateTotalsUI(); renderRosterList(); return; }
     let n = Number(v);
     if(!Number.isFinite(n)) n=0;
     n = Math.max(0, Math.min(g.scoring.max, n));
     rec.score = n;
     if(String(n)!==t.value) t.value = n;
+
     markDirty();
     updateTotalsUI();
     renderRosterList();
     return;
   }
 
-  // memo
   if(t instanceof HTMLTextAreaElement && t.getAttribute("data-memo")==="1"){
+    if(!sid) return;
     const gid = t.dataset.group;
     const rec = ensureGroup(sid, lessonKey, gid);
     rec.memo = t.value || "";
@@ -1558,48 +1742,47 @@ document.addEventListener("input", (e)=>{
 });
 
 document.addEventListener("change", (e)=>{
-  const sid = state.currentStudentId;
-  if(!sid) return;
-  const lessonKey = state.currentLessonKey;
-
   const t = e.target;
 
-  // lesson selector
   if(t.id==="lessonKey"){
     state.currentLessonKey = t.value;
+    // 項目モードの選択もリセット
+    state.currentItemGroupId = "";
     markDirty();
     renderAll();
     return;
   }
 
-  // checkbox
+  if(t.id==="itemGroupSelect"){
+    state.currentItemGroupId = t.value;
+    markDirty();
+    renderAll();
+    return;
+  }
+
+  const sid = state.currentStudentId;
+  if(!sid) return;
+
+  const lessonKey = state.currentLessonKey;
+
   if(t instanceof HTMLInputElement && t.getAttribute("data-check")==="1"){
     const gid = t.dataset.group;
     const idx = Number(t.dataset.idx);
     const rec = ensureGroup(sid, lessonKey, gid);
     rec.checks = rec.checks || [];
     rec.checks[idx] = t.checked;
+
     markDirty();
     updateTotalsUI();
     renderRosterList();
-    // チェック数表示など更新のため全再描画
     renderRubric();
     return;
   }
 });
 
 /** =========================
- *  8) 名簿・ナビ
+ *  11) ナビ・名簿反映
  * ========================= */
-function studentNameById(id){
-  const st = state.roster.find(s=>s.id===id);
-  return st ? st.name : "—";
-}
-function lessonNameByKey(k){
-  const l = CONFIG.lessons.find(x=>x.key===k);
-  return l ? l.name : k;
-}
-
 document.getElementById("btnApplyRoster").addEventListener("click", ()=>{
   const text = document.getElementById("rosterText").value || "";
   const lines = text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
@@ -1628,8 +1811,15 @@ document.getElementById("btnNext").addEventListener("click", ()=>{
   renderAll();
 });
 
+/** 表示モード切替 */
+document.getElementById("btnMode").addEventListener("click", ()=>{
+  state.uiMode = (state.uiMode === "student") ? "item" : "student";
+  markDirty();
+  renderAll();
+});
+
 /** =========================
- *  9) バックアップ／復元／全消去
+ *  12) バックアップ／復元／全消去
  * ========================= */
 document.getElementById("btnBackup").addEventListener("click", ()=>{
   const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
@@ -1651,10 +1841,11 @@ document.getElementById("btnRestore").addEventListener("click", ()=>{
     const text = await f.text();
     try{
       const obj = JSON.parse(text);
-      // 軽いバリデーション
       if(!obj || typeof obj !== "object") throw new Error("invalid");
       state = obj;
       if(!state.currentLessonKey) state.currentLessonKey = CONFIG.lessons[0].key;
+      if(!state.uiMode) state.uiMode = "student";
+      if(!state.currentItemGroupId) state.currentItemGroupId = "";
       markDirty();
       renderAll();
       showToast("復元した");
@@ -1673,6 +1864,8 @@ document.getElementById("btnReset").addEventListener("click", async ()=>{
     roster: [],
     currentStudentId: "",
     currentLessonKey: CONFIG.lessons[0].key,
+    uiMode:"student",
+    currentItemGroupId:"",
     records: {},
   };
   renderAll();
@@ -1680,7 +1873,7 @@ document.getElementById("btnReset").addEventListener("click", async ()=>{
 });
 
 /** =========================
- *  10) 画面更新
+ *  13) 画面更新
  * ========================= */
 function updateTotalsUI(){
   const sid = state.currentStudentId;
@@ -1724,12 +1917,25 @@ function renderAll(){
   }
 
   renderRosterList();
-  renderRubric();
+
+  // mode UI
+  const btnMode = document.getElementById("btnMode");
+  btnMode.textContent = (state.uiMode==="student") ? "表示：児童" : "表示：項目";
+
+  document.getElementById("itemModePanel").style.display = (state.uiMode==="item") ? "block" : "none";
+  document.getElementById("rubric").style.display = (state.uiMode==="student") ? "block" : "none";
+
+  if(state.uiMode==="student"){
+    renderRubric();
+  }else{
+    renderItemMode();
+  }
+
   updateTotalsUI();
 }
 
 /** =========================
- *  11) 起動
+ *  14) 起動
  * ========================= */
 (async function init(){
   await openDB();
@@ -1737,8 +1943,10 @@ function renderAll(){
   if(saved){
     state = saved;
     if(!state.currentLessonKey) state.currentLessonKey = CONFIG.lessons[0].key;
+    if(!state.uiMode) state.uiMode = "student";
+    if(!state.currentItemGroupId) state.currentItemGroupId = "";
   }else{
-    // 初回：名簿例
+    // 初回サンプル
     state.roster = [
       {id:makeId("st"), name:"3年A 児童A"},
       {id:makeId("st"), name:"3年A 児童B"},
@@ -1748,11 +1956,8 @@ function renderAll(){
     await idbSet(STATE_KEY, state);
   }
 
-  // rosterTextに反映
   document.getElementById("rosterText").value = state.roster.map(s=>s.name).join("\n");
-
   renderAll();
-
   showToast("起動しました");
 })();
 </script>
