@@ -183,11 +183,10 @@
       border-color: rgba(255,255,255,.14);
     }
 
-    /* ✅ メモはドラッグで高さ変更可能 */
     textarea{
       min-height:72px;
       resize:vertical;
-      padding-bottom:18px; /* iPadでつまみやすい */
+      padding-bottom:18px;
     }
 
     .select{
@@ -380,7 +379,6 @@
       border-color: rgba(255,255,255,.14);
     }
 
-    /* モーダル */
     .modal{
       position:fixed; inset:0;
       background: rgba(0,0,0,.45);
@@ -496,7 +494,6 @@
       font-size:12px;
     }
 
-    /* 項目モード */
     .itemRow{
       padding:12px;
       border-radius:16px;
@@ -575,7 +572,7 @@
         <small id="subTitle">単元：電気の通り道｜端末内に自動保存</small>
       </div>
       <div class="actions">
-        <button class="btn small" id="btnMode">表示：児童</button>
+        <button class="btn small" id="btnMode">表示：項目へ</button>
         <button class="btn small" id="btnTheme">🌙 ダーク</button>
         <button class="btn small ok" id="btnExportCSV">CSV出力</button>
         <button class="btn small primary" id="btnBackup">バックアップ(JSON)</button>
@@ -587,7 +584,6 @@
 
   <main>
     <div class="grid">
-      <!-- 左：名簿 -->
       <section class="card">
         <h3><span>名簿</span><span class="mini">タップで切替</span></h3>
         <div class="body">
@@ -603,7 +599,6 @@
         </div>
       </section>
 
-      <!-- 右：採点 -->
       <section class="card">
         <h3><span>採点</span><span class="mini" id="who">—</span></h3>
         <div class="body">
@@ -634,7 +629,6 @@
 
           <div class="line"></div>
 
-          <!-- 項目モード -->
           <div id="itemModePanel" style="display:none;">
             <div class="field">
               <label>項目を選択（この項目を全員分まとめて入力）</label>
@@ -645,7 +639,6 @@
             <div class="line"></div>
           </div>
 
-          <!-- 児童モード -->
           <div class="rubric" id="rubric"></div>
 
           <div class="line"></div>
@@ -672,7 +665,6 @@
     </div>
   </footer>
 
-  <!-- 注釈モーダル -->
   <div class="modal" id="modal">
     <div class="modalCard">
       <div class="modalTop">
@@ -730,24 +722,22 @@
 const CONFIG = {
   unitDefault: "電気の通り道",
   lessons: [
-    { key:"L1", name:"第1時：回路づくり（技能＋予想）" },
-    { key:"L2", name:"第2時：回路の理解＋シンキング（軽め）" },
-    { key:"L3", name:"第3-5時：通す/通さない（技能+思考+主体）" },
-    { key:"L7", name:"第7時：空き缶は通す？（発展・10点）" },
-    { key:"L8", name:"第8時：まとめテスト" },
+    { key:"L12", name:"第1-2時：回路（技能・知識）＋予想＋考察" },
+    { key:"L3",  name:"第3-5時：通す/通さない（技能+思考+主体）" },
+    { key:"L7",  name:"第7時：空き缶は通す？（発展・10点）" },
+    { key:"L8",  name:"第8時：まとめテスト（知識100＋思考50）" },
+    { key:"ALL", name:"通し評価（8時間：ふりかえり＆授業中の様子）" },
   ],
   domains: {
     K: { label:"知識・技能", color:"var(--k)" },
     T: { label:"思考・判断・表現", color:"var(--t)" },
     A: { label:"主体的", color:"var(--a)" },
   },
-
-  // 合計の判定（B帯広め）
   gradeBands: { A:0.86, Bp:0.72, B:0.40, Bm:0.28, C:0.00 },
 
   rubricByLesson: {
-    L1: [
-      { id:"K_L1", domain:"K", title:"回路の技能（チェック：達成数）",
+    L12: [
+      { id:"K_L12_skill", domain:"K", title:"回路の技能（チェック：達成数）",
         scoring:{ type:"checkCount", max:5 },
         criteria:[
           "乾電池の＋極/−極を意識してつなぐ",
@@ -757,32 +747,35 @@ const CONFIG = {
           "結果を記録（簡単にでも）",
         ],
       },
-      { id:"T_L1", domain:"T", title:"思考：予想（回路図＋理由）※正解でなくてOK（10点）",
-        scoring:{ type:"manual", max:10 },
-        criteria:[
-          "回路図が“輪”として描けている",
-          "電池の極や豆電球のつながりが分かる図",
-          "理由が自分の言葉で書けている（視点がある）",
-          "説明の分かりやすさ（相手に伝わる）",
-        ],
-      },
-    ],
-
-    L2: [
-      { id:"K_L2", domain:"K", title:"知識・技能（チェック：2つ）",
+      { id:"K_L12_know", domain:"K", title:"知識（チェック：2つ）",
         scoring:{ type:"checkCount", max:2 },
         criteria:[
           "用語（乾電池/導線/豆電球/ソケット等）が言える",
           "回路が“輪”になると電気が通ると説明できる",
         ],
       },
-      { id:"T_L2", domain:"T", title:"思考：シンキング（つく/つかない）からの軽い考察（10点）",
-        scoring:{ type:"manual", max:10 },
-        criteria:[
-          "結果をシンキングツールに正しく整理できている",
-          "整理から気づき（共通点/ちがい）を言えている",
-          "自分の言葉で説明できている",
-        ],
+      { id:"T_L12_pred", domain:"T", title:"思考：予想（回路図＋理由）※正解でなくてOK（10点）",
+        scoring:{
+          type:"subsum", max:10,
+          parts:[
+            { text:"回路図が“輪”として描けている", max:3 },
+            { text:"電池の極や豆電球のつながりが分かる図", max:3 },
+            { text:"理由が自分の言葉で書けている（視点）", max:3 },
+            { text:"説明の分かりやすさ", max:1 },
+          ]
+        },
+        criteria:[]
+      },
+      { id:"T_L12_think", domain:"T", title:"思考：考察（つく/つかないのシンキング）10点",
+        scoring:{
+          type:"subsum", max:10,
+          parts:[
+            { text:"結果をシンキングツールに正しく整理", max:4 },
+            { text:"整理から気づき（共通点/ちがい）", max:3 },
+            { text:"自分の言葉で説明できる", max:3 },
+          ]
+        },
+        criteria:[]
       },
     ],
 
@@ -797,18 +790,28 @@ const CONFIG = {
           "同じ条件で再確認（誤差チェック）ができる",
         ],
       },
-      { id:"T_L3a", domain:"T", title:"予想（10点）",
-        scoring:{ type:"manual", max:10 },
-        criteria:["予想＋理由（材質などの視点）"],
+      { id:"T_L3a", domain:"T", title:"思考：予想（10点）",
+        scoring:{
+          type:"subsum", max:10,
+          parts:[
+            { text:"予想が書けている（〇×など）", max:2 },
+            { text:"理由に材質などの視点がある", max:5 },
+            { text:"説明が分かりやすい", max:3 },
+          ]
+        },
+        criteria:[]
       },
-      { id:"T_L3b", domain:"T", title:"シンキング→分析→表現→結論（15点：結論重視）",
-        scoring:{ type:"manual", max:15 },
-        criteria:[
-          "結果をシンキングにまとめられる",
-          "シンキングから分析（共通点/規則性）",
-          "分析を言葉で表現できる",
-          "自分なりの結論を導けている（ここ重視）",
-        ],
+      { id:"T_L3b", domain:"T", title:"思考：シンキング→分析→表現→結論（15点：結論重視）",
+        scoring:{
+          type:"subsum", max:15,
+          parts:[
+            { text:"結果をシンキングにまとめられる", max:4 },
+            { text:"シンキングから分析（共通点/規則性）", max:4 },
+            { text:"分析を言葉で表現できる", max:3 },
+            { text:"自分なりの結論を導けている（重視）", max:4 },
+          ]
+        },
+        criteria:[]
       },
       { id:"A_L3", domain:"A", title:"主体：リクエスト（3個以上でB）",
         scoring:{ type:"manual", max:5 },
@@ -820,27 +823,35 @@ const CONFIG = {
     ],
 
     L7: [
-      { id:"T_L7", domain:"T", title:"空き缶は本当は通すはず…なのに通らないのはなぜ？（発展・10点）",
-        scoring:{ type:"manual", max:10 },
-        criteria:[
-          "『中は金属』など本質に触れている",
-          "表面の塗装/コーティングに気づけている",
-          "自分の言葉で筋道立てて説明できる",
-        ],
+      { id:"T_L7", domain:"T", title:"思考：空き缶は本当は通すはず…なのに通らないのはなぜ？（発展・10点）",
+        scoring:{
+          type:"subsum", max:10,
+          parts:[
+            { text:"『中は金属』など本質に触れている", max:3 },
+            { text:"塗装/コーティングに気づけている", max:4 },
+            { text:"自分の言葉で筋道立てて説明できる", max:3 },
+          ]
+        },
+        criteria:[]
       }
     ],
 
     L8: [
-      { id:"K_L8", domain:"K", title:"まとめテスト（得点入力）",
+      { id:"K_L8", domain:"K", title:"まとめテスト（知識：100点）",
         scoring:{ type:"manual", max:100 },
-        criteria:["得点を入力（必要なら別途換算）"],
-      }
+        grading:{ type:"testABC", aPct:0.95, cPct:0.70 },
+        criteria:["得点を入力（知識）"],
+      },
+      { id:"T_L8", domain:"T", title:"まとめテスト（思考：50点）",
+        scoring:{ type:"manual", max:50 },
+        grading:{ type:"testABC", aPct:0.95, cPct:0.70 },
+        criteria:["得点を入力（思考）"],
+      },
     ]
   },
 
-  // 主体（8時間通し）
   attitudeAcross: [
-    { id:"A_ALL1", domain:"A", title:"振り返りの蓄積（いつでも記録OK）",
+    { id:"A_ALL1", domain:"A", title:"ふりかえりの蓄積（8時間通し）",
       scoring:{ type:"manual", max:10 },
       criteria:[
         "振り返りが積み上がっている（回数/質）",
@@ -848,7 +859,7 @@ const CONFIG = {
       ],
       note:"※毎回書けない前提。空欄でもOK、記録は柔軟に。"
     },
-    { id:"A_ALL2", domain:"A", title:"授業中の様子（安全配慮/学習へ向かう/忘れ物等）",
+    { id:"A_ALL2", domain:"A", title:"授業中の様子（8時間通し：安全配慮/学習へ向かう/忘れ物等）",
       scoring:{ type:"manual", max:10 },
       criteria:["安全に配慮している","学習へ向かおうとしている","忘れ物/提出など"],
     }
@@ -857,9 +868,8 @@ const CONFIG = {
 
 /** =========================
  *  2) IndexedDB（端末内保存）
- *  ※A運用：DB名を更新して“新規”として扱う
  * ========================= */
-const DB_NAME = "SciEvalDB_v5_noocr";
+const DB_NAME = "SciEvalDB_v6_L12_ALL_testABC_subsum";
 const DB_VER = 1;
 const STORE = "state";
 
@@ -916,9 +926,9 @@ let state = {
   roster: [],
   currentStudentId: "",
   currentLessonKey: CONFIG.lessons[0].key,
-  uiMode: "student",        // "student" | "item"
+  uiMode: "student",
   currentItemGroupId: "",
-  records: {}, // records[studentId][lessonKey][groupId] = { score, checks[], memo, photos[], grade }
+  records: {},
 };
 
 function makeId(prefix="id"){
@@ -932,12 +942,21 @@ function ensurePath(studentId, lessonKey){
 function ensureGroup(studentId, lessonKey, groupId){
   const lesson = ensurePath(studentId, lessonKey);
   if(!lesson[groupId]){
-    lesson[groupId] = { score:null, checks:[], memo:"", photos:[], grade:"—" };
+    lesson[groupId] = { score:null, checks:[], parts:[], memo:"", photos:[], grade:"—" };
   }else{
     if(lesson[groupId].grade == null) lesson[groupId].grade = "—";
     if(lesson[groupId].photos == null) lesson[groupId].photos = [];
+    if(lesson[groupId].parts == null) lesson[groupId].parts = [];
   }
   return lesson[groupId];
+}
+
+/** ✅ 読み取り専用（CSV/集計でstateを増やさない） */
+function getGroup(studentId, lessonKey, groupId){
+  return state.records?.[studentId]?.[lessonKey]?.[groupId] || null;
+}
+function getOverallMemoRO(studentId, lessonKey){
+  return state.records?.[studentId]?.[lessonKey]?.__overall?.memo || "";
 }
 
 let saveTimer = null;
@@ -967,6 +986,7 @@ function escapeHtml(s){
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#39;");
 }
+
 function gradeFromRatio(r){
   const b = CONFIG.gradeBands;
   if(r >= b.A) return "A";
@@ -983,12 +1003,14 @@ function gradeClass(g){
   if(g==="C") return "C";
   return "B";
 }
+
 function getLessonGroups(lessonKey){
-  const base = CONFIG.rubricByLesson[lessonKey] ? [...CONFIG.rubricByLesson[lessonKey]] : [];
-  return [...base, ...CONFIG.attitudeAcross];
+  if(lessonKey === "ALL"){
+    return [...CONFIG.attitudeAcross];
+  }
+  return CONFIG.rubricByLesson[lessonKey] ? [...CONFIG.rubricByLesson[lessonKey]] : [];
 }
 
-/** ====== 項目点数と評価（保存用） ====== */
 function pointsForGroup(rec, g){
   const max = g.scoring?.max ?? 0;
   if(max <= 0) return 0;
@@ -996,28 +1018,54 @@ function pointsForGroup(rec, g){
   if(g.scoring?.type === "checkCount"){
     const cnt = (rec.checks || []).filter(Boolean).length;
     return Math.max(0, Math.min(max, cnt));
-  }else{
-    let points = (rec.score==null || rec.score==="") ? 0 : Number(rec.score);
-    if(!Number.isFinite(points)) points = 0;
-    return Math.max(0, Math.min(max, points));
   }
+
+  if(g.scoring?.type === "subsum"){
+    const parts = g.scoring.parts || [];
+    const arr = rec.parts || [];
+    let sum = 0;
+    for(let i=0;i<parts.length;i++){
+      const pmax = parts[i].max ?? 0;
+      let v = Number(arr[i] ?? 0);
+      if(!Number.isFinite(v)) v = 0;
+      v = Math.max(0, Math.min(pmax, v));
+      sum += v;
+    }
+    return Math.max(0, Math.min(max, sum));
+  }
+
+  let points = (rec.score==null || rec.score==="") ? 0 : Number(rec.score);
+  if(!Number.isFinite(points)) points = 0;
+  return Math.max(0, Math.min(max, points));
 }
-function gradeForGroup(points, max){
+
+function gradeForGroup(points, max, g){
   if(max <= 0) return "—";
-  const r = points / max;
+  const p = Math.max(0, Math.min(max, points));
+
+  if(g?.grading?.type === "testABC"){
+    const aMin = Math.floor(max * (g.grading.aPct ?? 0.95));
+    const cMin = Math.floor(max * (g.grading.cPct ?? 0.70));
+    if(p >= aMin) return "A";
+    if(p < cMin) return "C";
+    return "B";
+  }
+
+  const r = p / max;
   if(r >= 0.90) return "A";
   if(r >= 0.75) return "B+";
   if(r >= 0.55) return "B";
   if(r >= 0.35) return "B-";
   return "C";
 }
+
 function updateSavedGrade(studentId, lessonKey, groupId){
   const groups = getLessonGroups(lessonKey);
   const g = groups.find(x => x.id === groupId);
   if(!g) return;
   const rec = ensureGroup(studentId, lessonKey, groupId);
   const pts = pointsForGroup(rec, g);
-  rec.grade = gradeForGroup(pts, g.scoring?.max ?? 0);
+  rec.grade = gradeForGroup(pts, g.scoring?.max ?? 0, g);
 }
 
 function calcTotals(studentId, lessonKey){
@@ -1072,7 +1120,7 @@ function initTheme(){
 }
 
 /** =========================
- *  ✅ メモ高さ保存（児童×授業回×項目 など）
+ *  ✅ メモ高さ保存（イベント増殖防止）
  * ========================= */
 function memoHeightKey(type, studentId, lessonKey, groupId){
   return `memoH:${type}:${studentId||"-"}:${lessonKey||"-"}:${groupId||"-"}`;
@@ -1089,17 +1137,27 @@ function saveMemoHeight(type, studentId, lessonKey, groupId, px){
   localStorage.setItem(k, String(px));
 }
 
+/** ✅ 高さ復元＋保存（同一textareaへの二重登録を防ぐ） */
+function bindMemoHeightOnce(textarea, type, studentId, lessonKey, groupId, fallbackPx){
+  const h = loadMemoHeight(type, studentId, lessonKey, groupId, fallbackPx);
+  textarea.style.height = h + "px";
+
+  const bindKey = `bound_${type}_${studentId||"-"}_${lessonKey||"-"}_${groupId||"-"}`;
+  if(textarea.dataset[bindKey] === "1") return;
+  textarea.dataset[bindKey] = "1";
+
+  const save = ()=> saveMemoHeight(type, studentId, lessonKey, groupId, textarea.offsetHeight);
+  textarea.addEventListener("pointerup", save, {passive:true});
+  textarea.addEventListener("blur", save);
+}
+
 /** =========================
- *  CSV出力
+ *  CSV出力（stateを増やさない）
  * ========================= */
 function csvEscape(v){
   const s = (v==null) ? "" : String(v);
   if(/[",\n]/.test(s)) return `"${s.replaceAll('"','""')}"`;
   return s;
-}
-function getOverallMemo(studentId, lessonKey){
-  const lesson = state.records?.[studentId]?.[lessonKey];
-  return lesson?.__overall?.memo || "";
 }
 function exportCSV(){
   const unit = state.meta?.unitName || "";
@@ -1125,16 +1183,16 @@ function exportCSV(){
     const row = [unit, lessonName, st.name];
 
     for(const g of groups){
-      const rec = ensureGroup(st.id, lessonKey, g.id);
+      const rec = getGroup(st.id, lessonKey, g.id) || { score:null, checks:[], parts:[], memo:"", photos:[], grade:"—" };
       const pts = pointsForGroup(rec, g);
       const max = g.scoring?.max ?? 0;
-      const gr = (rec.grade && rec.grade !== "—") ? rec.grade : gradeForGroup(pts, max);
-
+      const gr = (rec.grade && rec.grade !== "—") ? rec.grade : gradeForGroup(pts, max, g);
       const photoCount = (rec.photos||[]).length;
+
       row.push(pts, max, gr, rec.memo||"", photoCount);
     }
 
-    row.push(getOverallMemo(st.id, lessonKey));
+    row.push(getOverallMemoRO(st.id, lessonKey));
     rows.push(row);
   }
 
@@ -1302,13 +1360,18 @@ function makeMiniPhotoUI(studentId, lessonKey, groupId){
   return box;
 }
 
-function fileToDataUrl(file){
-  return new Promise((resolve,reject)=>{
-    const r = new FileReader();
-    r.onload=()=>resolve(r.result);
-    r.onerror=()=>reject(r.error);
-    r.readAsDataURL(file);
-  });
+/** ✅ 写真を圧縮して保存（容量対策） */
+async function fileToCompressedDataUrl(file, maxW=1600, quality=0.8){
+  const bmp = await createImageBitmap(file);
+  const scale = Math.min(1, maxW / bmp.width);
+  const w = Math.round(bmp.width * scale);
+  const h = Math.round(bmp.height * scale);
+
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  const ctx = c.getContext("2d");
+  ctx.drawImage(bmp, 0, 0, w, h);
+  return c.toDataURL("image/jpeg", quality);
 }
 
 /** =========================
@@ -1358,27 +1421,38 @@ function renderRubric(){
     left.style.flex="1";
     left.style.minWidth="260px";
 
-    const crit = (g.criteria||[]);
-    const critHtml = crit.map((c, idx)=>{
-      if(g.scoring?.type==="checkCount"){
-        const checked = !!(rec.checks||[])[idx];
-        return `
-          <label style="display:flex; gap:10px; align-items:flex-start; margin:10px 0; cursor:pointer;">
-            <input type="checkbox" data-check="1" data-group="${escapeHtml(g.id)}" data-idx="${idx}" ${checked?"checked":""}
-                   style="width:22px; height:22px; margin-top:2px;">
-            <span>${escapeHtml(c)}</span>
-          </label>
-        `;
-      }
-      return `
+    let critHtml = "";
+    if(g.scoring?.type === "subsum"){
+      const parts = g.scoring.parts || [];
+      critHtml = parts.map((p, idx)=>`
         <div style="display:flex; gap:10px; align-items:flex-start; margin:8px 0;">
           <span class="tag gray" style="min-width:34px; text-align:center;">${idx+1}</span>
-          <span>${escapeHtml(c)}</span>
+          <span>${escapeHtml(p.text)} <span class="mini">（${p.max}点）</span></span>
         </div>
-      `;
-    }).join("");
+      `).join("");
+    }else{
+      const crit = (g.criteria||[]);
+      critHtml = crit.map((c, idx)=>{
+        if(g.scoring?.type==="checkCount"){
+          const checked = !!(rec.checks||[])[idx];
+          return `
+            <label style="display:flex; gap:10px; align-items:flex-start; margin:10px 0; cursor:pointer;">
+              <input type="checkbox" data-check="1" data-group="${escapeHtml(g.id)}" data-idx="${idx}" ${checked?"checked":""}
+                     style="width:22px; height:22px; margin-top:2px;">
+              <span>${escapeHtml(c)}</span>
+            </label>
+          `;
+        }
+        return `
+          <div style="display:flex; gap:10px; align-items:flex-start; margin:8px 0;">
+            <span class="tag gray" style="min-width:34px; text-align:center;">${idx+1}</span>
+            <span>${escapeHtml(c)}</span>
+          </div>
+        `;
+      }).join("");
+    }
 
-    left.innerHTML = `<div class="mini">基準（授業中に見ながら判断）</div><div>${critHtml}</div>`;
+    left.innerHTML = `<div class="mini">基準（授業中に見ながら判断）</div><div>${critHtml || `<span class="mini">（基準なし）</span>`}</div>`;
 
     const right = document.createElement("div");
     right.style.minWidth="280px";
@@ -1388,6 +1462,7 @@ function renderRubric(){
     right.style.alignItems="stretch";
 
     let scoreUI = "";
+
     if(g.scoring?.type==="checkCount"){
       const cnt = (rec.checks||[]).filter(Boolean).length;
       scoreUI = `
@@ -1397,7 +1472,39 @@ function renderRubric(){
           <div class="hint">チェック数＝得点（最大 ${g.scoring.max}）</div>
         </div>
       `;
-    }else{
+    } else if(g.scoring?.type==="subsum"){
+      const parts = g.scoring.parts || [];
+      const arr = rec.parts || [];
+      const rows = parts.map((p, idx)=>{
+        const v = (arr[idx]==null) ? 0 : arr[idx];
+        return `
+          <div style="display:flex; gap:10px; align-items:center; justify-content:space-between; margin:8px 0;">
+            <div style="flex:1; min-width:180px;">
+              <span class="tag gray" style="margin-right:6px;">${idx+1}</span>
+              <span>${escapeHtml(p.text)}</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input class="input" style="width:86px; text-align:center; font-weight:800;"
+                     inputmode="numeric" pattern="[0-9]*"
+                     data-partscore="1" data-group="${escapeHtml(g.id)}" data-idx="${idx}"
+                     value="${escapeHtml(v)}" />
+              <span class="mini">/ ${p.max}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      scoreUI = `
+        <div class="field">
+          <label>点数（各チェックの合計：自動）</label>
+          <div class="hint">各項目に点数 → 合計が ${g.scoring.max} 点満点</div>
+        </div>
+        <div>${rows}</div>
+        <div class="tag gray" style="display:inline-flex; margin-top:6px;">
+          合計：${pointsForGroup(rec, g)}/${g.scoring.max}点
+        </div>
+      `;
+    } else {
       const v = (rec.score==null) ? "" : rec.score;
       scoreUI = `
         <div class="field">
@@ -1429,16 +1536,10 @@ function renderRubric(){
     det.appendChild(block);
     wrap.appendChild(det);
 
-    // ✅ 児童モード：項目メモの高さを復元＆保存（児童×授業回×項目）
     setTimeout(()=>{
       const ta = right.querySelector(`textarea[data-memo="1"][data-group="${CSS.escape(g.id)}"]`);
       if(ta){
-        const h = loadMemoHeight("group", sid, lessonKey, g.id, 110);
-        ta.style.height = h + "px";
-
-        const save = ()=> saveMemoHeight("group", sid, lessonKey, g.id, ta.offsetHeight);
-        ta.addEventListener("pointerup", save, {passive:true});
-        ta.addEventListener("blur", save);
+        bindMemoHeightOnce(ta, "group", sid, lessonKey, g.id, 110);
       }
     }, 0);
   }
@@ -1447,6 +1548,31 @@ function renderRubric(){
 /** =========================
  *  項目モード（項目1つ→全員分入力）
  * ========================= */
+function promptPartsAndSave(studentId, lessonKey, group){
+  const rec = ensureGroup(studentId, lessonKey, group.id);
+  const parts = group.scoring.parts || [];
+  rec.parts = rec.parts || [];
+
+  for(let i=0;i<parts.length;i++){
+    const p = parts[i];
+    const cur = Number(rec.parts[i] ?? 0);
+    const ans = prompt(`【${studentNameById(studentId)}】\n${group.title}\n${i+1}. ${p.text}\n(0〜${p.max})`, String(cur));
+    if(ans === null) return;
+    let v = String(ans).replace(/[^\d]/g,"");
+    let n = v==="" ? 0 : Number(v);
+    if(!Number.isFinite(n)) n = 0;
+    n = Math.max(0, Math.min(p.max, n));
+    rec.parts[i] = n;
+  }
+
+  updateSavedGrade(studentId, lessonKey, group.id);
+  markDirty();
+  renderRosterList();
+  updateTotalsUI();
+  renderItemMode();
+  showToast("配点を保存した");
+}
+
 function renderItemMode(){
   const panel = document.getElementById("itemModePanel");
   const sel = document.getElementById("itemGroupSelect");
@@ -1487,11 +1613,14 @@ function renderItemMode(){
     const left = document.createElement("div");
     left.style.minWidth="220px";
     left.style.flex="1";
+    const pts = pointsForGroup(rec, group);
+
     left.innerHTML = `
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
         <b>${escapeHtml(st.name)}</b>
         <span class="tag ${group.domain==="K"?"k":group.domain==="T"?"t":"a"}">${escapeHtml(CONFIG.domains[group.domain].label)}</span>
         <span class="tag gray">${group.scoring.max}点</span>
+        <span class="tag gray">合計：${pts}/${group.scoring.max}</span>
       </div>
       <div class="mini">${escapeHtml(group.title)}</div>
     `;
@@ -1534,7 +1663,18 @@ function renderItemMode(){
       cntTag.className="tag gray";
       cntTag.textContent = `達成：${cnt}/${max}`;
       topLine.appendChild(cntTag);
-    }else{
+
+    } else if(group.scoring.type === "subsum"){
+      const btn = document.createElement("button");
+      btn.className = "btn small primary";
+      btn.type = "button";
+      btn.textContent = "配点入力";
+      btn.addEventListener("click", ()=>{
+        promptPartsAndSave(st.id, lessonKey, group);
+      });
+      topLine.appendChild(btn);
+
+    } else {
       const inp = document.createElement("input");
       inp.className = "input num";
       inp.inputMode = "numeric";
@@ -1584,12 +1724,7 @@ function renderItemMode(){
       markDirty();
     });
 
-    // ✅ 項目モード：メモ高さを復元＆保存（児童×授業回×項目）
-    const h = loadMemoHeight("itemmode", st.id, lessonKey, group.id, 90);
-    memo.style.height = h + "px";
-    const saveH = ()=> saveMemoHeight("itemmode", st.id, lessonKey, group.id, memo.offsetHeight);
-    memo.addEventListener("pointerup", saveH, {passive:true});
-    memo.addEventListener("blur", saveH);
+    bindMemoHeightOnce(memo, "itemmode", st.id, lessonKey, group.id, 90);
 
     const photoUI = makeMiniPhotoUI(st.id, lessonKey, group.id);
 
@@ -1614,7 +1749,7 @@ const penColor = document.getElementById("penColor");
 const penSize = document.getElementById("penSize");
 const penSizeVal = document.getElementById("penSizeVal");
 
-let tool = "pen"; // pen | eraser | obj | rect | text | line | arrow | circle | ellipse | tri
+let tool = "pen";
 let draw = { active:false, startX:0, startY:0, lastX:0, lastY:0 };
 let hist = [];
 let current = { studentId:"", lessonKey:"", groupId:"", photoId:"" };
@@ -1864,15 +1999,26 @@ ink.addEventListener("click", (e)=>{
   markDirty();
 });
 
+/** ✅ 注釈サムネ：ink基準で安定化 */
 function makeThumbFromBaseAndInk(baseDataUrl){
   try{
+    const w = ink.width || baseImg.naturalWidth;
+    const h = ink.height || baseImg.naturalHeight;
+    if(!w || !h) return baseDataUrl;
+
     const c = document.createElement("canvas");
-    c.width = baseImg.naturalWidth;
-    c.height = baseImg.naturalHeight;
+    c.width = w;
+    c.height = h;
     const ctx = c.getContext("2d");
-    ctx.drawImage(baseImg,0,0,c.width,c.height);
-    ctx.drawImage(ink,0,0,c.width,c.height);
-    return c.toDataURL("image/jpeg", 0.9);
+
+    if(baseImg.naturalWidth){
+      ctx.drawImage(baseImg, 0, 0, w, h);
+    }else{
+      return baseDataUrl;
+    }
+
+    ctx.drawImage(ink, 0, 0, w, h);
+    return c.toDataURL("image/jpeg", 0.85);
   }catch{
     return baseDataUrl;
   }
@@ -1945,7 +2091,7 @@ document.addEventListener("change", async (e)=>{
 
   const rec = ensureGroup(sid, lkey, gid);
   for(const f of files){
-    const dataUrl = await fileToDataUrl(f);
+    const dataUrl = await fileToCompressedDataUrl(f, 1600, 0.8);
     const id = makeId("ph");
     rec.photos = rec.photos || [];
     rec.photos.push({
@@ -1964,7 +2110,7 @@ document.addEventListener("change", async (e)=>{
 });
 
 /** =========================
- *  入力イベント（点数・チェック・メモ）
+ *  入力イベント（点数・配点・チェック・メモ）
  * ========================= */
 document.addEventListener("input", (e)=>{
   const sid = state.currentStudentId;
@@ -1984,6 +2130,36 @@ document.addEventListener("input", (e)=>{
     if(!lesson.__overall) lesson.__overall = { memo:"" };
     lesson.__overall.memo = t.value || "";
     markDirty();
+    return;
+  }
+
+  if(t instanceof HTMLInputElement && t.getAttribute("data-partscore")==="1"){
+    if(!sid) return;
+    const gid = t.dataset.group;
+    const idx = Number(t.dataset.idx);
+
+    const groups = getLessonGroups(lessonKey);
+    const g = groups.find(x=>x.id===gid);
+    if(!g || g.scoring?.type!=="subsum") return;
+
+    const rec = ensureGroup(sid, lessonKey, gid);
+    rec.parts = rec.parts || [];
+
+    let v = (t.value || "").replace(/[^\d]/g,"");
+    let n = v==="" ? 0 : Number(v);
+    if(!Number.isFinite(n)) n = 0;
+
+    const pmax = (g.scoring.parts?.[idx]?.max ?? 0);
+    n = Math.max(0, Math.min(pmax, n));
+
+    rec.parts[idx] = n;
+    t.value = String(n);
+
+    updateSavedGrade(sid, lessonKey, gid);
+    markDirty();
+    updateTotalsUI();
+    renderRosterList();
+    renderRubric();
     return;
   }
 
@@ -2061,14 +2237,18 @@ document.addEventListener("change", (e)=>{
 });
 
 /** =========================
- *  ナビ・名簿反映
+ *  ナビ・名簿反映（ID保持）
  * ========================= */
 document.getElementById("btnApplyRoster").addEventListener("click", ()=>{
   const text = document.getElementById("rosterText").value || "";
   const lines = text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
-  const roster = lines.map(name=>({ id: makeId("st"), name }));
+
+  const oldByName = new Map((state.roster||[]).map(s=>[s.name, s.id]));
+  const roster = lines.map(name=>({ id: oldByName.get(name) || makeId("st"), name }));
+
   state.roster = roster;
   if(!state.currentStudentId && roster.length>0) state.currentStudentId = roster[0].id;
+
   markDirty();
   renderAll();
   showToast("名簿を反映した");
@@ -2091,17 +2271,14 @@ document.getElementById("btnNext").addEventListener("click", ()=>{
   renderAll();
 });
 
-/** 表示モード切替 */
 document.getElementById("btnMode").addEventListener("click", ()=>{
   state.uiMode = (state.uiMode === "student") ? "item" : "student";
   markDirty();
   renderAll();
 });
 
-/** CSV */
 document.getElementById("btnExportCSV").addEventListener("click", exportCSV);
 
-/** テーマ */
 document.getElementById("btnTheme").addEventListener("click", ()=>{
   const cur = document.documentElement.getAttribute("data-theme") || "light";
   applyTheme(cur === "dark" ? "light" : "dark");
@@ -2200,14 +2377,9 @@ function renderAll(){
     const ta = document.getElementById("overallMemo");
     ta.value = memo;
 
-    // ✅ 全体メモの高さを復元＆保存（児童×授業回）
     setTimeout(()=>{
       const lkey = state.currentLessonKey;
-      const h = loadMemoHeight("overall", sid, lkey, "__overall", 120);
-      ta.style.height = h + "px";
-      const save = ()=> saveMemoHeight("overall", sid, lkey, "__overall", ta.offsetHeight);
-      ta.addEventListener("pointerup", save, {passive:true});
-      ta.addEventListener("blur", save);
+      bindMemoHeightOnce(ta, "overall", sid, lkey, "__overall", 120);
     }, 0);
   }else{
     document.getElementById("overallMemo").value = "";
@@ -2216,7 +2388,7 @@ function renderAll(){
   renderRosterList();
 
   const btnMode = document.getElementById("btnMode");
-  btnMode.textContent = (state.uiMode==="student") ? "表示：児童" : "表示：項目";
+  btnMode.textContent = (state.uiMode==="student") ? "表示：項目へ" : "表示：児童へ";
 
   document.getElementById("itemModePanel").style.display = (state.uiMode==="item") ? "block" : "none";
   document.getElementById("rubric").style.display = (state.uiMode==="student") ? "block" : "none";
@@ -2250,7 +2422,6 @@ function renderAll(){
     await idbSet(STATE_KEY, state);
   }
 
-  // 起動時：grade を埋める（互換）
   for(const st of (state.roster||[])){
     for(const l of (CONFIG.lessons||[])){
       const groups = getLessonGroups(l.key);
