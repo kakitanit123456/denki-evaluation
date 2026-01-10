@@ -11,7 +11,6 @@
     :root{
       --bg:#f6f7fb;
       --card:#ffffff;
-      --card2:#ffffff;
       --text:#111827;
       --muted:#6b7280;
       --line:#e5e7eb;
@@ -28,7 +27,6 @@
     :root[data-theme="dark"]{
       --bg:#0b1220;
       --card:#111a2b;
-      --card2:#0f172a;
       --text:#e5e7eb;
       --muted:#9ca3af;
       --line:#243049;
@@ -61,7 +59,6 @@
       backdrop-filter: blur(10px);
       border-bottom:1px solid rgba(0,0,0,.08);
     }
-
     :root[data-theme="dark"] header{
       background: rgba(17,26,43,.78);
       border-bottom:1px solid rgba(255,255,255,.10);
@@ -185,7 +182,14 @@
       background: rgba(255,255,255,.04);
       border-color: rgba(255,255,255,.14);
     }
-    textarea{min-height:72px; resize:vertical;}
+
+    /* ✅ メモはドラッグで高さ変更可能 */
+    textarea{
+      min-height:72px;
+      resize:vertical;
+      padding-bottom:18px; /* iPadでつまみやすい */
+    }
+
     .select{
       background: rgba(255,255,255,.95);
       border:1px solid rgba(0,0,0,.12);
@@ -362,7 +366,7 @@
       border-color: rgba(255,255,255,.14);
     }
     .thumb .x:active{transform:translateY(1px)}
-    .thumb .ocr{
+    .thumb .lbl{
       position:absolute; bottom:6px; left:6px;
       font-size:11px;
       padding:4px 8px;
@@ -371,7 +375,7 @@
       border:1px solid rgba(0,0,0,.12);
       user-select:none;
     }
-    :root[data-theme="dark"] .thumb .ocr{
+    :root[data-theme="dark"] .thumb .lbl{
       background: rgba(17,26,43,.88);
       border-color: rgba(255,255,255,.14);
     }
@@ -526,6 +530,7 @@
       min-height:54px;
       resize:vertical;
       font-size:13px;
+      padding-bottom:18px;
     }
     .thumbMini{
       width:74px; height:58px;
@@ -567,15 +572,11 @@
     <div class="topbar">
       <div class="title">
         <b>理科評価 記録ツール（iPad最適化）</b>
-        <small id="subTitle">単元：電気の通り道（サンプル）｜端末内に自動保存</small>
+        <small id="subTitle">単元：電気の通り道｜端末内に自動保存</small>
       </div>
       <div class="actions">
         <button class="btn small" id="btnMode">表示：児童</button>
-
         <button class="btn small" id="btnTheme">🌙 ダーク</button>
-        <button class="btn small" id="btnAutoOCR">OCR：OFF</button>
-        <button class="btn small" id="btnOCRNet">Wi-Fi限定：ON</button>
-
         <button class="btn small ok" id="btnExportCSV">CSV出力</button>
         <button class="btn small primary" id="btnBackup">バックアップ(JSON)</button>
         <button class="btn small warn" id="btnRestore">復元(JSON)</button>
@@ -650,7 +651,7 @@
           <div class="line"></div>
 
           <div class="field">
-            <label>全体メモ（この児童・この授業回）</label>
+            <label>全体メモ（この児童・この授業回）※高さは自由に変えられます</label>
             <textarea id="overallMemo" placeholder="気づき、声かけ、次時の手立て など"></textarea>
           </div>
         </div>
@@ -662,7 +663,7 @@
     <div class="foot">
       <div class="statline" id="statusLine">
         <span class="pill"><span class="dot" id="dot"></span><strong id="saveState">保存OK</strong></span>
-        <span>※ホーム画面追加で安定（iPad Safari推奨）</span>
+        <span>※iPadはSafari推奨（ホーム画面追加で安定）</span>
       </div>
       <div class="row">
         <button class="btn small" id="btnPrev">◀ 前の児童</button>
@@ -678,7 +679,6 @@
         <div class="left">
           <span class="tag gray" id="modalTitle">写真注釈</span>
           <span class="mini" id="modalSub">—</span>
-          <span class="tag gray" id="modalOCRTag" style="max-width:42vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">OCR：—</span>
         </div>
         <div class="right">
           <div class="toolRow">
@@ -706,9 +706,6 @@
           <button class="btn small" id="btnUndo">戻す</button>
           <button class="btn small" id="btnClearInk">注釈全消し</button>
 
-          <button class="btn small" id="btnOCR">OCR</button>
-          <button class="btn small" id="btnPasteOCR">📋メモへ</button>
-
           <button class="btn small ok" id="btnSaveInk">保存</button>
           <button class="btn small ghost" id="btnClose">閉じる</button>
         </div>
@@ -726,18 +723,15 @@
   <div class="toast" id="toast"></div>
 </div>
 
-<!-- OCR -->
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
 <script>
 /** =========================
- *  1) 設定（後で評価計画に合わせてここを調整）
+ *  1) 設定（評価計画）
  * ========================= */
 const CONFIG = {
   unitDefault: "電気の通り道",
   lessons: [
-    { key:"L1", name:"第1-2時：回路（理解・技能）" },
-    { key:"L2", name:"第2時：シンキング（つく/つかない）軽め10点" },
+    { key:"L1", name:"第1時：回路づくり（技能＋予想）" },
+    { key:"L2", name:"第2時：回路の理解＋シンキング（軽め）" },
     { key:"L3", name:"第3-5時：通す/通さない（技能+思考+主体）" },
     { key:"L7", name:"第7時：空き缶は通す？（発展・10点）" },
     { key:"L8", name:"第8時：まとめテスト" },
@@ -763,33 +757,35 @@ const CONFIG = {
           "結果を記録（簡単にでも）",
         ],
       },
-      { id:"T_L1", domain:"T", title:"予想（回路図＋理由）※正解でなくてOK（10点）",
+      { id:"T_L1", domain:"T", title:"思考：予想（回路図＋理由）※正解でなくてOK（10点）",
         scoring:{ type:"manual", max:10 },
         criteria:[
           "回路図が“輪”として描けている",
           "電池の極や豆電球のつながりが分かる図",
           "理由が自分の言葉で書けている（視点がある）",
-          "丁寧さ・説明の分かりやすさ",
+          "説明の分かりやすさ（相手に伝わる）",
         ],
       },
     ],
+
     L2: [
-      { id:"T_L2", domain:"T", title:"シンキングツール（つく/つかない）からの軽い考察（10点）",
-        scoring:{ type:"manual", max:10 },
-        criteria:[
-          "結果をシンキングに正しく整理できている",
-          "整理から気づき（共通点/ちがい）を言えている",
-          "言葉で説明できている",
-        ],
-      },
-      { id:"K_L2", domain:"K", title:"知識・技能（チェック：2つだけ）",
+      { id:"K_L2", domain:"K", title:"知識・技能（チェック：2つ）",
         scoring:{ type:"checkCount", max:2 },
         criteria:[
           "用語（乾電池/導線/豆電球/ソケット等）が言える",
           "回路が“輪”になると電気が通ると説明できる",
         ],
       },
+      { id:"T_L2", domain:"T", title:"思考：シンキング（つく/つかない）からの軽い考察（10点）",
+        scoring:{ type:"manual", max:10 },
+        criteria:[
+          "結果をシンキングツールに正しく整理できている",
+          "整理から気づき（共通点/ちがい）を言えている",
+          "自分の言葉で説明できている",
+        ],
+      },
     ],
+
     L3: [
       { id:"K_L3", domain:"K", title:"分類実験の技能（シビア版：チェック数）",
         scoring:{ type:"checkCount", max:5 },
@@ -822,6 +818,7 @@ const CONFIG = {
         ],
       },
     ],
+
     L7: [
       { id:"T_L7", domain:"T", title:"空き缶は本当は通すはず…なのに通らないのはなぜ？（発展・10点）",
         scoring:{ type:"manual", max:10 },
@@ -832,6 +829,7 @@ const CONFIG = {
         ],
       }
     ],
+
     L8: [
       { id:"K_L8", domain:"K", title:"まとめテスト（得点入力）",
         scoring:{ type:"manual", max:100 },
@@ -859,8 +857,9 @@ const CONFIG = {
 
 /** =========================
  *  2) IndexedDB（端末内保存）
+ *  ※A運用：DB名を更新して“新規”として扱う
  * ========================= */
-const DB_NAME = "SciEvalDB_v4";
+const DB_NAME = "SciEvalDB_v5_noocr";
 const DB_VER = 1;
 const STORE = "state";
 
@@ -937,10 +936,6 @@ function ensureGroup(studentId, lessonKey, groupId){
   }else{
     if(lesson[groupId].grade == null) lesson[groupId].grade = "—";
     if(lesson[groupId].photos == null) lesson[groupId].photos = [];
-    // 旧データ互換
-    for(const p of (lesson[groupId].photos||[])){
-      if(p.ocrText == null) p.ocrText = "";
-    }
   }
   return lesson[groupId];
 }
@@ -1042,6 +1037,7 @@ function calcTotals(studentId, lessonKey){
   const ratio = maxAll>0 ? sumAll/maxAll : 0;
   return {sumK,sumT,sumA,sumAll,maxAll,grade:gradeFromRatio(ratio)};
 }
+
 function renderLessonSelect(){
   const sel = document.getElementById("lessonKey");
   sel.innerHTML = CONFIG.lessons.map(l=>`<option value="${escapeHtml(l.key)}">${escapeHtml(l.name)}</option>`).join("");
@@ -1076,50 +1072,21 @@ function initTheme(){
 }
 
 /** =========================
- *  OCR 設定＆通信条件
+ *  ✅ メモ高さ保存（児童×授業回×項目 など）
  * ========================= */
-function getAutoOCR(){ return localStorage.getItem("autoOCR") === "1"; }
-function setAutoOCR(on){
-  localStorage.setItem("autoOCR", on ? "1" : "0");
-  const b = document.getElementById("btnAutoOCR");
-  if(b) b.textContent = on ? "OCR：ON" : "OCR：OFF";
-  showToast(on ? "自動OCR：ON" : "自動OCR：OFF");
+function memoHeightKey(type, studentId, lessonKey, groupId){
+  return `memoH:${type}:${studentId||"-"}:${lessonKey||"-"}:${groupId||"-"}`;
 }
-function initAutoOCR(){
-  if(localStorage.getItem("autoOCR") == null) localStorage.setItem("autoOCR","0");
-  setAutoOCR(getAutoOCR());
+function loadMemoHeight(type, studentId, lessonKey, groupId, fallbackPx){
+  const k = memoHeightKey(type, studentId, lessonKey, groupId);
+  const v = localStorage.getItem(k);
+  const n = v ? Number(v) : NaN;
+  if(Number.isFinite(n) && n>=60 && n<=1200) return n;
+  return fallbackPx;
 }
-
-function getWifiOnlyOCR(){
-  return localStorage.getItem("wifiOnlyOCR") !== "0"; // デフォルトON
-}
-function setWifiOnlyOCR(on){
-  localStorage.setItem("wifiOnlyOCR", on ? "1" : "0");
-  const b = document.getElementById("btnOCRNet");
-  if(b) b.textContent = on ? "Wi-Fi限定：ON" : "Wi-Fi限定：OFF";
-  showToast(on ? "OCRはWi-Fi時のみ" : "OCRは通信種別を問わない");
-}
-function initWifiOnlyOCR(){
-  if(localStorage.getItem("wifiOnlyOCR") == null) localStorage.setItem("wifiOnlyOCR","1");
-  setWifiOnlyOCR(getWifiOnlyOCR());
-}
-
-// iOS SafariはWi-Fi判定APIが無いことが多い → 判定不可なら安全側で止める
-function canRunOCRNow(){
-  if(!navigator.onLine) return {ok:false, reason:"オフライン"};
-
-  if(!getWifiOnlyOCR()) return {ok:true, reason:""};
-
-  const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  if(!c) return {ok:false, reason:"Wi-Fi判定不可（Safari制限）"};
-
-  if(c.type){
-    if(c.type === "wifi") return {ok:true, reason:""};
-    return {ok:false, reason:`Wi-Fi以外（${c.type}）`};
-  }
-  if(c.effectiveType) return {ok:false, reason:`Wi-Fi判定不可（${c.effectiveType}）`};
-
-  return {ok:false, reason:"Wi-Fi判定不可"};
+function saveMemoHeight(type, studentId, lessonKey, groupId, px){
+  const k = memoHeightKey(type, studentId, lessonKey, groupId);
+  localStorage.setItem(k, String(px));
 }
 
 /** =========================
@@ -1148,7 +1115,6 @@ function exportCSV(){
       `${CONFIG.domains[g.domain].label}｜${g.title}｜評価`,
       `${CONFIG.domains[g.domain].label}｜${g.title}｜メモ`,
       `${CONFIG.domains[g.domain].label}｜${g.title}｜写真枚数`,
-      `${CONFIG.domains[g.domain].label}｜${g.title}｜OCRテキスト`
     ]),
     "全体メモ"
   ];
@@ -1165,12 +1131,7 @@ function exportCSV(){
       const gr = (rec.grade && rec.grade !== "—") ? rec.grade : gradeForGroup(pts, max);
 
       const photoCount = (rec.photos||[]).length;
-      const ocrAll = (rec.photos||[])
-        .map(p => (p.ocrText||"").trim())
-        .filter(Boolean)
-        .join(" / ");
-
-      row.push(pts, max, gr, rec.memo||"", photoCount, ocrAll);
+      row.push(pts, max, gr, rec.memo||"", photoCount);
     }
 
     row.push(getOverallMemo(st.id, lessonKey));
@@ -1188,7 +1149,7 @@ function exportCSV(){
 }
 
 /** =========================
- *  4) 名簿表示
+ *  名簿表示
  * ========================= */
 function renderRosterList(){
   const list = document.getElementById("studentList");
@@ -1224,7 +1185,7 @@ function renderRosterList(){
 }
 
 /** =========================
- *  5) 写真（無制限）＋注釈
+ *  写真（無制限）＋注釈
  * ========================= */
 function makePhotoBlock(studentId, lessonKey, groupId){
   const rec = ensureGroup(studentId, lessonKey, groupId);
@@ -1259,11 +1220,10 @@ function makePhotoBlock(studentId, lessonKey, groupId){
   for(const p of photos){
     const th = document.createElement("div");
     th.className="thumb";
-    const hasOCR = (p.ocrText||"").trim();
     th.innerHTML = `
       <img src="${p.thumbDataUrl || p.baseDataUrl}" alt="thumb">
       <button class="x" type="button" title="削除">×</button>
-      <div class="ocr">${hasOCR ? "OCR✓" : "注釈"}</div>
+      <div class="lbl">注釈</div>
     `;
     th.querySelector(".x").addEventListener("click", (e)=>{
       e.stopPropagation();
@@ -1352,7 +1312,7 @@ function fileToDataUrl(file){
 }
 
 /** =========================
- *  6) 児童モード（1人ずつ）
+ *  児童モード（1人ずつ）
  * ========================= */
 function renderRubric(){
   const wrap = document.getElementById("rubric");
@@ -1368,7 +1328,6 @@ function renderRubric(){
 
   for(const g of groups){
     const rec = ensureGroup(sid, lessonKey, g.id);
-    // 表示のため、ついでに grade を最新化
     updateSavedGrade(sid, lessonKey, g.id);
 
     const det = document.createElement("details");
@@ -1453,7 +1412,7 @@ function renderRubric(){
     right.innerHTML = `
       ${scoreUI}
       <div class="field">
-        <label>メモ（この項目）</label>
+        <label>メモ（この項目）※高さは自由に変えられます</label>
         <textarea data-memo="1" data-group="${escapeHtml(g.id)}" placeholder="見取り／声かけ／次の手立て">${escapeHtml(rec.memo||"")}</textarea>
       </div>
     `;
@@ -1469,11 +1428,24 @@ function renderRubric(){
     block.appendChild(itemCard);
     det.appendChild(block);
     wrap.appendChild(det);
+
+    // ✅ 児童モード：項目メモの高さを復元＆保存（児童×授業回×項目）
+    setTimeout(()=>{
+      const ta = right.querySelector(`textarea[data-memo="1"][data-group="${CSS.escape(g.id)}"]`);
+      if(ta){
+        const h = loadMemoHeight("group", sid, lessonKey, g.id, 110);
+        ta.style.height = h + "px";
+
+        const save = ()=> saveMemoHeight("group", sid, lessonKey, g.id, ta.offsetHeight);
+        ta.addEventListener("pointerup", save, {passive:true});
+        ta.addEventListener("blur", save);
+      }
+    }, 0);
   }
 }
 
 /** =========================
- *  7) 項目モード（項目1つ→全員分入力）
+ *  項目モード（項目1つ→全員分入力）
  * ========================= */
 function renderItemMode(){
   const panel = document.getElementById("itemModePanel");
@@ -1605,12 +1577,19 @@ function renderItemMode(){
 
     const memo = document.createElement("textarea");
     memo.className = "miniMemo";
-    memo.placeholder = "メモ（この項目）";
+    memo.placeholder = "メモ（この項目）※高さは自由に変えられます";
     memo.value = rec.memo || "";
     memo.addEventListener("input", ()=>{
       rec.memo = memo.value || "";
       markDirty();
     });
+
+    // ✅ 項目モード：メモ高さを復元＆保存（児童×授業回×項目）
+    const h = loadMemoHeight("itemmode", st.id, lessonKey, group.id, 90);
+    memo.style.height = h + "px";
+    const saveH = ()=> saveMemoHeight("itemmode", st.id, lessonKey, group.id, memo.offsetHeight);
+    memo.addEventListener("pointerup", saveH, {passive:true});
+    memo.addEventListener("blur", saveH);
 
     const photoUI = makeMiniPhotoUI(st.id, lessonKey, group.id);
 
@@ -1625,7 +1604,7 @@ function renderItemMode(){
 }
 
 /** =========================
- *  8) 注釈（ペン／図形／文字／消しゴム）
+ *  注釈（ペン／図形／文字／消しゴム）
  * ========================= */
 const modal = document.getElementById("modal");
 const baseImg = document.getElementById("baseImg");
@@ -1771,9 +1750,6 @@ async function openAnnotator(studentId, lessonKey, groupId, photoId){
   current = {studentId, lessonKey, groupId, photoId};
   document.getElementById("modalTitle").textContent = "写真注釈";
   document.getElementById("modalSub").textContent = `${studentNameById(studentId)}｜${lessonNameByKey(lessonKey)}`;
-
-  const tag = document.getElementById("modalOCRTag");
-  tag.textContent = "OCR：" + ((p.ocrText||"") ? (p.ocrText.slice(0,60)+"…") : "—");
 
   hist = [];
   setTool("pen");
@@ -1939,7 +1915,7 @@ document.getElementById("toolTri").addEventListener("click", ()=> setTool("tri")
 document.getElementById("toolText").addEventListener("click", ()=> setTool("text"));
 
 /** =========================
- *  9) 写真追加（iPad Safariで確実に開く）
+ *  写真追加（iPad Safariで確実に開く）
  * ========================= */
 document.addEventListener("click", (e)=>{
   const t = e.target;
@@ -1954,155 +1930,6 @@ document.addEventListener("click", (e)=>{
     input.click();
   }
 });
-
-/** ===== OCR 画像縮小 ===== */
-async function resizeDataUrlForOCR(dataUrl, maxSide=1600, quality=0.9){
-  const img = new Image();
-  img.src = dataUrl;
-  await new Promise((res, rej)=>{ img.onload=res; img.onerror=rej; });
-
-  const w = img.naturalWidth || img.width;
-  const h = img.naturalHeight || img.height;
-
-  const scale = Math.min(1, maxSide / Math.max(w,h));
-  if(scale >= 1) return dataUrl;
-
-  const cw = Math.max(1, Math.round(w*scale));
-  const ch = Math.max(1, Math.round(h*scale));
-
-  const c = document.createElement("canvas");
-  c.width = cw; c.height = ch;
-  const ctx = c.getContext("2d");
-  ctx.drawImage(img, 0, 0, cw, ch);
-  return c.toDataURL("image/jpeg", quality);
-}
-
-/** ===== OCRキュー（安定化） ===== */
-let ocrQueue = [];
-let ocrRunning = false;
-
-function enqueueOCR(studentId, lessonKey, groupId, photoId){
-  ocrQueue.push({studentId, lessonKey, groupId, photoId});
-  processOCRQueue();
-}
-
-async function processOCRQueue(){
-  if(ocrRunning) return;
-  if(ocrQueue.length === 0) return;
-  if(!getAutoOCR()) { ocrQueue = []; return; }
-
-  const gate = canRunOCRNow();
-  if(!gate.ok){
-    showToast(`OCR停止：${gate.reason}`);
-    ocrQueue = [];
-    return;
-  }
-
-  if(!window.Tesseract){
-    showToast("OCRライブラリ未読込");
-    ocrQueue = [];
-    return;
-  }
-
-  ocrRunning = true;
-  try{
-    while(ocrQueue.length > 0 && getAutoOCR()){
-      const gate2 = canRunOCRNow();
-      if(!gate2.ok){
-        showToast(`OCR停止：${gate2.reason}`);
-        ocrQueue = [];
-        break;
-      }
-
-      const job = ocrQueue.shift();
-      const p = getPhotoRef(job.studentId, job.lessonKey, job.groupId, job.photoId);
-      if(!p) continue;
-      if((p.ocrText||"").trim()) continue;
-
-      showToast("OCR中…");
-      const src = p.thumbDataUrl || p.baseDataUrl;
-      const resized = await resizeDataUrlForOCR(src, 1600, 0.9);
-
-      const { data } = await Tesseract.recognize(
-        resized,
-        "jpn+eng",
-        { logger: m => {} }
-      );
-
-      p.ocrText = (data?.text || "").trim();
-      markDirty();
-      renderAll();
-      showToast(p.ocrText ? "OCR完了" : "OCR完了（文字少）");
-    }
-  }catch(err){
-    console.error(err);
-    showToast("OCR失敗（画像/通信/負荷）");
-  }finally{
-    ocrRunning = false;
-  }
-}
-
-/** 手動OCR（モーダル） */
-async function runOCRForCurrentPhoto(force=true){
-  const gate = canRunOCRNow();
-  if(!gate.ok){
-    showToast(`OCRできない：${gate.reason}`);
-    return;
-  }
-
-  const p = getPhotoRef(current.studentId, current.lessonKey, current.groupId, current.photoId);
-  if(!p) return;
-
-  if(!window.Tesseract){
-    showToast("OCRライブラリ未読込");
-    return;
-  }
-
-  if(!force && (p.ocrText||"").trim()){
-    showToast("OCR済み");
-    return;
-  }
-
-  showToast("OCR中…");
-  const src = p.thumbDataUrl || p.baseDataUrl;
-
-  try{
-    const resized = await resizeDataUrlForOCR(src, 1600, 0.9);
-    const { data } = await Tesseract.recognize(resized, "jpn+eng", { logger: m => {} });
-    p.ocrText = (data?.text || "").trim();
-    markDirty();
-    const tag = document.getElementById("modalOCRTag");
-    tag.textContent = "OCR：" + ((p.ocrText||"") ? (p.ocrText.slice(0,60)+"…") : "—");
-    renderAll();
-    showToast(p.ocrText ? "OCR完了" : "OCR完了（文字少）");
-  }catch(err){
-    console.error(err);
-    showToast("OCR失敗");
-  }
-}
-
-function pasteOCRToGroupMemo(){
-  const p = getPhotoRef(current.studentId, current.lessonKey, current.groupId, current.photoId);
-  if(!p) return;
-
-  const text = (p.ocrText || "").trim();
-  if(!text){
-    showToast("OCR結果が空（先にOCRしてね）");
-    return;
-  }
-
-  const rec = ensureGroup(current.studentId, current.lessonKey, current.groupId);
-  const stamp = new Date().toLocaleString();
-  const add = `\n[OCR ${stamp}]\n${text}\n`;
-
-  rec.memo = (rec.memo || "") + add;
-  markDirty();
-  renderAll();
-  showToast("メモに貼り付けた");
-}
-
-document.getElementById("btnOCR").addEventListener("click", ()=> runOCRForCurrentPhoto(true));
-document.getElementById("btnPasteOCR").addEventListener("click", pasteOCRToGroupMemo);
 
 document.addEventListener("change", async (e)=>{
   const input = e.target;
@@ -2119,7 +1946,6 @@ document.addEventListener("change", async (e)=>{
   const rec = ensureGroup(sid, lkey, gid);
   for(const f of files){
     const dataUrl = await fileToDataUrl(f);
-
     const id = makeId("ph");
     rec.photos = rec.photos || [];
     rec.photos.push({
@@ -2127,13 +1953,8 @@ document.addEventListener("change", async (e)=>{
       baseDataUrl: dataUrl,
       inkLayer: null,
       thumbDataUrl: null,
-      ocrText: "",
       createdAt: nowISO(),
     });
-
-    if(getAutoOCR()){
-      enqueueOCR(sid, lkey, gid, id);
-    }
   }
 
   input.value = "";
@@ -2143,7 +1964,7 @@ document.addEventListener("change", async (e)=>{
 });
 
 /** =========================
- *  10) 入力イベント（点数・チェック・メモ）
+ *  入力イベント（点数・チェック・メモ）
  * ========================= */
 document.addEventListener("input", (e)=>{
   const sid = state.currentStudentId;
@@ -2240,7 +2061,7 @@ document.addEventListener("change", (e)=>{
 });
 
 /** =========================
- *  11) ナビ・名簿反映
+ *  ナビ・名簿反映
  * ========================= */
 document.getElementById("btnApplyRoster").addEventListener("click", ()=>{
   const text = document.getElementById("rosterText").value || "";
@@ -2286,18 +2107,8 @@ document.getElementById("btnTheme").addEventListener("click", ()=>{
   applyTheme(cur === "dark" ? "light" : "dark");
 });
 
-/** 自動OCR */
-document.getElementById("btnAutoOCR").addEventListener("click", ()=>{
-  setAutoOCR(!getAutoOCR());
-});
-
-/** Wi-Fi限定 */
-document.getElementById("btnOCRNet").addEventListener("click", ()=>{
-  setWifiOnlyOCR(!getWifiOnlyOCR());
-});
-
 /** =========================
- *  12) バックアップ／復元／全消去
+ *  バックアップ／復元／全消去
  * ========================= */
 document.getElementById("btnBackup").addEventListener("click", ()=>{
   const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
@@ -2349,7 +2160,7 @@ document.getElementById("btnReset").addEventListener("click", async ()=>{
 });
 
 /** =========================
- *  13) 画面更新
+ *  画面更新
  * ========================= */
 function updateTotalsUI(){
   const sid = state.currentStudentId;
@@ -2386,7 +2197,18 @@ function renderAll(){
   if(sid){
     const lesson = ensurePath(sid, state.currentLessonKey);
     const memo = lesson.__overall?.memo || "";
-    document.getElementById("overallMemo").value = memo;
+    const ta = document.getElementById("overallMemo");
+    ta.value = memo;
+
+    // ✅ 全体メモの高さを復元＆保存（児童×授業回）
+    setTimeout(()=>{
+      const lkey = state.currentLessonKey;
+      const h = loadMemoHeight("overall", sid, lkey, "__overall", 120);
+      ta.style.height = h + "px";
+      const save = ()=> saveMemoHeight("overall", sid, lkey, "__overall", ta.offsetHeight);
+      ta.addEventListener("pointerup", save, {passive:true});
+      ta.addEventListener("blur", save);
+    }, 0);
   }else{
     document.getElementById("overallMemo").value = "";
   }
@@ -2406,12 +2228,10 @@ function renderAll(){
 }
 
 /** =========================
- *  14) 起動
+ *  起動
  * ========================= */
 (async function init(){
   initTheme();
-  initAutoOCR();
-  initWifiOnlyOCR();
 
   await openDB();
   const saved = await idbGet(STATE_KEY);
@@ -2430,7 +2250,7 @@ function renderAll(){
     await idbSet(STATE_KEY, state);
   }
 
-  // 起動時：既存データに grade を埋める（互換対応）
+  // 起動時：grade を埋める（互換）
   for(const st of (state.roster||[])){
     for(const l of (CONFIG.lessons||[])){
       const groups = getLessonGroups(l.key);
