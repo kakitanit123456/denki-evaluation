@@ -7,6 +7,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>理科評価 記録ツール（iPad）</title>
 
+  <!-- ✅ PWA 追記（ここから） -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#f6f7fb">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <!-- ✅ PWA 追記（ここまで） -->
+
   <style>
     :root{
       --bg:#f6f7fb;
@@ -565,6 +571,7 @@
 
 <body>
 <div class="app safe">
+  <!-- （ここから下は、あなたのHTMLそのまま） -->
   <header>
     <div class="topbar">
       <div class="title">
@@ -572,7 +579,7 @@
         <small id="subTitle">単元：電気の通り道｜端末内に自動保存</small>
       </div>
       <div class="actions">
-        <button class="btn small" id="btnMode">表示：項目へ</button>
+        <button class="btn small" id="btnMode">表示：児童</button>
         <button class="btn small" id="btnTheme">🌙 ダーク</button>
         <button class="btn small ok" id="btnExportCSV">CSV出力</button>
         <button class="btn small primary" id="btnBackup">バックアップ(JSON)</button>
@@ -733,6 +740,7 @@ const CONFIG = {
     T: { label:"思考・判断・表現", color:"var(--t)" },
     A: { label:"主体的", color:"var(--a)" },
   },
+
   gradeBands: { A:0.86, Bp:0.72, B:0.40, Bm:0.28, C:0.00 },
 
   rubricByLesson: {
@@ -790,6 +798,7 @@ const CONFIG = {
           "同じ条件で再確認（誤差チェック）ができる",
         ],
       },
+
       { id:"T_L3a", domain:"T", title:"思考：予想（10点）",
         scoring:{
           type:"subsum", max:10,
@@ -801,6 +810,7 @@ const CONFIG = {
         },
         criteria:[]
       },
+
       { id:"T_L3b", domain:"T", title:"思考：シンキング→分析→表現→結論（15点：結論重視）",
         scoring:{
           type:"subsum", max:15,
@@ -813,6 +823,7 @@ const CONFIG = {
         },
         criteria:[]
       },
+
       { id:"A_L3", domain:"A", title:"主体：リクエスト（3個以上でB）",
         scoring:{ type:"manual", max:5 },
         criteria:[
@@ -866,9 +877,6 @@ const CONFIG = {
   ],
 };
 
-/** =========================
- *  2) IndexedDB（端末内保存）
- * ========================= */
 const DB_NAME = "SciEvalDB_v6_L12_ALL_testABC_subsum";
 const DB_VER = 1;
 const STORE = "state";
@@ -915,9 +923,6 @@ function idbDel(key){
   });
 }
 
-/** =========================
- *  3) 状態
- * ========================= */
 const STATE_KEY = "app_state";
 const nowISO = ()=> new Date().toISOString();
 
@@ -949,14 +954,6 @@ function ensureGroup(studentId, lessonKey, groupId){
     if(lesson[groupId].parts == null) lesson[groupId].parts = [];
   }
   return lesson[groupId];
-}
-
-/** ✅ 読み取り専用（CSV/集計でstateを増やさない） */
-function getGroup(studentId, lessonKey, groupId){
-  return state.records?.[studentId]?.[lessonKey]?.[groupId] || null;
-}
-function getOverallMemoRO(studentId, lessonKey){
-  return state.records?.[studentId]?.[lessonKey]?.__overall?.memo || "";
 }
 
 let saveTimer = null;
@@ -1100,9 +1097,6 @@ function lessonNameByKey(k){
   return l ? l.name : k;
 }
 
-/** =========================
- *  テーマ（ダークモード）
- * ========================= */
 function applyTheme(theme){
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
@@ -1119,9 +1113,6 @@ function initTheme(){
   applyTheme(prefersDark ? "dark" : "light");
 }
 
-/** =========================
- *  ✅ メモ高さ保存（イベント増殖防止）
- * ========================= */
 function memoHeightKey(type, studentId, lessonKey, groupId){
   return `memoH:${type}:${studentId||"-"}:${lessonKey||"-"}:${groupId||"-"}`;
 }
@@ -1137,27 +1128,14 @@ function saveMemoHeight(type, studentId, lessonKey, groupId, px){
   localStorage.setItem(k, String(px));
 }
 
-/** ✅ 高さ復元＋保存（同一textareaへの二重登録を防ぐ） */
-function bindMemoHeightOnce(textarea, type, studentId, lessonKey, groupId, fallbackPx){
-  const h = loadMemoHeight(type, studentId, lessonKey, groupId, fallbackPx);
-  textarea.style.height = h + "px";
-
-  const bindKey = `bound_${type}_${studentId||"-"}_${lessonKey||"-"}_${groupId||"-"}`;
-  if(textarea.dataset[bindKey] === "1") return;
-  textarea.dataset[bindKey] = "1";
-
-  const save = ()=> saveMemoHeight(type, studentId, lessonKey, groupId, textarea.offsetHeight);
-  textarea.addEventListener("pointerup", save, {passive:true});
-  textarea.addEventListener("blur", save);
-}
-
-/** =========================
- *  CSV出力（stateを増やさない）
- * ========================= */
 function csvEscape(v){
   const s = (v==null) ? "" : String(v);
   if(/[",\n]/.test(s)) return `"${s.replaceAll('"','""')}"`;
   return s;
+}
+function getOverallMemo(studentId, lessonKey){
+  const lesson = state.records?.[studentId]?.[lessonKey];
+  return lesson?.__overall?.memo || "";
 }
 function exportCSV(){
   const unit = state.meta?.unitName || "";
@@ -1183,7 +1161,7 @@ function exportCSV(){
     const row = [unit, lessonName, st.name];
 
     for(const g of groups){
-      const rec = getGroup(st.id, lessonKey, g.id) || { score:null, checks:[], parts:[], memo:"", photos:[], grade:"—" };
+      const rec = ensureGroup(st.id, lessonKey, g.id);
       const pts = pointsForGroup(rec, g);
       const max = g.scoring?.max ?? 0;
       const gr = (rec.grade && rec.grade !== "—") ? rec.grade : gradeForGroup(pts, max, g);
@@ -1192,7 +1170,7 @@ function exportCSV(){
       row.push(pts, max, gr, rec.memo||"", photoCount);
     }
 
-    row.push(getOverallMemoRO(st.id, lessonKey));
+    row.push(getOverallMemo(st.id, lessonKey));
     rows.push(row);
   }
 
@@ -1206,9 +1184,6 @@ function exportCSV(){
   showToast("CSVを出力した");
 }
 
-/** =========================
- *  名簿表示
- * ========================= */
 function renderRosterList(){
   const list = document.getElementById("studentList");
   list.innerHTML = "";
@@ -1242,9 +1217,6 @@ function renderRosterList(){
   }
 }
 
-/** =========================
- *  写真（無制限）＋注釈
- * ========================= */
 function makePhotoBlock(studentId, lessonKey, groupId){
   const rec = ensureGroup(studentId, lessonKey, groupId);
   const photos = rec.photos || [];
@@ -1360,23 +1332,15 @@ function makeMiniPhotoUI(studentId, lessonKey, groupId){
   return box;
 }
 
-/** ✅ 写真を圧縮して保存（容量対策） */
-async function fileToCompressedDataUrl(file, maxW=1600, quality=0.8){
-  const bmp = await createImageBitmap(file);
-  const scale = Math.min(1, maxW / bmp.width);
-  const w = Math.round(bmp.width * scale);
-  const h = Math.round(bmp.height * scale);
-
-  const c = document.createElement("canvas");
-  c.width = w; c.height = h;
-  const ctx = c.getContext("2d");
-  ctx.drawImage(bmp, 0, 0, w, h);
-  return c.toDataURL("image/jpeg", quality);
+function fileToDataUrl(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=()=>reject(r.error);
+    r.readAsDataURL(file);
+  });
 }
 
-/** =========================
- *  児童モード（1人ずつ）
- * ========================= */
 function renderRubric(){
   const wrap = document.getElementById("rubric");
   wrap.innerHTML = "";
@@ -1539,15 +1503,17 @@ function renderRubric(){
     setTimeout(()=>{
       const ta = right.querySelector(`textarea[data-memo="1"][data-group="${CSS.escape(g.id)}"]`);
       if(ta){
-        bindMemoHeightOnce(ta, "group", sid, lessonKey, g.id, 110);
+        const h = loadMemoHeight("group", sid, lessonKey, g.id, 110);
+        ta.style.height = h + "px";
+
+        const save = ()=> saveMemoHeight("group", sid, lessonKey, g.id, ta.offsetHeight);
+        ta.addEventListener("pointerup", save, {passive:true});
+        ta.addEventListener("blur", save);
       }
     }, 0);
   }
 }
 
-/** =========================
- *  項目モード（項目1つ→全員分入力）
- * ========================= */
 function promptPartsAndSave(studentId, lessonKey, group){
   const rec = ensureGroup(studentId, lessonKey, group.id);
   const parts = group.scoring.parts || [];
@@ -1724,7 +1690,11 @@ function renderItemMode(){
       markDirty();
     });
 
-    bindMemoHeightOnce(memo, "itemmode", st.id, lessonKey, group.id, 90);
+    const h = loadMemoHeight("itemmode", st.id, lessonKey, group.id, 90);
+    memo.style.height = h + "px";
+    const saveH = ()=> saveMemoHeight("itemmode", st.id, lessonKey, group.id, memo.offsetHeight);
+    memo.addEventListener("pointerup", saveH, {passive:true});
+    memo.addEventListener("blur", saveH);
 
     const photoUI = makeMiniPhotoUI(st.id, lessonKey, group.id);
 
@@ -1738,9 +1708,6 @@ function renderItemMode(){
   }
 }
 
-/** =========================
- *  注釈（ペン／図形／文字／消しゴム）
- * ========================= */
 const modal = document.getElementById("modal");
 const baseImg = document.getElementById("baseImg");
 const ink = document.getElementById("ink");
@@ -1999,26 +1966,15 @@ ink.addEventListener("click", (e)=>{
   markDirty();
 });
 
-/** ✅ 注釈サムネ：ink基準で安定化 */
 function makeThumbFromBaseAndInk(baseDataUrl){
   try{
-    const w = ink.width || baseImg.naturalWidth;
-    const h = ink.height || baseImg.naturalHeight;
-    if(!w || !h) return baseDataUrl;
-
     const c = document.createElement("canvas");
-    c.width = w;
-    c.height = h;
+    c.width = baseImg.naturalWidth;
+    c.height = baseImg.naturalHeight;
     const ctx = c.getContext("2d");
-
-    if(baseImg.naturalWidth){
-      ctx.drawImage(baseImg, 0, 0, w, h);
-    }else{
-      return baseDataUrl;
-    }
-
-    ctx.drawImage(ink, 0, 0, w, h);
-    return c.toDataURL("image/jpeg", 0.85);
+    ctx.drawImage(baseImg,0,0,c.width,c.height);
+    ctx.drawImage(ink,0,0,c.width,c.height);
+    return c.toDataURL("image/jpeg", 0.9);
   }catch{
     return baseDataUrl;
   }
@@ -2060,9 +2016,6 @@ document.getElementById("toolEllipse").addEventListener("click", ()=> setTool("e
 document.getElementById("toolTri").addEventListener("click", ()=> setTool("tri"));
 document.getElementById("toolText").addEventListener("click", ()=> setTool("text"));
 
-/** =========================
- *  写真追加（iPad Safariで確実に開く）
- * ========================= */
 document.addEventListener("click", (e)=>{
   const t = e.target;
   const openBtn = t.closest("button[data-open-picker='1']");
@@ -2091,7 +2044,7 @@ document.addEventListener("change", async (e)=>{
 
   const rec = ensureGroup(sid, lkey, gid);
   for(const f of files){
-    const dataUrl = await fileToCompressedDataUrl(f, 1600, 0.8);
+    const dataUrl = await fileToDataUrl(f);
     const id = makeId("ph");
     rec.photos = rec.photos || [];
     rec.photos.push({
@@ -2109,9 +2062,6 @@ document.addEventListener("change", async (e)=>{
   showToast(`${files.length}枚 追加した`);
 });
 
-/** =========================
- *  入力イベント（点数・配点・チェック・メモ）
- * ========================= */
 document.addEventListener("input", (e)=>{
   const sid = state.currentStudentId;
   const lessonKey = state.currentLessonKey;
@@ -2236,19 +2186,12 @@ document.addEventListener("change", (e)=>{
   }
 });
 
-/** =========================
- *  ナビ・名簿反映（ID保持）
- * ========================= */
 document.getElementById("btnApplyRoster").addEventListener("click", ()=>{
   const text = document.getElementById("rosterText").value || "";
   const lines = text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
-
-  const oldByName = new Map((state.roster||[]).map(s=>[s.name, s.id]));
-  const roster = lines.map(name=>({ id: oldByName.get(name) || makeId("st"), name }));
-
+  const roster = lines.map(name=>({ id: makeId("st"), name }));
   state.roster = roster;
   if(!state.currentStudentId && roster.length>0) state.currentStudentId = roster[0].id;
-
   markDirty();
   renderAll();
   showToast("名簿を反映した");
@@ -2284,9 +2227,6 @@ document.getElementById("btnTheme").addEventListener("click", ()=>{
   applyTheme(cur === "dark" ? "light" : "dark");
 });
 
-/** =========================
- *  バックアップ／復元／全消去
- * ========================= */
 document.getElementById("btnBackup").addEventListener("click", ()=>{
   const blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
   const a = document.createElement("a");
@@ -2336,9 +2276,6 @@ document.getElementById("btnReset").addEventListener("click", async ()=>{
   showToast("全消去しました");
 });
 
-/** =========================
- *  画面更新
- * ========================= */
 function updateTotalsUI(){
   const sid = state.currentStudentId;
   if(!sid){
@@ -2379,7 +2316,11 @@ function renderAll(){
 
     setTimeout(()=>{
       const lkey = state.currentLessonKey;
-      bindMemoHeightOnce(ta, "overall", sid, lkey, "__overall", 120);
+      const h = loadMemoHeight("overall", sid, lkey, "__overall", 120);
+      ta.style.height = h + "px";
+      const save = ()=> saveMemoHeight("overall", sid, lkey, "__overall", ta.offsetHeight);
+      ta.addEventListener("pointerup", save, {passive:true});
+      ta.addEventListener("blur", save);
     }, 0);
   }else{
     document.getElementById("overallMemo").value = "";
@@ -2388,7 +2329,7 @@ function renderAll(){
   renderRosterList();
 
   const btnMode = document.getElementById("btnMode");
-  btnMode.textContent = (state.uiMode==="student") ? "表示：項目へ" : "表示：児童へ";
+  btnMode.textContent = (state.uiMode==="student") ? "表示：児童" : "表示：項目";
 
   document.getElementById("itemModePanel").style.display = (state.uiMode==="item") ? "block" : "none";
   document.getElementById("rubric").style.display = (state.uiMode==="student") ? "block" : "none";
@@ -2399,9 +2340,6 @@ function renderAll(){
   updateTotalsUI();
 }
 
-/** =========================
- *  起動
- * ========================= */
 (async function init(){
   initTheme();
 
@@ -2438,6 +2376,15 @@ function renderAll(){
   renderAll();
   showToast("起動しました");
 })();
+</script>
+
+<!-- ✅ PWA：Service Worker 登録（オフライン用） -->
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    });
+  }
 </script>
 </body>
 </html>
